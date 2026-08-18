@@ -4,7 +4,7 @@ import cors from 'cors';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import Database from 'better-sqlite3';
-
+import path from 'path';
 const app=express(), PORT=process.env.PORT||4000, SECRET=process.env.JWT_SECRET||'dev-change-me';
 const db=new Database('shortcut_hub_v3.db');
 db.pragma('foreign_keys=ON');
@@ -78,5 +78,14 @@ app.get('/api/admin/stats',auth,admin,(q,r)=>r.json({users:db.prepare('SELECT CO
 app.get('/api/admin/users',auth,admin,(q,r)=>r.json(db.prepare('SELECT id,name,email,role,xp,streak,created_at FROM users ORDER BY id DESC').all()));
 app.post('/api/admin/shortcuts',auth,admin,(req,res)=>{let x=req.body||{};if(!x.software||!x.category||!x.keys||!x.action)return res.status(400).json({error:'Missing required fields'});let r=db.prepare('INSERT INTO shortcuts(software,icon,category,keys,action,level,type,example) VALUES(?,?,?,?,?,?,?,?)').run(x.software,x.icon||'⌨',x.category,x.keys,x.action,x.level||'Beginner',x.type||'General',x.example||'');res.status(201).json(db.prepare('SELECT * FROM shortcuts WHERE id=?').get(r.lastInsertRowid))});
 app.put('/api/admin/shortcuts/:id',auth,admin,(req,res)=>{let id=+req.params.id,x=req.body||{};db.prepare('UPDATE shortcuts SET software=?,icon=?,category=?,keys=?,action=?,level=?,type=?,example=? WHERE id=?').run(x.software,x.icon,x.category,x.keys,x.action,x.level,x.type,x.example,id);res.json(db.prepare('SELECT * FROM shortcuts WHERE id=?').get(id))});
-app.delete('/api/admin/shortcuts/:id',auth,admin,(req,res)=>{db.prepare('DELETE FROM shortcuts WHERE id=?').run(+req.params.id);res.json({ok:true})});
+app.delete('/api/admin/shortcuts/:id',auth,admin,(req,res)=>{let id=+req.params.id;db.prepare('DELETE FROM shortcuts WHERE id=?').run(id);res.json({ok:true})});
+const clientDist = path.join(process.cwd(), 'client', 'dist');
+
+app.use(express.static(clientDist));
+
+app.use((req,res,next)=>{
+  if(req.path.startsWith('/api/')) return next();
+  res.sendFile(path.join(clientDist, 'index.html'));
+});
+
 app.listen(PORT,()=>console.log(`ShortcutHub V3 API: http://localhost:${PORT}`));
