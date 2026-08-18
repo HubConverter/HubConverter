@@ -717,7 +717,7 @@ app.delete('/api/admin/shortcuts/:id', auth, admin, (req, res) => {
 
 const clientDist = path.join(
   process.cwd(),
-  'src',
+  '..',
   'client',
   'dist'
 );
