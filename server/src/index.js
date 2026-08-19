@@ -97,13 +97,9 @@ const seed = [
   ['Chrome','🌐','Browser','Ctrl+Shift+T','Reopen closed tab','Intermediate','Tabs','Restores the last closed tab.'],
   ['Chrome','🌐','Browser','Ctrl+L','Address bar','Beginner','Navigation','Focuses the address bar.'],
 
-  ['Gmail','✉️','Web','C','Compose','Beginner','Email','Starts a new message when shortcuts are enabled.'],
 
-  ['VS Code','</>','Development','Ctrl+P','Quick Open','Beginner','Navigation','Opens Quick Open.'],
-
-  ['Google Sheets','📗','Web','Ctrl+;','Insert date','Beginner','Editing','Inserts the current date.']
 ];
-
+db.prepare("DELETE FROM shortcuts WHERE software IN ('Gmail', 'VS Code', 'Google Sheets')").run();
 if (db.prepare('SELECT COUNT(*) c FROM shortcuts').get().c === 0) {
   const ins = db.prepare(`
     INSERT INTO shortcuts
