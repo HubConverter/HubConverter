@@ -100,16 +100,14 @@ const seed = [
 
 ];
 db.prepare("DELETE FROM shortcuts WHERE software IN ('Gmail', 'VS Code', 'Google Sheets')").run();
-if (db.prepare('SELECT COUNT(*) c FROM shortcuts').get().c === 0) {
-  const ins = db.prepare(`
-    INSERT INTO shortcuts
-    (software,icon,category,keys,action,level,type,example)
-    VALUES(?,?,?,?,?,?,?,?)
-  `);
+const ins = db.prepare(`
+  INSERT INTO shortcuts
+  (software, icon, category, keys, action, level, type, example)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+`);
 
-  db.transaction(rows => {
-    rows.forEach(row => ins.run(...row));
-  })(seed);
+for (const s of seed) {
+  ins.run(...s);
 }
 
 /* =========================
