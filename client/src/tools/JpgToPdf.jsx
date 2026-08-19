@@ -254,53 +254,32 @@ export default function JpgToPdf() {
                     ? "sizeOption active"
                     : "sizeOption"
                 }
-                onClick={() => {
-                  setImageSize("large");
-                  setPdfBlob(null);
-                }}
-              >
+                {pdfBlob && (
+  <button
+    className="downloadButton"
+    onClick={() => {
+      const url = URL.createObjectURL(pdfBlob);
+      const link = document.createElement("a");
 
-                <span className="sizeIcon">
-                  L
-                </span>
+      link.href = url;
+      link.download = `ShortcutHub-JPG-to-PDF-${imageSize}.pdf`;
 
-                <span>
-                  <b>Large</b>
-                  <small>1440 × 2560</small>
-                </span>
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
 
-              </button>
+      URL.revokeObjectURL(url);
 
-            </div>
-
-            {/* GENERATE BUTTON */}
-            {!pdfBlob && (
-              <button
-                className="convertButton"
-                onClick={convertToPdf}
-                disabled={
-                  converting ||
-                  files.length === 0
-                }
-              >
-                {converting
-                  ? "Generating PDF..."
-                  : "Generate PDF"}
-              </button>
-            )}
-
-            {/* DOWNLOAD BUTTON */}
-            {pdfBlob && (
-              <button
-                className="convertButton"
-                onClick={downloadPdf}
-              >
-                ⬇️ Download Now
-              </button>
-            )}
-
-          </div>
-        )}
+      // Reset everything for a new conversion
+      setFiles([]);
+      setPdfBlob(null);
+      setShowSizes(false);
+      setImageSize("medium");
+    }}
+  >
+    ⬇️ Download Now
+  </button>
+)}
 
         {/* PRIVACY NOTE */}
         <div className="toolNote">
