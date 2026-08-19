@@ -254,7 +254,7 @@ export default function JpgToPdf() {
                     ? "sizeOption active"
                     : "sizeOption"
                 }
-                {pdfBlob && (
+                
   <button
     className="downloadButton"
     onClick={() => {
