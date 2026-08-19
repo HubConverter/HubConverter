@@ -293,16 +293,32 @@ const seed = [
   ['Chrome','🌐','Browser','Ctrl+L','Address bar','Beginner','Navigation','Focuses the address bar.'],
 ];
 
-if (db.prepare('SELECT COUNT(*) c FROM shortcuts').get().c === 0) {
-  const ins = db.prepare(`
-    INSERT INTO shortcuts
-    (software,icon,category,keys,action,level,type,example)
-    VALUES(?,?,?,?,?,?,?,?)
-  `);
+/* =========================
+   SEED / UPDATE SHORTCUTS
+========================= */
 
-  db.transaction(rows => {
-    rows.forEach(row => ins.run(...row));
-  })(seed);
+// Remove old shortcuts for apps that we are updating.
+// This allows the new Tally, PowerPoint and Windows data
+// to replace the old data.
+db.prepare(`
+  DELETE FROM shortcuts
+  WHERE software IN ('Tally', 'PowerPoint', 'Windows')
+`).run();
+
+// Also remove these old apps if you want them replaced
+db.prepare(`
+  DELETE FROM shortcuts
+  WHERE software IN ('Gmail', 'VS Code', 'Google Sheets')
+`).run();
+
+const ins = db.prepare(`
+  INSERT INTO shortcuts
+  (software, icon, category, keys, action, level, type, example)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+`);
+
+for (const s of seed) {
+  ins.run(...s);
 }
 
 // ShortcutHub migration: remove unwanted shortcut categories
