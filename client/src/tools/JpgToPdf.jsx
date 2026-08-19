@@ -94,7 +94,7 @@ export default function JpgToPdf() {
         URL.revokeObjectURL(imageUrl);
       }
 
-    pdf.save(`ShortcutHub-JPG-to-PDF-${imageSize}.pdf`);
+  pdf.save("ShortcutHub-JPG-to-PDF-" + imageSize + ".pdf");
     } catch (error) {
       console.error(error);
       alert("Something went wrong while creating the PDF.");
