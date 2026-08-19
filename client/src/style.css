@@ -800,4 +800,13 @@ body {
     ) !important;
 }
 }
- }
+<div className="apps">
+  {(soft.length ? soft : fallback).map(a =>
+    <button className="app">
+      <b>{a.icon || a[1]}</b>
+      <strong>{a.software || a[0]}</strong>
+      <small>{a.count || 'Ready'} shortcuts</small>
+    </button>
+  )}
+</div>
+}
