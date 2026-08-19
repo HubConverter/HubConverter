@@ -1119,17 +1119,7 @@ const wordShortcuts = [
     "Other Useful Shortcuts",
     ""
   ],
-  [
-    "Word",
-    "📝",
-    "Other Useful Shortcuts",
-    "Shift + F7",
-    "Thesaurus",
-    "Beginner",
-    "Other Useful Shortcuts",
-    ""
-  ],
-  [
+   [
     "Word",
     "📝",
     "Other Useful Shortcuts",
