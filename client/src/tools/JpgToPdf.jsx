@@ -209,5 +209,3 @@ export default function JpgToPdf() {
        </section>
   );
 }
-
-export default JpgToPdf;
