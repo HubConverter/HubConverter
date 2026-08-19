@@ -344,6 +344,98 @@ if (!tallyMigrationDone) {
 
   replaceTally();
 }
+// ==================================================
+// POWERPOINT SHORTCUTS - UPDATED USER LIST
+// Replaces all previous PowerPoint shortcuts
+// ==================================================
+
+const latestPowerPointShortcuts = [
+  ['Page Down', 'Go to the next slide'],
+  ['Page Up', 'Go to the previous slide'],
+  ['Ctrl + M', 'Insert new slide'],
+  ['Ctrl + D', 'Duplicate slide'],
+  ['Alt + W, Q (or Ctrl + Mouse scroll)', 'Change the zoom for the slide'],
+
+  ['Ctrl + Alt + Shift + A', 'Send selected slides to appendix'],
+  ['Ctrl + Alt + Shift + D', 'Create Summary Slide'],
+  ['Alt + G, H', 'Select a theme'],
+  ['Alt + H, L', 'Select a slide layout'],
+  ['Ctrl + Alt + Shift + V', 'Save selected slides'],
+  ['Ctrl + Alt + Shift + P', 'Print selected slides'],
+
+  ['Ctrl + S', 'Save presentation'],
+  ['F12', 'Save As'],
+  ['Ctrl+Shift+S', 'Save As'],
+  ['Ctrl + N', 'New presentation'],
+  ['Ctrl + P', 'Print presentation'],
+
+  ['Ctrl + F6', 'Switch between open presentations'],
+  ['Ctrl + TAB', 'Switch between open PowerPoint windows'],
+  ['Ctrl + Shift + N', 'Duplicate active presentation (PowerPoint 2013, 2016, 365)'],
+  ['Ctrl + <', 'Add section to presentation (PowerPoint 2013, 2016, 365)'],
+
+  ['Alt + F4 or Alt + F, X', 'Close PowerPoint'],
+  ['Ctrl + W or Ctrl + F4', 'Close Presentation'],
+
+  ['Ctrl + F', 'Open Find dialog box'],
+  ['Ctrl + H', 'Open Find and Replace dialog box'],
+  ['Alt + Shift + D', 'Open Header and Footer dialog box'],
+  ['F7', 'Open Spell Check'],
+  ['Shift + F7', 'Open Thesaurus'],
+  ['Ctrl + 1', 'Format selected Chart element'],
+
+  ['Ctrl + Shift + H', 'Show or Hide the Notes pane (PowerPoint 2013, 2016, 365)'],
+  ["Shift + click 'Normal View'", 'Switch to Slide Master View'],
+  ["Shift + click 'Slide Sorter View'", 'Switch to Handout Master View'],
+  ["Ctrl + Shift + click 'Normal View'", 'Close Thumbnails View']
+];
+
+const powerPointMigration = 'powerpoint_shortcuts_user_v2';
+
+const powerPointMigrationDone = db.prepare(
+  'SELECT 1 FROM app_migrations WHERE name=?'
+).get(powerPointMigration);
+
+if (!powerPointMigrationDone) {
+  const replacePowerPoint = db.transaction(() => {
+
+    // Delete ALL old PowerPoint shortcuts
+    db.prepare(
+      'DELETE FROM shortcuts WHERE software=?'
+    ).run('PowerPoint');
+
+    // Insert new PowerPoint shortcuts
+    const insertPowerPoint = db.prepare(`
+      INSERT INTO shortcuts
+      (software, icon, category, keys, action, level, type, example)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `);
+
+    for (const [keys, action] of latestPowerPointShortcuts) {
+      insertPowerPoint.run(
+        'PowerPoint',
+        '📊',
+        'Presentation',
+        keys,
+        action,
+        'Beginner',
+        'General',
+        ''
+      );
+    }
+
+    // Mark migration as completed
+    db.prepare(
+      'INSERT INTO app_migrations(name) VALUES(?)'
+    ).run(powerPointMigration);
+  });
+
+  replacePowerPoint();
+
+  console.log(
+    `PowerPoint migration complete: ${latestPowerPointShortcuts.length} shortcuts inserted.`
+  );
+}
 const wordShortcuts = [
   [
     "Word",
