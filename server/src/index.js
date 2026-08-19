@@ -230,7 +230,120 @@ try {
 } catch (e) {
   console.error("Unwanted shortcut removal failed:", e);
 }
+// ==================================================
+// TALLY SHORTCUTS - UPDATED USER LIST V2
+// Replaces all previous Tally shortcuts
+// ==================================================
 
+const latestTallyShortcuts = [
+  ['F12', 'Only Press F12'],
+  ['F12', 'F12'],
+  ['Alt F12', 'F12'],
+  ['Ctrl F12', 'F12'],
+  ['Alt P', 'Print'],
+  ['Alt E', 'Export'],
+  ['ALC', 'Create Ledger'],
+  ['ALA', 'Alter Ledger'],
+  ['DD', 'To See Entries (ALL) — Display → Daybook → Select Period'],
+  ['DAL', 'To See One Ledger — Display → Account → Book Ledger'],
+  ['Alt C', 'Make Ledger'],
+  ['Ctrl Enter', 'Change Ledger'],
+  ['Enter Enter', 'Change Ledger'],
+  ['Ctrl A', 'Calculator'],
+  ['Ctrl N', 'To Hide Ledger'],
+  ['Alt R', 'To Hide Ledger'],
+  ['Alt U', 'To Unhide Ledger'],
+
+  ['F1', 'To select a company; To select the Accounts Button and Inventory buttons'],
+  ['F2', 'To change the menu period'],
+  ['F3', 'To select the company'],
+  ['F4', 'To select the Contra voucher'],
+  ['F5', 'To select the Payment voucher'],
+  ['F6', 'To select the Receipt voucher'],
+  ['F7', 'To select the Journal voucher'],
+  ['F8', 'To select the Sales voucher'],
+  ['F8 (CTRL+F8)', 'To select the Credit Note voucher'],
+  ['F9', 'To select the Purchase voucher'],
+  ['F9 (CTRL+F9)', 'To select the Debit Note voucher'],
+  ['F10', 'To select the Reversing Journal voucher'],
+  ['F10', 'To select the Memorandum voucher'],
+  ['F11', 'To select the Functions and Features screen'],
+  ['F12', 'To select the Configure screen'],
+
+  ['ALT + 2', 'To Duplicate a voucher'],
+  ['ALT + A', 'To Add a voucher'],
+  ['ALT + C', 'To create a master at a voucher screen'],
+  ['ALT + D', 'To delete a voucher; To delete a master'],
+  ['ALT + E', 'To export the report in ASCII, SDF, HTML OR XML format'],
+  ['ALT + I', 'To insert a voucher'],
+  ['Alt+H', 'Help Shortcut'],
+  ['ALT + O', 'To upload the report at your website'],
+  ['Alt+I', 'Insert a voucher / To toggle between Item and Accounting invoice'],
+  ['Alt+N', 'To view the report in automatic columns'],
+  ['Alt+U', 'Retrieve the last line which is deleted using Alt+R'],
+  ['Alt+Y', 'Register Tally'],
+  ['ALT + M', 'To Email the report'],
+  ['ALT + P', 'To print the report'],
+  ['ALT + R', 'To remove a line in a report'],
+  ['ALT + S', 'To bring back a line you removed using ALT + R'],
+  ['ALT+ V', 'From Invoice screen to bring Stock Journal screen'],
+  ['ALT + W', 'To view the Tally Web browser.'],
+  ['Alt+Z', 'Zoom'],
+  ['ALT + X', 'To cancel a voucher in Day Book/List of Vouchers'],
+  ['ALT + R', 'To Register Tally'],
+
+  ['CTRL + A', 'To accept a form – wherever you use this key combination, that screen or report gets accepted as it is.'],
+  ['Ctrl+Alt+B', 'Check the Company Statutory details'],
+  ['Ctrl+M', 'Switches to Main Area of Tally Screen'],
+  ['Ctrl+N', 'Switches to Calculator / ODBC Section of Tally Screen'],
+  ['Ctrl+R', 'Repeat narration in the same voucher type irrespective of Ledger Account'],
+  ['Ctrl+T', 'Mark any voucher as Post Dated Voucher'],
+  ['Ctrl+Alt+C', 'Copy the text from Tally (At creation and alternation screens)'],
+  ['Ctrl+Alt+V', 'To paste the text from Tally (At creation and alternation screens)']
+];
+
+const tallyMigration = 'tally_shortcuts_user_v2';
+
+const tallyMigrationDone = db.prepare(
+  'SELECT 1 FROM app_migrations WHERE name=?'
+).get(tallyMigration);
+
+if (!tallyMigrationDone) {
+  const replaceTally = db.transaction(() => {
+
+    // Delete ALL old Tally shortcuts
+    db.prepare(
+      'DELETE FROM shortcuts WHERE software=?'
+    ).run('Tally');
+
+    // Insert new Tally shortcuts
+    const insertTally = db.prepare(`
+      INSERT INTO shortcuts
+      (software, icon, category, keys, action, level, type, example)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `);
+
+    for (const [keys, action] of latestTallyShortcuts) {
+      insertTally.run(
+        'Tally',
+        '▣',
+        'Accounting',
+        keys,
+        action,
+        'Beginner',
+        'General',
+        ''
+      );
+    }
+
+    // Mark migration completed
+    db.prepare(
+      'INSERT INTO app_migrations(name) VALUES(?)'
+    ).run(tallyMigration);
+  });
+
+  replaceTally();
+}
 const wordShortcuts = [
   [
     "Word",
