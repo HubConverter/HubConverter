@@ -1376,37 +1376,143 @@ footer {
    JPG TO PDF - SIZE SELECTOR
 ================================ */
 
-.sizeSelector {
-  margin-top: 24px;
+.toolPage {
   width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 60px 20px;
+}
+
+.toolBox {
+  width: min(900px, 100%);
+  margin: 0 auto;
+  text-align: center;
+}
+
+.toolBox h1 {
+  font-size: 52px;
+  margin: 10px 0 15px;
+  color: #ffffff;
+}
+
+.toolBox > p {
+  font-size: 20px;
+  color: #c8d8f2;
+  margin-bottom: 30px;
+}
+
+.uploadBox {
+  width: min(700px, 100%);
+  min-height: 170px;
+  margin: 25px auto;
+  padding: 35px 25px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  border: 2px dashed rgba(80, 190, 255, 0.45);
+  border-radius: 18px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(20, 50, 100, 0.65),
+      rgba(7, 18, 50, 0.85)
+    );
+
+  color: #ffffff;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.uploadBox:hover {
+  border-color: #38bdf8;
+  transform: translateY(-2px);
+  box-shadow: 0 0 30px rgba(56, 189, 248, 0.15);
+}
+
+.uploadBox input {
+  display: none;
+}
+
+.uploadIcon {
+  font-size: 42px;
+  margin-bottom: 12px;
+}
+
+.uploadBox strong {
+  font-size: 20px;
+  color: #ffffff;
+}
+
+.uploadBox span {
+  margin-top: 8px;
+  color: #9fb5d9;
+}
+
+.fileList {
+  width: min(700px, 100%);
+  margin: 20px auto;
+  text-align: left;
+}
+
+.fileItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 10px 14px;
+  margin-bottom: 8px;
+
+  border-radius: 10px;
+  background: rgba(20, 45, 85, 0.65);
+  color: #ffffff;
+}
+
+
+/* =========================================
+   SIZE SELECTOR
+   ========================================= */
+
+.sizeSelector {
+  width: min(850px, 100%);
+  margin: 30px auto 20px;
+  text-align: center;
 }
 
 .sizeSelector > strong {
   display: block;
-  margin-bottom: 12px;
-  font-size: 16px;
+  margin-bottom: 15px;
+
+  font-size: 18px;
   color: #ffffff;
 }
 
 .sizeOptions {
   display: flex;
-  gap: 12px;
+  gap: 16px;
   width: 100%;
 }
 
 .sizeOption {
   flex: 1;
-  min-height: 70px;
+
+  min-height: 85px;
+
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
+  gap: 14px;
+
+  padding: 14px 18px;
 
   border: 1px solid rgba(90, 160, 255, 0.35);
-  border-radius: 12px;
+  border-radius: 14px;
 
-  background: rgba(10, 30, 70, 0.65);
-  color: white;
+  background: rgba(10, 30, 70, 0.75);
+  color: #ffffff;
 
   cursor: pointer;
   text-align: left;
@@ -1425,50 +1531,173 @@ footer {
 .sizeOption.active {
   border-color: #38bdf8;
   background: rgba(20, 90, 170, 0.55);
-  box-shadow: 0 0 18px rgba(56, 189, 248, 0.18);
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.18);
 }
 
 .sizeIcon {
-  width: 38px;
-  height: 38px;
+  width: 45px;
+  height: 45px;
+
+  flex-shrink: 0;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  border-radius: 9px;
+  border-radius: 10px;
 
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.10);
 
   color: #38bdf8;
   font-weight: 800;
-  font-size: 17px;
+  font-size: 18px;
 }
 
 .sizeOption span:last-child {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
 }
 
 .sizeOption b {
-  font-size: 15px;
+  font-size: 16px;
   color: #ffffff;
 }
 
 .sizeOption small {
-  font-size: 12px;
+  font-size: 13px;
   color: #9fb5d9;
 }
 
-/* Mobile */
-@media (max-width: 650px) {
+
+/* =========================================
+   BUTTON
+   ========================================= */
+
+.convertButton {
+  display: block;
+
+  min-width: 220px;
+
+  margin: 25px auto 20px;
+  padding: 14px 28px;
+
+  border: 0;
+  border-radius: 12px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #00bfff,
+      #426eff,
+      #7c42ff
+    );
+
+  color: #ffffff;
+
+  font-size: 17px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 8px 25px rgba(0, 140, 255, 0.25);
+
+  transition: 0.2s ease;
+}
+
+.convertButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow:
+    0 12px 30px rgba(0, 140, 255, 0.35);
+}
+
+.convertButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+
+/* =========================================
+   DOWNLOAD BUTTON
+   ========================================= */
+
+.downloadButton {
+  display: block;
+
+  min-width: 220px;
+
+  margin: 15px auto 20px;
+  padding: 14px 28px;
+
+  border: 0;
+  border-radius: 12px;
+
+  background: linear-gradient(
+    135deg,
+    #22c55e,
+    #16a34a
+  );
+
+  color: #ffffff;
+
+  font-size: 17px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 8px 25px rgba(34, 197, 94, 0.25);
+}
+
+.downloadButton:hover {
+  transform: translateY(-2px);
+}
+
+
+/* =========================================
+   TOOL NOTE
+   ========================================= */
+
+.toolNote {
+  width: min(700px, 100%);
+  margin: 20px auto;
+
+  text-align: center;
+
+  color: #9fb5d9;
+  font-size: 14px;
+}
+
+
+/* =========================================
+   MOBILE
+   ========================================= */
+
+@media (max-width: 700px) {
+
+  .toolPage {
+    padding: 40px 15px;
+  }
+
+  .toolBox h1 {
+    font-size: 38px;
+  }
+
+  .toolBox > p {
+    font-size: 17px;
+  }
+
   .sizeOptions {
     flex-direction: column;
   }
 
   .sizeOption {
     width: 100%;
+  }
+
+  .uploadBox {
+    min-height: 150px;
   }
 }
 ```
