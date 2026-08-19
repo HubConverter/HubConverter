@@ -270,4 +270,19 @@ button {
 button:hover {
   box-shadow:
     0 0 20px rgba(0, 200, 255, 0.25);
+  /* ===== YELLOW APP NAMES ===== */
+
+.card h3,
+.card h4,
+.apps h3,
+.apps h4 {
+  color: #ffd84d !important;
+  text-shadow: 0 0 8px rgba(255, 216, 77, 0.25);
+}
+
+/* Shortcut numbers */
+.card p,
+.apps .card p {
+  color: #ffd84d !important;
+}
 }
