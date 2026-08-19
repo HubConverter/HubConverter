@@ -1,9 +1,11 @@
+```jsx
 import React, { useState } from "react";
 import { jsPDF } from "jspdf";
 
 export default function JpgToPdf() {
   const [files, setFiles] = useState([]);
   const [converting, setConverting] = useState(false);
+  const [imageSize, setImageSize] = useState("medium");
 
   const handleFiles = (event) => {
     const selectedFiles = Array.from(event.target.files || []);
@@ -30,7 +32,6 @@ export default function JpgToPdf() {
         const file = files[i];
 
         const imageUrl = URL.createObjectURL(file);
-
         const img = new Image();
 
         await new Promise((resolve, reject) => {
@@ -42,10 +43,26 @@ export default function JpgToPdf() {
         const pageWidth = 210;
         const pageHeight = 297;
 
+        /*
+          Image size options:
+
+          Small  = 60% of available page area
+          Medium = 80% of available page area
+          Large  = 100% of available page area
+        */
+        const sizeScale = {
+          small: 0.6,
+          medium: 0.8,
+          large: 1
+        };
+
         const margin = 10;
 
-        const maxWidth = pageWidth - margin * 2;
-        const maxHeight = pageHeight - margin * 2;
+        const maxWidth =
+          (pageWidth - margin * 2) * sizeScale[imageSize];
+
+        const maxHeight =
+          (pageHeight - margin * 2) * sizeScale[imageSize];
 
         let width = img.width;
         let height = img.height;
@@ -77,7 +94,7 @@ export default function JpgToPdf() {
         URL.revokeObjectURL(imageUrl);
       }
 
-      pdf.save("ShortcutHub-JPG-to-PDF.pdf");
+      pdf.save(`ShortcutHub-JPG-to-PDF-${imageSize}.pdf`);
     } catch (error) {
       console.error(error);
       alert("Something went wrong while creating the PDF.");
@@ -132,6 +149,51 @@ export default function JpgToPdf() {
           </div>
         )}
 
+        {/* IMAGE SIZE */}
+        <div className="sizeSelector">
+          <strong>Image Size</strong>
+
+          <div className="sizeOptions">
+
+            <button
+              type="button"
+              className={imageSize === "small" ? "sizeOption active" : "sizeOption"}
+              onClick={() => setImageSize("small")}
+            >
+              <span className="sizeIcon">S</span>
+              <span>
+                <b>Small</b>
+                <small>60% size</small>
+              </span>
+            </button>
+
+            <button
+              type="button"
+              className={imageSize === "medium" ? "sizeOption active" : "sizeOption"}
+              onClick={() => setImageSize("medium")}
+            >
+              <span className="sizeIcon">M</span>
+              <span>
+                <b>Medium</b>
+                <small>80% size</small>
+              </span>
+            </button>
+
+            <button
+              type="button"
+              className={imageSize === "large" ? "sizeOption active" : "sizeOption"}
+              onClick={() => setImageSize("large")}
+            >
+              <span className="sizeIcon">L</span>
+              <span>
+                <b>Large</b>
+                <small>100% size</small>
+              </span>
+            </button>
+
+          </div>
+        </div>
+
         <button
           className="convertButton"
           onClick={convertToPdf}
@@ -148,3 +210,4 @@ export default function JpgToPdf() {
     </section>
   );
 }
+```
