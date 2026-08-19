@@ -4,9 +4,9 @@ import { jsPDF } from "jspdf";
 export default function JpgToPdf() {
   const [files, setFiles] = useState([]);
   const [converting, setConverting] = useState(false);
- const [imageSize, setImageSize] = useState("medium");
-const [showSizes, setShowSizes] = useState(false);
-const [pdfBlob, setPdfBlob] = useState(null);
+  const [imageSize, setImageSize] = useState("medium");
+  const [showSizes, setShowSizes] = useState(false);
+  const [pdfBlob, setPdfBlob] = useState(null);
 
   const handleFiles = (event) => {
     const selectedFiles = Array.from(event.target.files || []);
@@ -16,6 +16,7 @@ const [pdfBlob, setPdfBlob] = useState(null);
     );
 
     setFiles(images);
+    setPdfBlob(null);
     setShowSizes(false);
   };
 
@@ -26,6 +27,7 @@ const [pdfBlob, setPdfBlob] = useState(null);
     }
 
     setConverting(true);
+    setPdfBlob(null);
 
     try {
       const pdf = new jsPDF("p", "mm", "a4");
@@ -49,7 +51,7 @@ const [pdfBlob, setPdfBlob] = useState(null);
         const sizeScale = {
           small: 0.6,
           medium: 0.8,
-          large: 1
+          large: 1,
         };
 
         const maxWidth =
@@ -88,15 +90,34 @@ const [pdfBlob, setPdfBlob] = useState(null);
         URL.revokeObjectURL(imageUrl);
       }
 
+      // Create PDF blob but DON'T download yet
       const blob = pdf.output("blob");
-setPdfBlob(blob);
-  
+      setPdfBlob(blob);
+
     } catch (error) {
       console.error(error);
       alert("Something went wrong while creating the PDF.");
     }
 
     setConverting(false);
+  };
+
+  const downloadPdf = () => {
+    if (!pdfBlob) {
+      return;
+    }
+
+    const url = URL.createObjectURL(pdfBlob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `ShortcutHub-JPG-to-PDF-${imageSize}.pdf`;
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -113,7 +134,9 @@ setPdfBlob(blob);
           Convert your JPG or PNG images into a professional PDF.
         </p>
 
+        {/* IMAGE UPLOAD */}
         <label className="uploadBox">
+
           <input
             type="file"
             accept="image/jpeg,image/png"
@@ -125,39 +148,47 @@ setPdfBlob(blob);
 
           <strong>
             {files.length > 0
-              ? files.length +
-                " image" +
-                (files.length > 1 ? "s" : "") +
-                " selected"
+              ? `${files.length} image${
+                  files.length > 1 ? "s" : ""
+                } selected`
               : "Choose JPG or PNG images"}
           </strong>
 
           <span>
             Click here to select your images
           </span>
+
         </label>
 
+        {/* FILE LIST */}
         {files.length > 0 && (
           <div className="fileList">
+
             {files.map((file, index) => (
               <div className="fileItem" key={index}>
+
                 <span>🖼️</span>
+
                 <span>{file.name}</span>
+
               </div>
             ))}
+
           </div>
         )}
 
+        {/* FIRST BUTTON */}
         {!showSizes && (
           <button
             className="convertButton"
             onClick={() => setShowSizes(true)}
             disabled={files.length === 0}
           >
-            Convert to PDF
+            Generate PDF
           </button>
         )}
 
+        {/* SIZE OPTIONS */}
         {showSizes && (
           <div className="sizeSelector">
 
@@ -165,6 +196,7 @@ setPdfBlob(blob);
 
             <div className="sizeOptions">
 
+              {/* SMALL */}
               <button
                 type="button"
                 className={
@@ -172,16 +204,24 @@ setPdfBlob(blob);
                     ? "sizeOption active"
                     : "sizeOption"
                 }
-                onClick={() => setImageSize("small")}
+                onClick={() => {
+                  setImageSize("small");
+                  setPdfBlob(null);
+                }}
               >
-                <span className="sizeIcon">S</span>
+
+                <span className="sizeIcon">
+                  S
+                </span>
 
                 <span>
                   <b>Small</b>
                   <small>720 × 1080</small>
                 </span>
+
               </button>
 
+              {/* MEDIUM */}
               <button
                 type="button"
                 className={
@@ -189,16 +229,24 @@ setPdfBlob(blob);
                     ? "sizeOption active"
                     : "sizeOption"
                 }
-                onClick={() => setImageSize("medium")}
+                onClick={() => {
+                  setImageSize("medium");
+                  setPdfBlob(null);
+                }}
               >
-                <span className="sizeIcon">M</span>
+
+                <span className="sizeIcon">
+                  M
+                </span>
 
                 <span>
                   <b>Medium</b>
                   <small>1080 × 2080</small>
                 </span>
+
               </button>
 
+              {/* LARGE */}
               <button
                 type="button"
                 className={
@@ -206,59 +254,60 @@ setPdfBlob(blob);
                     ? "sizeOption active"
                     : "sizeOption"
                 }
-                onClick={() => setImageSize("large")}
+                onClick={() => {
+                  setImageSize("large");
+                  setPdfBlob(null);
+                }}
               >
-                <span className="sizeIcon">L</span>
+
+                <span className="sizeIcon">
+                  L
+                </span>
 
                 <span>
                   <b>Large</b>
                   <small>1440 × 2560</small>
                 </span>
+
               </button>
 
             </div>
 
-            <button
-              className="convertButton"
-              onClick={convertToPdf}
-              disabled={
-                converting || files.length === 0
-              }
-            >
-             {converting ? "Generating PDF..." : "Generate PDF"}
-            </button>
+            {/* GENERATE BUTTON */}
+            {!pdfBlob && (
+              <button
+                className="convertButton"
+                onClick={convertToPdf}
+                disabled={
+                  converting ||
+                  files.length === 0
+                }
+              >
+                {converting
+                  ? "Generating PDF..."
+                  : "Generate PDF"}
+              </button>
+            )}
+
+            {/* DOWNLOAD BUTTON */}
+            {pdfBlob && (
+              <button
+                className="convertButton"
+                onClick={downloadPdf}
+              >
+                ⬇️ Download Now
+              </button>
+            )}
 
           </div>
         )}
 
+        {/* PRIVACY NOTE */}
         <div className="toolNote">
           🔒 Your images are processed directly in your browser.
         </div>
 
-      
-{pdfBlob && (
-  <button
-    className="convertButton"
-    onClick={() => {
-      const url = URL.createObjectURL(pdfBlob);
-      const link = document.createElement("a");
-
-      link.href = url;
-      link.download = `ShortcutHub-JPG-to-PDF-${imageSize}.pdf`;
-
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-      URL.revokeObjectURL(url);
-    }}
-  >
-    ⬇️ Download Now
-  </button>
-)}
-        <div className="toolNote">
-  🔒 Your images are processed directly in your browser.
-        </div>
+      </div>
     </section>
   );
 }
