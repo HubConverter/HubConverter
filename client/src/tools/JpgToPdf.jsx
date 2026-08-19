@@ -128,9 +128,9 @@ export default function JpgToPdf() {
           <div className="uploadIcon">📁</div>
 
           <strong>
-            {files.length
-              ? `${files.length} image${files.length > 1 ? "s" : ""} selected`
-              : "Choose JPG or PNG images"}
+          {files.length > 0
+  ? files.length + " image" + (files.length > 1 ? "s" : "") + " selected"
+  : "Choose JPG or PNG images"}
           </strong>
 
           <span>
