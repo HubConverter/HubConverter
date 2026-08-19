@@ -256,6 +256,8 @@ setPdfBlob(blob);
     ⬇️ Download Now
   </button>
 )}
+        <div className="toolNote">
+  🔒 Your images are processed directly in your browser.
         </div>
     </section>
   );
