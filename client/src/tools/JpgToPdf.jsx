@@ -90,7 +90,7 @@ const [pdfBlob, setPdfBlob] = useState(null);
 
       const blob = pdf.output("blob");
 setPdfBlob(blob);
-      );
+  
     } catch (error) {
       console.error(error);
       alert("Something went wrong while creating the PDF.");
