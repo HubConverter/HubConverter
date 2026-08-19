@@ -18,4 +18,55 @@ body {
   background-attachment: fixed;
 }*{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:#f5f7fb;color:#152236}button,input,select{font:inherit}button{cursor:pointer}header{height:70px;display:flex;align-items:center;padding:0 4%;gap:20px;background:#fff;border-bottom:1px solid #e1e7ee;position:sticky;top:0;z-index:10}.brand{min-width:220px;font-size:20px;cursor:pointer}.brand span{color:#1675e8}.brand i{font-style:normal;font-size:9px;color:#667085;margin-left:8px}.actions{display:flex;align-items:center;gap:6px}.actions button,nav button{border:0;background:transparent;border-radius:8px;padding:9px 11px}nav{display:flex;gap:3px;flex:1}nav .sel,nav button:hover{background:#edf5ff;color:#1675e8}.primary{background:#1675e8!important;color:#fff!important;border:0!important;border-radius:8px;padding:11px 16px}.hero{padding:85px 20px 75px;text-align:center;color:#fff;background:radial-gradient(circle at 20% 10%,#1c5c8b,#082844 60%)}.eyebrow,.sectionHead small,.learnBox small,.profile>small,.admin>small{font-size:10px;letter-spacing:.12em;color:#8ba8c1}.hero h1{font-size:52px;line-height:1.05;margin:20px 0 12px}.hero em{font-style:normal;color:#ffd84a}.hero p{color:#d8e7f4;max-width:620px;margin:0 auto 28px}.heroSearch{display:flex;max-width:820px;margin:auto;background:#fff;padding:7px;border-radius:11px}.heroSearch input{flex:1;border:0;outline:0;padding:13px}.quick{margin-top:13px}.quick button{border:0;border-radius:18px;padding:6px 11px;margin:3px;background:#1c4a70;color:#fff}.wrap{max-width:1180px;margin:auto;padding:38px 20px}.sectionHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.sectionHead h2{margin:7px 0}.sectionHead>button{border:1px solid #d7e0e9;background:#fff;padding:8px;border-radius:7px}.apps{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}.app{border:1px solid #e0e6ed;background:#fff;border-radius:12px;padding:18px 8px;text-align:center}.app b{font-size:28px;display:block}.app strong,.app small{display:block;margin-top:7px}.app small{color:#718096;font-size:11px}.featureGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:20px}.featureGrid article,.shortcut,.profile,.admin,.learnBox{background:#fff;border:1px solid #e0e6ed;border-radius:13px;padding:20px}.featureGrid b,.featureGrid p{display:block;margin:8px 0}.featureGrid p{color:#718096;font-size:13px}.filters{display:flex;gap:8px;margin-bottom:16px}.filters input,.filters select,.formGrid input,.modalBox input{border:1px solid #d5dee8;background:#fff;border-radius:8px;padding:10px;outline:0}.filters input{flex:1}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.shortcutTop{display:flex;align-items:center;gap:10px}.shortcutTop small{display:block;color:#718096;margin-top:3px}.appIcon{font-size:27px}.heart{margin-left:auto;border:0;background:transparent;font-size:23px}.heart.on{color:#1675e8}.keys{display:flex;gap:5px;margin:20px 0 12px;flex-wrap:wrap}kbd{background:#f8fafc;border:1px solid #cdd7e2;border-bottom-width:2px;border-radius:6px;padding:5px 8px;font-weight:750}.shortcut h3{margin:8px 0}.shortcut p{font-size:13px;color:#718096;min-height:36px}.cardActions{display:flex;gap:6px}.cardActions button,.shortcut>button,.answers button,.learnBox>button{border:1px solid #d6e0ea;background:#fff;border-radius:7px;padding:8px}.learnBox{max-width:800px;margin:20px auto;text-align:center}.megaKey{font-size:38px;font-weight:850;margin:30px}.answers{display:grid;gap:9px;max-width:600px;margin:20px auto}.answers button{text-align:left}.badge{font-size:45px}.score{font-size:28px;font-weight:800}.profile,.admin{max-width:900px;margin:15px auto}.stats,.adminStats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:24px 0}.stats div,.adminStats div{background:#f7f9fc;border-radius:9px;padding:16px;text-align:center}.stats b,.stats small,.adminStats b,.adminStats small{display:block}.stats b,.adminStats b{font-size:22px}.stats small,.adminStats small{color:#718096}.progress{height:8px;background:#e8edf3;border-radius:10px;overflow:hidden}.progress span{display:block;height:100%;background:#1675e8}.badges{display:flex;gap:8px;flex-wrap:wrap}.badges span{padding:8px 11px;border-radius:18px;background:#edf5ff;color:#1d5d99;font-size:12px}.recent{display:block;padding:8px;background:#f7f9fc;margin:4px 0;border-radius:7px}.formGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}.userList{display:grid;gap:5px}.userList div{display:flex;gap:15px;padding:10px;background:#f7f9fc;border-radius:7px}.userList span{color:#718096}.empty{text-align:center;padding:50px;background:#fff;border:1px dashed #ccd7e2;border-radius:12px}.modal{position:fixed;inset:0;background:#07172bbd;display:grid;place-items:center;z-index:30;padding:20px}.modalBox{background:#fff;border-radius:13px;padding:26px;width:min(420px,100%);position:relative}.modalBox input{width:100%;margin:6px 0}.close{position:absolute;right:10px;top:5px;border:0;background:transparent;font-size:25px}.full{width:100%;margin-top:8px}.link{display:block;margin:10px auto;border:0;background:transparent;color:#1675e8}.error{color:#b42318;font-size:12px;padding:6px}.toast{position:fixed;right:20px;bottom:20px;background:#152b43;color:#fff;padding:12px 16px;border-radius:9px;z-index:50}footer{text-align:center;padding:28px;background:#0c2946;color:#d9e5f0;margin-top:20px}.dark{background:#101925;color:#edf2f7}.dark header,.dark .app,.dark .featureGrid article,.dark .shortcut,.dark .profile,.dark .admin,.dark .learnBox,.dark .modalBox,.dark .empty{background:#182333;color:#edf2f7;border-color:#2c394b}.dark input,.dark select,.dark .sectionHead>button,.dark .cardActions button,.dark .shortcut>button,.dark .answers button,.dark .learnBox>button{background:#202d3f;color:#fff;border-color:#3b495d}.dark kbd{background:#243246;color:#fff;border-color:#3b495d}.dark .stats div,.dark .adminStats div,.dark .recent,.dark .userList div{background:#202d3f}.dark .featureGrid p,.dark .shortcut p,.dark .stats small,.dark .adminStats small{color:#aeb9c7}@media(max-width:900px){header{height:auto;flex-wrap:wrap;padding:10px 15px}.brand{min-width:200px}nav{order:3;width:100%;overflow:auto}.apps{grid-template-columns:repeat(3,1fr)}.cards{grid-template-columns:repeat(2,1fr)}}@media(max-width:600px){.hero h1{font-size:38px}.apps,.cards,.featureGrid{grid-template-columns:1fr 1fr}.stats,.adminStats{grid-template-columns:1fr 1fr}.formGrid{grid-template-columns:1fr}.actions span{display:none}.wrap{padding:28px 14px}}@media(max-width:420px){.apps,.cards,.featureGrid{grid-template-columns:1fr}.heroSearch{display:block;background:transparent}.heroSearch input{width:100%;border-radius:8px;margin-bottom:7px}.heroSearch button{width:100%}}
 /* ===== ShortcutHub NEW FRONT PAGE BACKGROUND ===== */
+/* ===== ShortcutHub COMPUTER / LAPTOP BACKGROUND ===== */
 
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  min-width: 320px;
+  margin: 0;
+
+  background-image:
+    linear-gradient(
+      rgba(7, 15, 30, 0.62),
+      rgba(15, 23, 42, 0.68)
+    ),
+    url("https://images.unsplash.com/photo-1640955014216-75201056c829?auto=format&fit=crop&w=2400&q=85");
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+
+  color: #ffffff;
+}
+
+/* Keep ShortcutHub content above the background */
+#root,
+.app,
+main {
+  background: transparent !important;
+}
+
+/* Make cards slightly transparent so the laptop background is visible */
+.apps .card,
+.cards .card,
+.shortcut {
+  background: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Keep text readable */
+.apps,
+.cards,
+.featureGrid,
+.heroSearch,
+section {
+  position: relative;
+  z-index: 1;
+}
