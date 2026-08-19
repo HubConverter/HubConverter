@@ -131,7 +131,93 @@ const excelShortcuts = [
   ["Excel", "📊", "CTRL Shortcuts", "CTRL + X", "Cut", "Beginner", "General", ""],
   ["Excel", "📊", "CTRL Shortcuts", "CTRL + Z", "Undo", "Beginner", "General", ""]
 ];
+// =========================
+// ADD UPDATED TALLY SHORTCUTS
+// =========================
 
+const tallyUpdates = [
+  ['Tally','▣','Accounting','F12','Configure','Beginner','Configuration','Opens the Configure screen.'],
+  ['Tally','▣','Accounting','Alt+F12','Configure','Beginner','Configuration','Opens Tally configuration options.'],
+  ['Tally','▣','Accounting','Ctrl+F12','Configure','Beginner','Configuration','Opens configuration options.'],
+
+  ['Tally','▣','Accounting','Alt+P','Print','Beginner','Reports','Prints the report.'],
+  ['Tally','▣','Accounting','Alt+E','Export','Beginner','Reports','Exports the report.'],
+
+  ['Tally','▣','Accounting','ALC','Create Ledger','Beginner','Masters','Creates a new Ledger.'],
+  ['Tally','▣','Accounting','ALA','Alter Ledger','Intermediate','Masters','Alters an existing Ledger.'],
+
+  ['Tally','▣','Accounting','DD','Daybook','Beginner','Reports','Displays Daybook and allows period selection.'],
+  ['Tally','▣','Accounting','DAL','Book Ledger','Beginner','Reports','Opens the Book Ledger.'],
+
+  ['Tally','▣','Accounting','Alt+C','Create Ledger','Beginner','Masters','Creates a Ledger.'],
+  ['Tally','▣','Accounting','Ctrl+Enter','Alter Ledger','Intermediate','Masters','Changes or alters the selected Ledger.'],
+
+  ['Tally','▣','Accounting','Enter Enter','Accept','Beginner','Navigation','Accepts the selected option.'],
+  ['Tally','▣','Accounting','Ctrl+A','Accept','Beginner','Forms','Accepts a form.'],
+  ['Tally','▣','Accounting','Ctrl+N','Calculator','Beginner','Utilities','Switches to Calculator / ODBC section.'],
+
+  ['Tally','▣','Accounting','Alt+R','Hide Ledger','Beginner','Masters','Hides a Ledger.'],
+  ['Tally','▣','Accounting','Alt+U','Unhide Ledger','Beginner','Masters','Unhides a Ledger.'],
+
+  ['Tally','▣','Accounting','F1','Select Company / Buttons','Beginner','Company','Selects a company or Accounts and Inventory buttons.'],
+  ['Tally','▣','Accounting','F2','Change Period','Beginner','Navigation','Changes the menu period.'],
+  ['Tally','▣','Accounting','F3','Select Company','Beginner','Company','Selects the company.'],
+
+  ['Tally','▣','Accounting','F4','Contra Voucher','Beginner','Vouchers','Selects the Contra voucher.'],
+  ['Tally','▣','Accounting','F5','Payment Voucher','Beginner','Vouchers','Selects the Payment voucher.'],
+  ['Tally','▣','Accounting','F6','Receipt Voucher','Beginner','Vouchers','Selects the Receipt voucher.'],
+  ['Tally','▣','Accounting','F7','Journal Voucher','Beginner','Vouchers','Selects the Journal voucher.'],
+  ['Tally','▣','Accounting','F8','Sales Voucher','Beginner','Vouchers','Selects the Sales voucher.'],
+  ['Tally','▣','Accounting','Ctrl+F8','Credit Note','Beginner','Vouchers','Selects the Credit Note voucher.'],
+  ['Tally','▣','Accounting','F9','Purchase Voucher','Beginner','Vouchers','Selects the Purchase voucher.'],
+  ['Tally','▣','Accounting','Ctrl+F9','Debit Note','Beginner','Vouchers','Selects the Debit Note voucher.'],
+  ['Tally','▣','Accounting','F10','Reversing Journal','Intermediate','Vouchers','Selects the Reversing Journal voucher.'],
+  ['Tally','▣','Accounting','F10','Memorandum Voucher','Beginner','Vouchers','Selects the Memorandum voucher.'],
+  ['Tally','▣','Accounting','F11','Functions and Features','Beginner','Configuration','Opens the Functions and Features screen.'],
+
+  ['Tally','▣','Accounting','Alt+2','Duplicate Voucher','Beginner','Vouchers','Duplicates a voucher.'],
+  ['Tally','▣','Accounting','Alt+A','Add Voucher','Beginner','Vouchers','Adds a voucher.'],
+  ['Tally','▣','Accounting','Alt+C','Create Master','Beginner','Masters','Creates a master at a voucher screen.'],
+  ['Tally','▣','Accounting','Alt+D','Delete Voucher','Intermediate','Vouchers','Deletes a voucher or master.'],
+  ['Tally','▣','Accounting','Alt+I','Insert Voucher','Beginner','Vouchers','Inserts a voucher.'],
+  ['Tally','▣','Accounting','Alt+H','Help','Beginner','Help','Opens Help.'],
+  ['Tally','▣','Accounting','Alt+O','Upload Report','Intermediate','Reports','Uploads the report to your website.'],
+  ['Tally','▣','Accounting','Alt+N','Automatic Columns','Intermediate','Reports','Views reports in automatic columns.'],
+  ['Tally','▣','Accounting','Alt+M','Email Report','Beginner','Reports','Emails the report.'],
+  ['Tally','▣','Accounting','Alt+P','Print Report','Beginner','Reports','Prints the report.'],
+  ['Tally','▣','Accounting','Alt+R','Remove Line','Intermediate','Editing','Removes a line in a report.'],
+  ['Tally','▣','Accounting','Alt+S','Restore Line','Intermediate','Editing','Brings back a removed line.'],
+  ['Tally','▣','Accounting','Alt+V','Stock Journal','Intermediate','Inventory','Opens Stock Journal from Invoice screen.'],
+  ['Tally','▣','Accounting','Alt+W','Tally Web Browser','Intermediate','Web','Opens the Tally Web browser.'],
+  ['Tally','▣','Accounting','Alt+Z','Zoom','Beginner','Reports','Zooms the report.'],
+  ['Tally','▣','Accounting','Alt+X','Cancel Voucher','Intermediate','Vouchers','Cancels a voucher in Day Book or List of Vouchers.'],
+
+  ['Tally','▣','Accounting','Ctrl+Alt+B','Company Statutory Details','Intermediate','Company','Checks company statutory details.'],
+  ['Tally','▣','Accounting','Ctrl+M','Main Area','Beginner','Navigation','Switches to Main Area of Tally screen.'],
+  ['Tally','▣','Accounting','Ctrl+R','Repeat Narration','Beginner','Vouchers','Repeats narration in the same voucher type.'],
+  ['Tally','▣','Accounting','Ctrl+T','Post Dated Voucher','Intermediate','Vouchers','Marks a voucher as Post Dated.'],
+  ['Tally','▣','Accounting','Ctrl+Alt+C','Copy Text','Beginner','Editing','Copies text from Tally.'],
+  ['Tally','▣','Accounting','Ctrl+Alt+V','Paste Text','Beginner','Editing','Pastes text into Tally.']
+];
+
+const tallyInsert = db.prepare(`
+  INSERT INTO shortcuts
+  (software, icon, category, keys, action, level, type, example)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+`);
+
+for (const s of tallyUpdates) {
+  const exists = db.prepare(`
+    SELECT id FROM shortcuts
+    WHERE software = ?
+      AND keys = ?
+      AND action = ?
+  `).get(s[0], s[3], s[4]);
+
+  if (!exists) {
+    tallyInsert.run(...s);
+  }
+}
 const seed = [
   ["Excel", "📊", "Columns & Rows", "CTRL + 9", "Hide Row", "Beginner", "General", ""],
   ["Excel", "📊", "Columns & Rows", "SHIFT + CTRL + 9", "Unhide Row", "Beginner", "General", ""],
@@ -196,103 +282,6 @@ const seed = [
 
   ['Word','📝','Office','Ctrl+B','Bold','Beginner','Formatting','Makes selected text bold.'],
   ['Word','📝','Office','Ctrl+P','Print','Beginner','File','Opens print settings.'],
- ['PowerPoint', '🎥', 'Office', 'Page Down', 'Next slide', 'Beginner', 'Slides', 'Go to the next slide.'],
-['PowerPoint', '🎥', 'Office', 'Page Up', 'Previous slide', 'Beginner', 'Slides', 'Go to the previous slide.'],
-['PowerPoint', '🎥', 'Office', 'Ctrl + M', 'New slide', 'Beginner', 'Slides', 'Insert a new slide.'],
-['PowerPoint', '🎥', 'Office', 'Ctrl + D', 'Duplicate slide', 'Beginner', 'Slides', 'Duplicate the selected slide.'],
-['PowerPoint', '🎥', 'Office', 'Alt + W, Q', 'Zoom', 'Beginner', 'View', 'Change the zoom for the slide.'],
-['PowerPoint', '🎥', 'Office', 'Ctrl + Alt + Shift + A', 'Send slides to appendix', 'Intermediate', 'Slides', 'Send selected slides to appendix.'],
-['PowerPoint', '🎥', 'Office', 'Ctrl + Alt + Shift + D', 'Create Summary Slide', 'Intermediate', 'Slides', 'Create a summary slide.'],
-['PowerPoint', '🎥', 'Office', 'Alt + G, H', 'Select theme', 'Beginner', 'Design', 'Select a presentation theme.'],
-['PowerPoint', '🎥', 'Office', 'Alt + H, L', 'Select slide layout', 'Beginner', 'Slides', 'Select a slide layout.'],
-['PowerPoint', '🎥', 'Office', 'Ctrl + Alt + Shift + V', 'Save selected slides', 'Intermediate', 'File', 'Save selected slides.'],
-['PowerPoint', '🎥', 'Office', 'Ctrl + Alt + Shift + P', 'Print selected slides', 'Intermediate', 'File', 'Print selected slides.'],
-['PowerPoint', '🎥', 'Office', 'Ctrl + S', 'Save presentation', 'Beginner', 'File', 'Save the presentation.'],
-['PowerPoint', '🎥', 'Office', 'F12', 'Save As', 'Beginner', 'File', 'Save the presentation as another file.'],
-['PowerPoint', '🎥', 'Office', 'Ctrl+Shift+S', 'Save As', 'Beginner', 'File', 'Save the presentation as another file.'],
-['PowerPoint', '🎥', 'Office', 'Ctrl + N', 'New presentation', 'Beginner', 'File', 'Create a new presentation.'],
-['PowerPoint', '🎥', 'Office', 'Ctrl + P', 'Print presentation', 'Beginner', 'File', 'Print the presentation.'],
-['PowerPoint', '🎥', 'Office', 'Ctrl + F6', 'Switch presentations', 'Intermediate', 'Window', 'Switch between open presentations.'],
-['PowerPoint', '🎥', 'Office', 'Ctrl + TAB', 'Switch PowerPoint windows', 'Intermediate', 'Window', 'Switch between open PowerPoint windows.'],
-['PowerPoint', '🎥', 'Office', 'Ctrl + Shift + N', 'Duplicate presentation', 'Intermediate', 'File', 'Duplicate the active presentation.'],
-['PowerPoint', '🎥', 'Office', 'Ctrl + <', 'Add section', 'Intermediate', 'Slides', 'Add a section to the presentation.'],
-['PowerPoint', '🎥', 'Office', 'Alt + F4 or Alt + F, X', 'Close PowerPoint', 'Beginner', 'File', 'Close PowerPoint.'],
-['PowerPoint', '🎥', 'Office', 'Ctrl + W or Ctrl + F4', 'Close presentation', 'Beginner', 'File', 'Close the current presentation.'],
-['PowerPoint', '🎥', 'Office', 'Ctrl + F', 'Find', 'Beginner', 'Navigation', 'Open the Find dialog box.'],
-['PowerPoint', '🎥', 'Office', 'Ctrl + H', 'Find and Replace', 'Beginner', 'Editing', 'Open Find and Replace.'],
-['PowerPoint', '🎥', 'Office', 'Alt + Shift + D', 'Header and Footer', 'Beginner', 'Insert', 'Open Header and Footer dialog box.'],
-['PowerPoint', '🎥', 'Office', 'F7', 'Spell Check', 'Beginner', 'Review', 'Open Spell Check.'],
-['PowerPoint', '🎥', 'Office', 'Shift + F7', 'Thesaurus', 'Beginner', 'Review', 'Open Thesaurus.'],
-['PowerPoint', '🎥', 'Office', 'Ctrl + 1', 'Format chart element', 'Intermediate', 'Formatting', 'Format the selected chart element.'],
-['PowerPoint', '🎥', 'Office', 'Ctrl + Shift + H', 'Show or Hide Notes pane', 'Intermediate', 'View', 'Show or hide the Notes pane.'],
-['PowerPoint', '🎥', 'Office', "Shift + click 'Normal View'", 'Slide Master View', 'Intermediate', 'View', 'Switch to Slide Master View.'],
-['PowerPoint', '🎥', 'Office', "Shift + click 'Slide Sorter View'", 'Handout Master View', 'Intermediate', 'View', 'Switch to Handout Master View.'],
-['PowerPoint', '🎥', 'Office', "Ctrl + Shift + click 'Normal View'", 'Close Thumbnails View', 'Intermediate', 'View', 'Close Thumbnails View.'],
- ['Tally', '▣', 'Accounting', 'F12', 'Configure', 'Beginner', 'Configuration', 'Opens the Configure screen.'],
-['Tally', '▣', 'Accounting', 'Alt F12', 'Configure', 'Beginner', 'Configuration', 'Opens the Configure screen.'],
-['Tally', '▣', 'Accounting', 'Ctrl F12', 'Configure', 'Beginner', 'Configuration', 'Opens the Configure screen.'],
-
-['Tally', '▣', 'Accounting', 'Alt P', 'Print', 'Beginner', 'File', 'Print the report.'],
-['Tally', '▣', 'Accounting', 'Alt E', 'Export', 'Beginner', 'File', 'Export the report in ASCII, SDF, HTML or XML format.'],
-
-['Tally', '▣', 'Accounting', 'ALC', 'Create Ledger', 'Beginner', 'Ledger', 'Create Ledger.'],
-['Tally', '▣', 'Accounting', 'ALA', 'Alter Ledger', 'Beginner', 'Ledger', 'Alter Ledger.'],
-['Tally', '▣', 'Accounting', 'DD', 'See Entries (ALL)', 'Beginner', 'Display', 'Display → Daybook → Select Period.'],
-['Tally', '▣', 'Accounting', 'DAL', 'See One Ledger', 'Beginner', 'Display', 'Display → Account → Book Ledger.'],
-['Tally', '▣', 'Accounting', 'Alt C', 'Make Ledger', 'Beginner', 'Ledger', 'Create a ledger.'],
-['Tally', '▣', 'Accounting', 'Ctrl Enter', 'Change Ledger', 'Intermediate', 'Ledger', 'Change or alter the selected ledger.'],
-['Tally', '▣', 'Accounting', 'Enter Enter', 'Accept', 'Beginner', 'Navigation', 'Accept the selected option or screen.'],
-['Tally', '▣', 'Accounting', 'Ctrl A', 'Accept form', 'Beginner', 'Navigation', 'Accept a form.'],
-['Tally', '▣', 'Accounting', 'Ctrl N', 'Calculator', 'Beginner', 'Tools', 'Switches to Calculator / ODBC section.'],
-['Tally', '▣', 'Accounting', 'Alt R', 'Hide Ledger', 'Beginner', 'Ledger', 'Hide Ledger.'],
-['Tally', '▣', 'Accounting', 'Alt U', 'Unhide Ledger', 'Beginner', 'Ledger', 'Unhide Ledger.'],
-
-['Tally', '▣', 'Accounting', 'F1', 'Select Company / Accounts / Inventory', 'Beginner', 'Company', 'Select a company and Accounts or Inventory buttons.'],
-['Tally', '▣', 'Accounting', 'F2', 'Change Period', 'Beginner', 'Period', 'Change the menu period.'],
-['Tally', '▣', 'Accounting', 'F3', 'Select Company', 'Beginner', 'Company', 'Select the company.'],
-['Tally', '▣', 'Accounting', 'F4', 'Contra Voucher', 'Beginner', 'Voucher', 'Select the Contra voucher.'],
-['Tally', '▣', 'Accounting', 'F5', 'Payment Voucher', 'Beginner', 'Voucher', 'Select the Payment voucher.'],
-['Tally', '▣', 'Accounting', 'F6', 'Receipt Voucher', 'Beginner', 'Voucher', 'Select the Receipt voucher.'],
-['Tally', '▣', 'Accounting', 'F7', 'Journal Voucher', 'Beginner', 'Voucher', 'Select the Journal voucher.'],
-['Tally', '▣', 'Accounting', 'F8', 'Sales Voucher', 'Beginner', 'Voucher', 'Select the Sales voucher.'],
-['Tally', '▣', 'Accounting', 'Ctrl+F8', 'Credit Note Voucher', 'Beginner', 'Voucher', 'Select the Credit Note voucher.'],
-['Tally', '▣', 'Accounting', 'F9', 'Purchase Voucher', 'Beginner', 'Voucher', 'Select the Purchase voucher.'],
-['Tally', '▣', 'Accounting', 'Ctrl+F9', 'Debit Note Voucher', 'Beginner', 'Voucher', 'Select the Debit Note voucher.'],
-['Tally', '▣', 'Accounting', 'F10', 'Reversing Journal Voucher', 'Intermediate', 'Voucher', 'Select the Reversing Journal voucher.'],
-['Tally', '▣', 'Accounting', 'F10', 'Memorandum Voucher', 'Intermediate', 'Voucher', 'Select the Memorandum voucher.'],
-['Tally', '▣', 'Accounting', 'F11', 'Functions and Features', 'Beginner', 'Configuration', 'Select the Functions and Features screen.'],
-['Tally', '▣', 'Accounting', 'F12', 'Configure', 'Beginner', 'Configuration', 'Select the Configure screen.'],
-
-['Tally', '▣', 'Accounting', 'Alt + 2', 'Duplicate Voucher', 'Intermediate', 'Voucher', 'Duplicate a voucher.'],
-['Tally', '▣', 'Accounting', 'Alt + A', 'Add Voucher', 'Beginner', 'Voucher', 'Add a voucher.'],
-['Tally', '▣', 'Accounting', 'Alt + C', 'Create Master', 'Beginner', 'Master', 'Create a master at a voucher screen.'],
-['Tally', '▣', 'Accounting', 'Alt + D', 'Delete Voucher / Master', 'Intermediate', 'Editing', 'Delete a voucher or master.'],
-['Tally', '▣', 'Accounting', 'Alt + E', 'Export Report', 'Beginner', 'File', 'Export the report in ASCII, SDF, HTML or XML format.'],
-['Tally', '▣', 'Accounting', 'Alt + I', 'Insert Voucher', 'Beginner', 'Voucher', 'Insert a voucher.'],
-['Tally', '▣', 'Accounting', 'Alt+H', 'Help', 'Beginner', 'Help', 'Open Help.'],
-['Tally', '▣', 'Accounting', 'Alt + O', 'Upload Report', 'Intermediate', 'Web', 'Upload the report at your website.'],
-['Tally', '▣', 'Accounting', 'Alt+I', 'Insert / Invoice Toggle', 'Beginner', 'Voucher', 'Insert a voucher or toggle between Item and Accounting invoice.'],
-['Tally', '▣', 'Accounting', 'Alt+N', 'Automatic Columns', 'Intermediate', 'Report', 'View the report in automatic columns.'],
-['Tally', '▣', 'Accounting', 'Alt+U', 'Retrieve Deleted Line', 'Intermediate', 'Editing', 'Retrieve the last line deleted using Alt+R.'],
-['Tally', '▣', 'Accounting', 'Alt+Y', 'Register Tally', 'Beginner', 'Account', 'Register Tally.'],
-['Tally', '▣', 'Accounting', 'Alt + M', 'Email Report', 'Beginner', 'Communication', 'Email the report.'],
-['Tally', '▣', 'Accounting', 'Alt + P', 'Print Report', 'Beginner', 'File', 'Print the report.'],
-['Tally', '▣', 'Accounting', 'Alt + R', 'Remove Line', 'Intermediate', 'Editing', 'Remove a line in a report.'],
-['Tally', '▣', 'Accounting', 'Alt + S', 'Restore Line', 'Intermediate', 'Editing', 'Bring back a line removed using Alt+R.'],
-['Tally', '▣', 'Accounting', 'Alt+V', 'Stock Journal', 'Intermediate', 'Inventory', 'From Invoice screen, bring Stock Journal screen.'],
-['Tally', '▣', 'Accounting', 'Alt + W', 'Tally Web Browser', 'Beginner', 'Web', 'View the Tally Web browser.'],
-['Tally', '▣', 'Accounting', 'Alt+Z', 'Zoom', 'Beginner', 'View', 'Zoom the report.'],
-['Tally', '▣', 'Accounting', 'Alt + X', 'Cancel Voucher', 'Intermediate', 'Voucher', 'Cancel a voucher in Day Book/List of Vouchers.'],
-['Tally', '▣', 'Accounting', 'Alt + R', 'Register Tally', 'Beginner', 'Account', 'Register Tally.'],
-
-['Tally', '▣', 'Accounting', 'Ctrl + A', 'Accept Form', 'Beginner', 'Navigation', 'Accept a form wherever this key combination is used.'],
-['Tally', '▣', 'Accounting', 'Ctrl+Alt+B', 'Company Statutory Details', 'Intermediate', 'Company', 'Check the Company Statutory details.'],
-['Tally', '▣', 'Accounting', 'Ctrl+M', 'Main Area', 'Beginner', 'Navigation', 'Switch to Main Area of Tally Screen.'],
-['Tally', '▣', 'Accounting', 'Ctrl+N', 'Calculator / ODBC', 'Beginner', 'Tools', 'Switch to Calculator / ODBC section of Tally Screen.'],
-['Tally', '▣', 'Accounting', 'Ctrl+R', 'Repeat Narration', 'Intermediate', 'Voucher', 'Repeat narration in the same voucher type.'],
-['Tally', '▣', 'Accounting', 'Ctrl+T', 'Post Dated Voucher', 'Intermediate', 'Voucher', 'Mark a voucher as Post Dated.'],
-['Tally', '▣', 'Accounting', 'Ctrl+Alt+C', 'Copy Text', 'Intermediate', 'Editing', 'Copy text from Tally.'],
-['Tally', '▣', 'Accounting', 'Ctrl+Alt+V', 'Paste Text', 'Intermediate', 'Editing', 'Paste text into Tally.'],
   ['BUSY','B','Accounting','F2','Change date','Beginner','Workflow','Changes working date.'],
   ['Photoshop','Ps','Design','Ctrl+T','Free Transform','Intermediate','Transform','Transforms the selected layer/object.'],
   ['Photoshop','Ps','Design','B','Brush tool','Beginner','Tools','Selects the Brush tool.'],
