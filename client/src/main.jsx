@@ -5,6 +5,7 @@ function App(){const[user,setUser]=useState(null),[view,setView]=useState('home'
 function Home({setView,q,setQ,search,soft,selectSoftware}){return <><section className="hero"><div className="eyebrow">THE COMPLETE SHORTCUT PLATFORM</div><h1>Every shortcut.<br/><em>One place.</em></h1><p>Search, learn, practice and master shortcuts for work, study and everyday computing.</p><div className="heroSearch"><input value={q} onChange={e=>setQ(e.target.value)} onKeyDown={e=>e.key==='Enter'&&(setView('library'),search())} placeholder="Try “Ctrl+C”, “Excel”, “Save”..."/><button className="primary" onClick={()=>{setView('library');search()}}>Search</button></div><div className="quick">{['save','copy','print','undo','new tab'].map(x=><button onClick={()=>{setQ(x);setView('library');setTimeout(search,0)}}>{x}</button>)}</div></section><section className="wrap"><div className="sectionHead"><div><small>EXPLORE</small><h2>Choose an app</h2></div><span>{soft.reduce((a,x)=>a+x.count,0)}+ shortcuts</span></div><div className="apps">{(soft.length?soft:fallback).map(a=><button className="app" onClick={()=>selectSoftware(a.software||a[0])}><b>{a.icon||a[1]}</b><strong>{a.software||a[0]}</strong><small>{a.count||'Ready'} shortcuts</small></button>)}</div><div className="featureGrid"><article>⚡<b>Learn fast</b><p>Focused Learn Mode helps you build muscle memory.</p></article><article>🏆<b>Earn XP</b><p>Master shortcuts, build streaks and unlock badges.</p></article><article>☁️<b>Sync your progress</b><p>Favorites and learning data are stored in your account.</p></article></div></section></>}
 function Library({
   items,
+  setItems,
   saved,
   prog,
   favorite,
@@ -15,7 +16,141 @@ function Library({
   setFilter,
   search,
   soft
-}){return <section className="wrap"><div className="sectionHead"><div><small>LIBRARY</small><h2>{filter||'All shortcuts'}</h2></div><button onClick={()=>{setFilter('');setQ('');setTimeout(search,0)}}>Reset</button></div><div className="filters"><input value={q} onChange={e=>setQ(e.target.value)} onKeyDown={e=>e.key==='Enter'&&search()} placeholder="Search shortcuts..."/><select
+}) {
+  async function changeSoftware(e) {
+    const selected = e.target.value;
+
+    setFilter(selected);
+    setQ('');
+
+    try {
+      const data = await api(
+        `/shortcuts?software=${encodeURIComponent(selected)}`
+      );
+
+      setItems(data);
+    } catch (error) {
+      console.error('Software filter error:', error);
+    }
+  }
+
+  return (
+    <section className="wrap">
+
+      <div className="sectionHead">
+        <div>
+          <small>LIBRARY</small>
+          <h2>{filter || 'All shortcuts'}</h2>
+        </div>
+
+        <button
+          onClick={() => {
+            setFilter('');
+            setQ('');
+            api('/shortcuts').then(setItems);
+          }}
+        >
+          Reset
+        </button>
+      </div>
+
+      <div className="filters">
+
+        <input
+          value={q}
+          onChange={e => setQ(e.target.value)}
+          onKeyDown={e => e.key === 'Enter' && search()}
+          placeholder="Search shortcuts..."
+        />
+
+        <select
+          value={filter}
+          onChange={changeSoftware}
+        >
+          <option value="">All software</option>
+
+          {soft.map(x => (
+            <option
+              key={x.software}
+              value={x.software}
+            >
+              {x.software}
+            </option>
+          ))}
+        </select>
+
+      </div>
+
+      <div className="cards">
+
+        {items.map(s => (
+          <article
+            className="shortcut"
+            key={s.id}
+          >
+
+            <div className="shortcutTop">
+
+              <span className="appIcon">
+                {s.icon}
+              </span>
+
+              <div>
+                <b>{s.software}</b>
+                <small>
+                  {s.category} · {s.level}
+                </small>
+              </div>
+
+              <button
+                className={
+                  saved.includes(s.id)
+                    ? 'heart on'
+                    : 'heart'
+                }
+                onClick={() => favorite(s.id)}
+              >
+                {saved.includes(s.id) ? '★' : '☆'}
+              </button>
+
+            </div>
+
+            <div className="keys">
+              {s.keys.split('+').map((k, i) => (
+                <kbd key={i}>{k}</kbd>
+              ))}
+            </div>
+
+            <h3>{s.action}</h3>
+
+            <p>{s.example}</p>
+
+            <div className="cardActions">
+
+              <button onClick={() => learn(s.id)}>
+                {prog.includes(s.id)
+                  ? '✓ Mastered'
+                  : 'Learn +10 XP'}
+              </button>
+
+              <button
+                onClick={() =>
+                  navigator.clipboard?.writeText(s.keys)
+                }
+              >
+                Copy key
+              </button>
+
+            </div>
+
+          </article>
+        ))}
+
+      </div>
+
+    </section>
+  );
+}{return <section className="wrap"><div className="sectionHead"><div><small>LIBRARY</small><h2>{filter||'All shortcuts'}</h2></div><button onClick={()=>{setFilter('');setQ('');setTimeout(search,0)}}>Reset</button></div><div className="filters"><input value={q} onChange={e=>setQ(e.target.value)} onKeyDown={e=>e.key==='Enter'&&search()} placeholder="Search shortcuts..."/><select
   value={filter}
   onChange={e => {
     const selectedSoftware = e.target.value;
