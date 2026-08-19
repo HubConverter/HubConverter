@@ -4,7 +4,8 @@ import { jsPDF } from "jspdf";
 export default function JpgToPdf() {
   const [files, setFiles] = useState([]);
   const [converting, setConverting] = useState(false);
-  const [imageSize, setImageSize] = useState("medium");
+ const [imageSize, setImageSize] = useState("medium");
+const [showSizes, setShowSizes] = useState(false);
 
   const handleFiles = (event) => {
     const selectedFiles = Array.from(event.target.files || []);
@@ -45,126 +46,91 @@ export default function JpgToPdf() {
         /*
           Image size options:
 
-          Small  = 60% of available page area
-          Medium = 80% of available page area
-          Large  = 100% of available page area
-        */
-        const sizeScale = {
-          small: 0.6,
-          medium: 0.8,
-          large: 1
-        };
+         {!showSizes && (
+<button
+className="convertButton"
+onClick={() => setShowSizes(true)}
+disabled={files.length === 0}
 
-        const margin = 10;
+>
 
-        const maxWidth =
-          (pageWidth - margin * 2) * sizeScale[imageSize];
+```
+Convert to PDF
+```
 
-        const maxHeight =
-          (pageHeight - margin * 2) * sizeScale[imageSize];
+  </button>
+)}
 
-        let width = img.width;
-        let height = img.height;
+{showSizes && (
 
-        const ratio = Math.min(
-          maxWidth / width,
-          maxHeight / height
-        );
+  <div className="sizeSelector">
+    <strong>Choose Image Size</strong>
 
-        width *= ratio;
-        height *= ratio;
+```
+<div className="sizeOptions">
 
-        const x = (pageWidth - width) / 2;
-        const y = (pageHeight - height) / 2;
-
-        if (i > 0) {
-          pdf.addPage();
-        }
-
-        pdf.addImage(
-          img,
-          file.type === "image/png" ? "PNG" : "JPEG",
-          x,
-          y,
-          width,
-          height
-        );
-
-        URL.revokeObjectURL(imageUrl);
-      }
-
-  pdf.save("ShortcutHub-JPG-to-PDF-" + imageSize + ".pdf");
-    } catch (error) {
-      console.error(error);
-      alert("Something went wrong while creating the PDF.");
+  <button
+    type="button"
+    className={
+      imageSize === "small"
+        ? "sizeOption active"
+        : "sizeOption"
     }
+    onClick={() => setImageSize("small")}
+  >
+    <span className="sizeIcon">S</span>
+    <span>
+      <b>Small</b>
+      <small>720 × 1080</small>
+    </span>
+  </button>
 
-    setConverting(false);
-  };
+  <button
+    type="button"
+    className={
+      imageSize === "medium"
+        ? "sizeOption active"
+        : "sizeOption"
+    }
+    onClick={() => setImageSize("medium")}
+  >
+    <span className="sizeIcon">M</span>
+    <span>
+      <b>Medium</b>
+      <small>1080 × 2080</small>
+    </span>
+  </button>
 
-  return (
-    <section className="toolPage">
-      <div className="toolBox">
+  <button
+    type="button"
+    className={
+      imageSize === "large"
+        ? "sizeOption active"
+        : "sizeOption"
+    }
+    onClick={() => setImageSize("large")}
+  >
+    <span className="sizeIcon">L</span>
+    <span>
+      <b>Large</b>
+      <small>1440 × 2560</small>
+    </span>
+  </button>
 
-        <div className="toolIcon">🖼️</div>
+</div>
 
-        <small>SHORTCUTHUB TOOL</small>
+<button
+  className="convertButton"
+  onClick={convertToPdf}
+  disabled={converting || files.length === 0}
+>
+  {converting ? "Creating PDF..." : "Create PDF"}
+</button>
+```
 
-        <h1>JPG to PDF</h1>
+  </div>
+)}
 
-        <p>
-          Convert your JPG or PNG images into a professional PDF.
-        </p>
-
-        <label className="uploadBox">
-          <input
-            type="file"
-            accept="image/jpeg,image/png"
-            multiple
-            onChange={handleFiles}
-          />
-
-          <div className="uploadIcon">📁</div>
-
-          <strong>
-          {files.length > 0
-  ? files.length + " image" + (files.length > 1 ? "s" : "") + " selected"
-  : "Choose JPG or PNG images"}
-          </strong>
-
-          <span>
-            Click here to select your images
-          </span>
-        </label>
-
-        {files.length > 0 && (
-          <div className="fileList">
-            {files.map((file, index) => (
-              <div className="fileItem" key={index}>
-                <span>🖼️</span>
-                <span>{file.name}</span>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* IMAGE SIZE */}
-        <div className="sizeSelector">
-          <strong>Image Size</strong>
-
-          <div className="sizeOptions">
-
-            <button
-              type="button"
-              className={imageSize === "small" ? "sizeOption active" : "sizeOption"}
-              onClick={() => setImageSize("small")}
-            >
-              <span className="sizeIcon">S</span>
-              <span>
-                <b>Small</b>
-                <small>60% size</small>
-              </span>
-            </button>
 
             <button
               type="button"
