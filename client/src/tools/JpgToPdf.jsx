@@ -4,8 +4,9 @@ import { jsPDF } from "jspdf";
 export default function JpgToPdf() {
   const [files, setFiles] = useState([]);
   const [converting, setConverting] = useState(false);
-  const [imageSize, setImageSize] = useState("medium");
-  const [showSizes, setShowSizes] = useState(false);
+ const [imageSize, setImageSize] = useState("medium");
+const [showSizes, setShowSizes] = useState(false);
+const [pdfBlob, setPdfBlob] = useState(null);
 
   const handleFiles = (event) => {
     const selectedFiles = Array.from(event.target.files || []);
@@ -87,8 +88,8 @@ export default function JpgToPdf() {
         URL.revokeObjectURL(imageUrl);
       }
 
-      pdf.save(
-        "ShortcutHub-JPG-to-PDF-" + imageSize + ".pdf"
+      const blob = pdf.output("blob");
+setPdfBlob(blob);
       );
     } catch (error) {
       console.error(error);
@@ -224,9 +225,7 @@ export default function JpgToPdf() {
                 converting || files.length === 0
               }
             >
-              {converting
-                ? "Creating PDF..."
-                : "Create PDF"}
+             {converting ? "Generating PDF..." : "Generate PDF"}
             </button>
 
           </div>
@@ -236,7 +235,28 @@ export default function JpgToPdf() {
           🔒 Your images are processed directly in your browser.
         </div>
 
-      </div>
+      
+{pdfBlob && (
+  <button
+    className="convertButton"
+    onClick={() => {
+      const url = URL.createObjectURL(pdfBlob);
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.download = `ShortcutHub-JPG-to-PDF-${imageSize}.pdf`;
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      URL.revokeObjectURL(url);
+    }}
+  >
+    ⬇️ Download Now
+  </button>
+)}
+        </div>
     </section>
   );
 }
