@@ -1,4 +1,3 @@
-```jsx
 import React, { useState } from "react";
 import { jsPDF } from "jspdf";
 
@@ -207,7 +206,8 @@ export default function JpgToPdf() {
         </div>
 
       </div>
-    </section>
+       </section>
   );
 }
-```
+
+export default JpgToPdf;
