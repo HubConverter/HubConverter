@@ -2240,7 +2240,249 @@ try {
   const insertManyLatestWindows = db.transaction((items) => {
     for (const [keys, action] of items) insertLatestWindows.run("Windows", keys, action);
   });
-  insertManyLatestWindows(latestWindowsShortcuts);
+ // =========================
+// REPLACE TALLY / POWERPOINT / WINDOWS
+// =========================
+
+const replaceShortcuts = db.prepare(`
+  INSERT INTO shortcuts
+  (software, icon, category, keys, action, level, type, example)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+`);
+
+
+// =========================
+// POWERPOINT
+// =========================
+
+const latestPowerPointShortcuts = [
+  ['Page Down', 'Go to the next slide shortcut'],
+  ['Page Up', 'Go to the previous slide shortcut'],
+  ['Ctrl + M', 'Insert new slide shortcut'],
+  ['Ctrl + D', 'Duplicate slide shortcut'],
+  ['Alt + W, Q', 'Change the zoom for the slide shortcut'],
+  ['Ctrl + Alt + Shift + A', 'Send selected slides to appendix'],
+  ['Ctrl + Alt + Shift + D', 'Create Summary Slide'],
+  ['Alt + G, H', 'Select a theme shortcut'],
+  ['Alt + H, L', 'Select a slide layout shortcut'],
+  ['Ctrl + Alt + Shift + V', 'Save selected slides'],
+  ['Ctrl + Alt + Shift + P', 'Print selected slides'],
+  ['Ctrl + S', 'Save presentation shortcut'],
+  ['F12', 'Save As shortcut'],
+  ['Ctrl+Shift+S', 'Save As shortcut'],
+  ['Ctrl + N', 'New presentation shortcut'],
+  ['Ctrl + P', 'Print presentation shortcut'],
+  ['Ctrl + F6', 'Switch between open presentations shortcut'],
+  ['Ctrl + TAB', 'Switch between open PowerPoint windows shortcut'],
+  ['Ctrl + Shift + N', 'Duplicate active presentation'],
+  ['Ctrl + <', 'Add section to presentation'],
+  ['Alt + F4 or Alt + F, X', 'Close PowerPoint'],
+  ['Ctrl + W or Ctrl + F4', 'Close Presentation'],
+  ['Ctrl + F', 'Open Find dialog box'],
+  ['Ctrl + H', 'Open Find and Replace dialog box'],
+  ['Alt + Shift + D', 'Open Header and Footer dialog box'],
+  ['F7', 'Open Spell Check'],
+  ['Shift + F7', 'Open Thesaurus'],
+  ['Ctrl + 1', 'Format selected Chart element'],
+  ['Ctrl + Shift + H', 'Show or Hide the Notes pane'],
+  ["Shift + click 'Normal View'", 'Switch to Slide Master View'],
+  ["Shift + click 'Slide Sorter View'", 'Switch to Handout Master View'],
+  ["Ctrl + Shift + click 'Normal View'", 'Close Thumbnails View']
+];
+
+
+// Delete old PowerPoint
+db.prepare(
+  `DELETE FROM shortcuts WHERE software = 'PowerPoint'`
+).run();
+
+
+// Insert new PowerPoint
+for (const [keys, action] of latestPowerPointShortcuts) {
+  replaceShortcuts.run(
+    'PowerPoint',
+    '📽️',
+    'Office',
+    keys,
+    action,
+    'Beginner',
+    'Presentation',
+    ''
+  );
+}
+
+
+// =========================
+// TALLY
+// =========================
+
+const latestTallyShortcuts = [
+  ['F12', 'Only Press F12'],
+  ['Alt F12', 'F12'],
+  ['Ctrl F12', 'F12'],
+  ['Alt P', 'Print'],
+  ['Alt E', 'Export'],
+  ['ALC', 'Create Ledger'],
+  ['ALA', 'Alter Ledger'],
+  ['DD', 'To See Entries (ALL) — Display → Daybook → Select Period'],
+  ['DAL', 'To See One Ledger — Display → Account → Book Ledger'],
+  ['Alt C', 'Make Ledger'],
+  ['Ctrl Enter', 'Change Ledger'],
+  ['Enter Enter', 'Change Ledger'],
+  ['Ctrl A', 'Calculator'],
+  ['Ctrl N', 'To Hide Ledger'],
+  ['Alt R', 'To Hide Ledger'],
+  ['Alt U', 'To Unhide Ledger'],
+  ['F1', 'To select a company; To select the Accounts Button and Inventory buttons'],
+  ['F2', 'To change the menu period'],
+  ['F3', 'To select the company'],
+  ['F4', 'To select the Contra voucher'],
+  ['F5', 'To select the Payment voucher'],
+  ['F6', 'To select the Receipt voucher'],
+  ['F7', 'To select the Journal voucher'],
+  ['F8', 'To select the Sales voucher'],
+  ['F8 (CTRL+F8)', 'To select the Credit Note voucher'],
+  ['F9', 'To select the Purchase voucher'],
+  ['F9 (CTRL+F9)', 'To select the Debit Note voucher'],
+  ['F10', 'To select the Reversing Journal voucher'],
+  ['F10', 'To select the Memorandum voucher'],
+  ['F11', 'To select the Functions and Features screen'],
+  ['F12', 'To select the Configure screen'],
+  ['ALT + 2', 'To Duplicate a voucher'],
+  ['ALT + A', 'To Add a voucher'],
+  ['ALT + C', 'To create a master at a voucher screen'],
+  ['ALT + D', 'To delete a voucher / master'],
+  ['ALT + E', 'To export the report'],
+  ['ALT + I', 'To insert a voucher'],
+  ['Alt+H', 'Help Shortcut'],
+  ['ALT + O', 'To upload the report at your website'],
+  ['Alt+I', 'Insert a voucher / toggle Item and Accounting invoice'],
+  ['Alt+N', 'Automatic columns'],
+  ['Alt+U', 'Retrieve the last line deleted using Alt+R'],
+  ['Alt+Y', 'Register Tally'],
+  ['ALT + M', 'Email the report'],
+  ['ALT + P', 'Print the report'],
+  ['ALT + R', 'Remove a line in a report'],
+  ['ALT + S', 'Bring back a removed line'],
+  ['ALT+ V', 'Bring Stock Journal screen'],
+  ['ALT + W', 'View the Tally Web browser'],
+  ['Alt+Z', 'Zoom'],
+  ['ALT + X', 'Cancel a voucher'],
+  ['CTRL + A', 'Accept a form'],
+  ['Ctrl+Alt+B', 'Check Company Statutory details'],
+  ['Ctrl+M', 'Switch to Main Area of Tally'],
+  ['Ctrl+N', 'Switch to Calculator / ODBC Section'],
+  ['Ctrl+R', 'Repeat narration'],
+  ['Ctrl+T', 'Mark voucher as Post Dated'],
+  ['Ctrl+Alt+C', 'Copy text from Tally'],
+  ['Ctrl+Alt+V', 'Paste text into Tally']
+];
+
+
+// Delete old Tally
+db.prepare(
+  `DELETE FROM shortcuts WHERE software = 'Tally'`
+).run();
+
+
+// Insert new Tally
+for (const [keys, action] of latestTallyShortcuts) {
+  replaceShortcuts.run(
+    'Tally',
+    '▣',
+    'Accounting',
+    keys,
+    action,
+    'Beginner',
+    'Tally',
+    ''
+  );
+}
+
+
+// =========================
+// WINDOWS
+// =========================
+
+const latestWindowsShortcuts = [
+  ['Windows key + S (or Q)', 'Open Search.'],
+  ['Windows key + Alt + D', 'Open date and time in the taskbar.'],
+  ['Windows key + Tab', 'Open Task View.'],
+  ['Windows key + Ctrl + D', 'Create new virtual desktop.'],
+  ['Windows key + Ctrl + F4', 'Close active virtual desktop.'],
+  ['Windows key + Ctrl + Right arrow', 'Switch to virtual desktop on the right.'],
+  ['Windows key + Ctrl + Left arrow', 'Switch to virtual desktop on the left.'],
+  ['Windows key + P', 'Open Project settings.'],
+  ['Windows key + A', 'Open Action center.'],
+  ['Windows key + I', 'Open Settings app.'],
+  ['Windows key + E', 'Open File Explorer.'],
+  ['Alt + D', 'Select address bar.'],
+  ['Ctrl + E (or F)', 'Select search box.'],
+  ['Ctrl + N', 'Open new window.'],
+  ['Ctrl + W', 'Close active window.'],
+  ['Ctrl + F (or F3)', 'Start search.'],
+  ['Ctrl + Mouse scroll wheel', 'Change file and folder view.'],
+  ['Ctrl + Shift + E', 'Expand all folders.'],
+  ['Ctrl + Shift + N', 'Create new folder.'],
+  ['Ctrl + L', 'Focus on address bar.'],
+  ['Alt + P', 'Display preview panel.'],
+  ['Alt + Enter', 'Open Properties.'],
+  ['Alt + Right arrow', 'View next folder.'],
+  ['Alt + Left arrow', 'View previous folder.'],
+  ['Alt + Up arrow', 'Move up one level.'],
+  ['F11', 'Full-screen mode.'],
+  ['F5', 'Refresh File Explorer.'],
+  ['F2', 'Rename selected item.'],
+  ['F4', 'Switch focus to address bar.'],
+  ['F6', 'Cycle through screen elements.'],
+  ['Home', 'Scroll to top.'],
+  ['End', 'Scroll to bottom.'],
+  ['Windows key', 'Open Start menu.'],
+  ['Windows key + D', 'Show or hide desktop.'],
+  ['Windows key + L', 'Lock computer.'],
+  ['Windows key + M', 'Minimize all windows.'],
+  ['Windows key + B', 'Focus notification area.'],
+  ['Windows key + R', 'Open Run command.'],
+  ['Windows key + X', 'Open Quick Link menu.'],
+  ['Windows key + V', 'Open Clipboard.'],
+  ['Windows key + H', 'Open dictation.'],
+  ['Windows key + K', 'Open Connect settings.'],
+  ['Windows key + U', 'Open Ease of Access.'],
+  ['Windows key + Ctrl + Enter', 'Open Narrator.'],
+  ['Windows key + Plus (+)', 'Zoom in.'],
+  ['Windows key + Minus (-)', 'Zoom out.'],
+  ['Windows key + Esc', 'Exit magnifier.'],
+  ['Windows key + Up arrow', 'Maximize app window.'],
+  ['Windows key + Down arrow', 'Minimize app window.'],
+  ['Windows key + Left arrow', 'Snap window left.'],
+  ['Windows key + Right arrow', 'Snap window right.'],
+  ['Windows key + Shift + S', 'Take a screenshot.'],
+  ['Windows key + Period (.)', 'Open emoji panel.'],
+  ['Windows key + Pause', 'Show System Properties.']
+];
+
+
+// Delete old Windows
+db.prepare(
+  `DELETE FROM shortcuts WHERE software = 'Windows'`
+).run();
+
+
+// Insert new Windows
+for (const [keys, action] of latestWindowsShortcuts) {
+  replaceShortcuts.run(
+    'Windows',
+    '⊞',
+    'System',
+    keys,
+    action,
+    'Beginner',
+    'Windows',
+    ''
+  );
+}
+
+console.log('Tally, PowerPoint and Windows shortcuts updated successfully.');
 } catch (e) {
   console.error("Windows shortcut migration failed:", e);
 }
