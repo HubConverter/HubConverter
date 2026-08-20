@@ -37,49 +37,50 @@ const fallback = [
   ["Chrome", "🌐"],
 ];
 
+const themes = [
+  { id: "neon", label: "Neon", icon: "✦" },
+  { id: "ocean", label: "Ocean", icon: "🌊" },
+  { id: "sunset", label: "Sunset", icon: "☀" },
+  { id: "forest", label: "Forest", icon: "🌿" },
+  { id: "midnight", label: "Midnight", icon: "☾" },
+];
+
 function App() {
-  const [user, setUser] = useState(null);
   const [view, setView] = useState("home");
   const [selectedSoftware, setSelectedSoftware] = useState("");
   const [items, setItems] = useState([]);
   const [allItems, setAllItems] = useState([]);
   const [soft, setSoft] = useState([]);
   const [prog, setProg] = useState([]);
+  const [favorites, setFavorites] = useState([]);
   const [recent, setRecent] = useState([]);
   const [q, setQ] = useState("");
   const [filter, setFilter] = useState("");
-  const [dark, setDark] = useState(localStorage.dark === "1");
-  const [auth, setAuth] = useState(false);
+  const [theme, setTheme] = useState(localStorage.getItem("sh_theme") || "neon");
+  const [showThemes, setShowThemes] = useState(false);
   const [toast, setToast] = useState("");
 
   useEffect(() => {
     (async () => {
-      try {
-        if (token()) {
-          setUser(await api("/me"));
-        }
-      } catch {
-        localStorage.removeItem("sh_token");
-      }
-
       const allShortcuts = await api("/shortcuts");
       setAllItems(allShortcuts);
       setItems(allShortcuts);
       setSoft(await api("/software"));
+
+      try {
+        setProg(JSON.parse(localStorage.getItem("sh_progress") || "[]"));
+        setFavorites(JSON.parse(localStorage.getItem("sh_favorites") || "[]"));
+      } catch {
+        localStorage.removeItem("sh_progress");
+        localStorage.removeItem("sh_favorites");
+      }
     })();
   }, []);
 
   useEffect(() => {
-    if (user) {
-      api("/progress").then(setProg);
-      api("/recent").then(setRecent);
-    }
-  }, [user]);
-
-  useEffect(() => {
-    document.body.className = dark ? "dark" : "";
-    localStorage.dark = dark ? "1" : "0";
-  }, [dark]);
+    document.body.className = `theme-${theme}`;
+    localStorage.setItem("sh_theme", theme);
+  }, [theme]);
 
   function notify(message) {
     setToast(message);
@@ -115,27 +116,23 @@ function App() {
     setView("software");
   }
 
-  async function learn(id) {
-    if (!user) {
-      return setAuth(true);
-    }
+  function learn(id) {
+    if (prog.includes(id)) return notify("Already mastered");
 
-    await api("/progress/" + id, {
-      method: "POST",
-    });
-
-    setProg((current) =>
-      current.includes(id) ? current : [...current, id]
-    );
-
-    notify("+10 XP · Shortcut mastered");
+    const next = [...prog, id];
+    setProg(next);
+    localStorage.setItem("sh_progress", JSON.stringify(next));
+    notify("Shortcut mastered");
   }
 
-  function logout() {
-    localStorage.removeItem("sh_token");
-    setUser(null);
-    setProg([]);
-    setRecent([]);
+  function toggleFavorite(id) {
+    const saved = !favorites.includes(id);
+    const next = saved
+      ? [...favorites, id]
+      : favorites.filter((item) => item !== id);
+    setFavorites(next);
+    localStorage.setItem("sh_favorites", JSON.stringify(next));
+    notify(saved ? "Saved to favorites" : "Removed from favorites");
   }
 
   return (
@@ -155,8 +152,6 @@ function App() {
             "tools",
             "learn",
             "quiz",
-            ...(user?.role === "admin" ? ["admin"] : []),
-            "profile",
           ].map((item) => (
             <button
               key={item}
@@ -169,26 +164,36 @@ function App() {
         </nav>
 
         <div className="actions">
-          <button onClick={() => setDark(!dark)}>
-            ◐
-          </button>
-
-          {user ? (
-            <>
-              <span>👤 {user.name}</span>
-
-              <button onClick={logout}>
-                Logout
-              </button>
-            </>
-          ) : (
+          <div className="themePicker">
             <button
-              className="primary"
-              onClick={() => setAuth(true)}
+              className="themeToggle"
+              onClick={() => setShowThemes((current) => !current)}
+              aria-label="Choose a color theme"
+              aria-expanded={showThemes}
+              title="Choose a color theme"
             >
-              Sign in
+              ◐
             </button>
-          )}
+
+            {showThemes && (
+              <div className="themeMenu" role="menu" aria-label="Color themes">
+                <b>Choose a theme</b>
+                {themes.map((item) => (
+                  <button
+                    key={item.id}
+                    className={theme === item.id ? "themeChoice active" : "themeChoice"}
+                    onClick={() => {
+                      setTheme(item.id);
+                      setShowThemes(false);
+                    }}
+                    role="menuitem"
+                  >
+                    <span>{item.icon}</span> {item.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </header>
 
@@ -200,6 +205,7 @@ function App() {
           search={search}
           soft={soft}
           openSoftware={openSoftware}
+          setFilter={setFilter}
         />
       )}
 
@@ -211,6 +217,8 @@ function App() {
           items={items}
           learn={() => setView("learn")}
           back={() => setView("home")}
+          favorites={favorites}
+          toggleFavorite={toggleFavorite}
         />
       )}
 
@@ -218,34 +226,12 @@ function App() {
         <Learn
           items={items}
           learn={learn}
+          prog={prog}
         />
       )}
 
       {view === "quiz" && (
         <Quiz items={items} />
-      )}
-
-      {view === "profile" && (
-        <Profile
-          user={user}
-          prog={prog}
-          recent={recent}
-        />
-      )}
-
-      {view === "admin" &&
-        user?.role === "admin" && (
-          <Admin notify={notify} />
-        )}
-
-      {auth && (
-        <Auth
-          close={() => setAuth(false)}
-          setUser={(u) => {
-            setUser(u);
-            setAuth(false);
-          }}
-        />
       )}
 
       {toast && (
@@ -265,7 +251,7 @@ function App() {
    SOFTWARE SHORTCUT PAGE
 ========================= */
 
-function SoftwarePage({ software, items, learn, back }) {
+function SoftwarePage({ software, items, learn, back, favorites, toggleFavorite }) {
   return (
     <section className="wrap">
       <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
@@ -312,6 +298,14 @@ function SoftwarePage({ software, items, learn, back }) {
                     <b>{s.software}</b>
                     <small>{s.category} · {s.level}</small>
                   </div>
+                  <button
+                    className={favorites.includes(s.id) ? "heart on" : "heart"}
+                    onClick={() => toggleFavorite(s.id)}
+                    aria-label={favorites.includes(s.id) ? "Remove from favorites" : "Save to favorites"}
+                    title={favorites.includes(s.id) ? "Remove from favorites" : "Save to favorites"}
+                  >
+                    {favorites.includes(s.id) ? "♥" : "♡"}
+                  </button>
                 </div>
                 <div className="keys">
                   {String(s.keys || "").split("+").map((k, i) => (
@@ -340,6 +334,7 @@ function Home({
   search,
   soft,
   openSoftware,
+  setFilter,
 }) {
   return (
     <>
@@ -897,7 +892,7 @@ function ToolCard({
    LEARN
 ========================= */
 
-function Learn({ items, learn }) {
+function Learn({ items, learn, prog }) {
   const [i, setI] = useState(0);
 
   useEffect(() => {
@@ -923,11 +918,18 @@ function Learn({ items, learn }) {
   }
 
   const s = items[i % items.length];
+  const mastered = prog.includes(s.id);
+  const masteredCount = items.filter((item) => prog.includes(item.id)).length;
 
   return (
     <section className="wrap">
       <div className="learnBox">
         <small>LEARN MODE · {i + 1} / {items.length}</small>
+
+        <div className="learnProgress" aria-label={`${masteredCount} of ${items.length} shortcuts mastered`}>
+          <span style={{ width: `${(masteredCount / items.length) * 100}%` }} />
+        </div>
+        <p className="learnCount">{masteredCount} of {items.length} mastered</p>
 
         <h2>Master this shortcut</h2>
 
@@ -959,7 +961,7 @@ function Learn({ items, learn }) {
               setI((current) => (current + 1) % items.length);
             }}
           >
-            ✓ I know it
+            {mastered ? "✓ Mastered" : "✓ I know it"}
           </button>
 
           <button
@@ -1080,6 +1082,7 @@ function Profile({
   user,
   prog,
   recent,
+  favorites,
 }) {
   const level =
     Math.floor((user?.xp || 0) / 100) + 1;
@@ -1111,8 +1114,8 @@ function Profile({
           </div>
 
           <div>
-            <b>—</b>
-            <small>Favorites removed</small>
+            <b>{favorites.length}</b>
+            <small>Favorites</small>
           </div>
 
           <div>
@@ -1163,9 +1166,7 @@ function Profile({
   );
 }
 
-/* =========================
-   AUTH
-========================= */
+/* Login UI intentionally removed from the public version.
 
 function Auth({
   close,
@@ -1290,6 +1291,7 @@ function Auth({
     </div>
   );
 }
+*/
 
 /* =========================
    ADMIN
