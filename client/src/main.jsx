@@ -495,104 +495,10 @@ function Home({
 function Tools() {
   const [selectedTool, setSelectedTool] = useState(null);
 
-  /*
-    TOOL PAGE
-    When a user clicks a tool, only that tool opens.
-  */
-  if (selectedTool === "word-to-pdf") {
-  return (
-    <div>
-      <div
-        style={{
-          maxWidth: "1200px",
-          margin: "0 auto",
-          padding: "20px 24px 0",
-        }}
-      >
-        <button
-          onClick={() => setSelectedTool(null)}
-          style={{
-            border: "none",
-            background: "transparent",
-            color: "inherit",
-            fontSize: "15px",
-            fontWeight: "600",
-            cursor: "pointer",
-            padding: "10px 0",
-          }}
-        >
-          ← Back to Tools
-        </button>
-      </div>
+  // =========================
+  // TOOL PAGES
+  // =========================
 
-      <WordToPdf />
-    </div>
-  );
-}
-  
-
-if (selectedTool === "pdf-to-jpg") {
-  return (
-    <div>
-      <div
-        style={{
-          maxWidth: "1200px",
-          margin: "0 auto",
-          padding: "20px 24px 0",
-        }}
-      >
-        <button
-          onClick={() => setSelectedTool(null)}
-          style={{
-            border: "none",
-            background: "transparent",
-            color: "inherit",
-            fontSize: "15px",
-            fontWeight: "600",
-            cursor: "pointer",
-            padding: "10px 0",
-          }}
-        >
-          ← Back to Tools
-        </button>
-      </div>
-
-      <PDFToJpg />
-    </div>
-  );
-}
-
-
-if (selectedTool === "excel-to-pdf") {
-  return (
-    <div>
-      <div
-        style={{
-          maxWidth: "1200px",
-          margin: "0 auto",
-          padding: "20px 24px 0",
-        }}
-      >
-        <button
-          onClick={() => setSelectedTool(null)}
-          style={{
-            border: "none",
-            background: "transparent",
-            color: "inherit",
-            fontSize: "15px",
-            fontWeight: "600",
-            cursor: "pointer",
-            padding: "10px 0",
-          }}
-        >
-          ← Back to Tools
-        </button>
-      </div>
-
-      <ExcelToPdf />
-    </div>
-  );
-}
   if (selectedTool === "jpg-to-pdf") {
     return (
       <div>
@@ -624,13 +530,107 @@ if (selectedTool === "excel-to-pdf") {
     );
   }
 
-  /*
-    TOOLS HOME
-    Only cards appear here.
-  */
+  if (selectedTool === "pdf-to-jpg") {
+    return (
+      <div>
+        <div
+          style={{
+            maxWidth: "1200px",
+            margin: "0 auto",
+            padding: "20px 24px 0",
+          }}
+        >
+          <button
+            onClick={() => setSelectedTool(null)}
+            style={{
+              border: "none",
+              background: "transparent",
+              color: "inherit",
+              fontSize: "15px",
+              fontWeight: "600",
+              cursor: "pointer",
+              padding: "10px 0",
+            }}
+          >
+            ← Back to Tools
+          </button>
+        </div>
+
+        <PDFToJpg />
+      </div>
+    );
+  }
+
+  if (selectedTool === "excel-to-pdf") {
+    return (
+      <div>
+        <div
+          style={{
+            maxWidth: "1200px",
+            margin: "0 auto",
+            padding: "20px 24px 0",
+          }}
+        >
+          <button
+            onClick={() => setSelectedTool(null)}
+            style={{
+              border: "none",
+              background: "transparent",
+              color: "inherit",
+              fontSize: "15px",
+              fontWeight: "600",
+              cursor: "pointer",
+              padding: "10px 0",
+            }}
+          >
+            ← Back to Tools
+          </button>
+        </div>
+
+        <ExcelToPdf />
+      </div>
+    );
+  }
+
+  if (selectedTool === "word-to-pdf") {
+    return (
+      <div>
+        <div
+          style={{
+            maxWidth: "1200px",
+            margin: "0 auto",
+            padding: "20px 24px 0",
+          }}
+        >
+          <button
+            onClick={() => setSelectedTool(null)}
+            style={{
+              border: "none",
+              background: "transparent",
+              color: "inherit",
+              fontSize: "15px",
+              fontWeight: "600",
+              cursor: "pointer",
+              padding: "10px 0",
+            }}
+          >
+            ← Back to Tools
+          </button>
+        </div>
+
+        <WordToPdf />
+      </div>
+    );
+  }
+
+  // =========================
+  // TOOLS HOME
+  // =========================
 
   return (
     <section className="wrap">
+
+      {/* HEADER */}
 
       <div className="sectionHead">
         <div>
@@ -646,27 +646,21 @@ if (selectedTool === "excel-to-pdf") {
         </span>
       </div>
 
+
       {/* =========================
           PDF TOOLS
       ========================= */}
 
       <div style={{ marginTop: "30px" }}>
 
-        <div
-          style={{
-            marginBottom: "18px",
-          }}
-        >
+        <div style={{ marginBottom: "18px" }}>
           <small>PDF TOOLS</small>
 
-          <h2
-            style={{
-              marginTop: "5px",
-            }}
-          >
+          <h2 style={{ marginTop: "5px" }}>
             PDF Tools
           </h2>
         </div>
+
 
         <div
           style={{
@@ -681,34 +675,33 @@ if (selectedTool === "excel-to-pdf") {
             icon="🖼️"
             title="JPG to PDF"
             description="Convert JPG images into a PDF document."
-            onClick={() =>
-              setSelectedTool("jpg-to-pdf")
-            }
+            onClick={() => setSelectedTool("jpg-to-pdf")}
           />
-<ToolCard
-  icon="📊"
-  title="Excel to PDF"
-  description="Convert Excel spreadsheets into PDF documents."
-  onClick={() =>
-    setSelectedTool("excel-to-pdf")
-  }
-/>
+
+
           <ToolCard
-  icon="📝"
-  title="Word to PDF"
-  description="Convert Word documents into PDF files."
-  onClick={() =>
-    setSelectedTool("word-to-pdf")
-  }
-/>
-         <ToolCard
- icon={pdfToJpgIcon}
-  title="PDF to JPG"
-  description="Convert PDF pages into JPG images."
-  onClick={() =>
-    setSelectedTool("pdf-to-jpg")
-  }
-/>
+            icon="📊"
+            title="Excel to PDF"
+            description="Convert Excel spreadsheets into PDF documents."
+            onClick={() => setSelectedTool("excel-to-pdf")}
+          />
+
+
+          <ToolCard
+            icon="📝"
+            title="Word to PDF"
+            description="Convert Word documents into PDF files."
+            onClick={() => setSelectedTool("word-to-pdf")}
+          />
+
+
+          <ToolCard
+            icon="🧾➡️🖼️"
+            title="PDF to JPG"
+            description="Convert PDF pages into JPG images."
+            onClick={() => setSelectedTool("pdf-to-jpg")}
+          />
+
 
           <ToolCard
             icon="📑"
@@ -717,12 +710,14 @@ if (selectedTool === "excel-to-pdf") {
             comingSoon
           />
 
+
           <ToolCard
             icon="✂️"
             title="Split PDF"
             description="Split a PDF into separate documents."
             comingSoon
           />
+
 
           <ToolCard
             icon="🗜️"
@@ -731,12 +726,14 @@ if (selectedTool === "excel-to-pdf") {
             comingSoon
           />
 
+
           <ToolCard
             icon="📝"
             title="PDF to Word"
             description="Convert PDF documents to Word."
             comingSoon
           />
+
 
           <ToolCard
             icon="📊"
@@ -745,12 +742,14 @@ if (selectedTool === "excel-to-pdf") {
             comingSoon
           />
 
+
           <ToolCard
             icon="📽️"
             title="PDF to PowerPoint"
             description="Convert PDF files to presentations."
             comingSoon
           />
+
 
           <ToolCard
             icon="🔄"
@@ -759,12 +758,14 @@ if (selectedTool === "excel-to-pdf") {
             comingSoon
           />
 
+
           <ToolCard
             icon="💧"
             title="Watermark PDF"
             description="Add a watermark to your PDF."
             comingSoon
           />
+
 
           <ToolCard
             icon="🔐"
@@ -773,12 +774,14 @@ if (selectedTool === "excel-to-pdf") {
             comingSoon
           />
 
+
           <ToolCard
             icon="🔓"
             title="Unlock PDF"
             description="Remove password protection from a PDF."
             comingSoon
           />
+
 
           <ToolCard
             icon="✍️"
@@ -787,6 +790,7 @@ if (selectedTool === "excel-to-pdf") {
             comingSoon
           />
 
+
           <ToolCard
             icon="📋"
             title="Extract PDF Pages"
@@ -794,12 +798,14 @@ if (selectedTool === "excel-to-pdf") {
             comingSoon
           />
 
+
           <ToolCard
             icon="🗑️"
             title="Delete PDF Pages"
             description="Remove unwanted pages from a PDF."
             comingSoon
           />
+
 
           <ToolCard
             icon="↕️"
@@ -811,6 +817,7 @@ if (selectedTool === "excel-to-pdf") {
         </div>
       </div>
 
+
       {/* =========================
           IMAGE TOOLS
       ========================= */}
@@ -820,14 +827,11 @@ if (selectedTool === "excel-to-pdf") {
         <div style={{ marginBottom: "18px" }}>
           <small>IMAGE TOOLS</small>
 
-          <h2
-            style={{
-              marginTop: "5px",
-            }}
-          >
+          <h2 style={{ marginTop: "5px" }}>
             Image Tools
           </h2>
         </div>
+
 
         <div
           style={{
@@ -890,6 +894,7 @@ if (selectedTool === "excel-to-pdf") {
         </div>
       </div>
 
+
       {/* =========================
           TEXT TOOLS
       ========================= */}
@@ -899,14 +904,11 @@ if (selectedTool === "excel-to-pdf") {
         <div style={{ marginBottom: "18px" }}>
           <small>TEXT TOOLS</small>
 
-          <h2
-            style={{
-              marginTop: "5px",
-            }}
-          >
+          <h2 style={{ marginTop: "5px" }}>
             Text Tools
           </h2>
         </div>
+
 
         <div
           style={{
