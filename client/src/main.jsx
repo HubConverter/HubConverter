@@ -997,50 +997,84 @@ function Learn({ items, learn, prog }) {
 
 function Quiz({ items }) {
   const [n, setN] = useState(0);
-  const [score, setScore] = useState(0);
+  const [quiz, setQuiz] = useState([]);
+  const [answers, setAnswers] = useState([]);
   const [done, setDone] = useState(false);
 
-  const s =
-    items[n % Math.max(items.length, 1)];
+  function shuffle(list) {
+    return [...list].sort(() => Math.random() - 0.5);
+  }
 
-  const opts = s
-    ? [
-        s.action,
-        ...items
-          .filter((x) => x.id !== s.id)
-          .slice(n % 4, n % 4 + 3)
-          .map((x) => x.action),
-      ].sort(() => Math.random() - 0.5)
-    : [];
+  function createQuiz(source) {
+    return shuffle(source)
+      .slice(0, Math.min(5, source.length))
+      .map((question) => {
+        const distractors = shuffle(
+          source
+            .filter((item) => item.id !== question.id && item.action !== question.action)
+            .map((item) => item.action)
+        ).slice(0, 3);
+
+        return {
+          ...question,
+          options: shuffle([question.action, ...distractors]),
+        };
+      });
+  }
+
+  function startQuiz() {
+    setQuiz(createQuiz(items));
+    setN(0);
+    setAnswers([]);
+    setDone(false);
+  }
+
+  useEffect(() => {
+    startQuiz();
+  }, [items]);
+
+  const s = quiz[n];
+  const score = answers.filter((answer) => answer.correct).length;
+  const wrongAnswers = answers.filter((answer) => !answer.correct);
+
+  if (!s && !done) {
+    return (
+      <section className="wrap">
+        <div className="learnBox">
+          <small>QUIZ</small>
+          <h2>No shortcuts available yet</h2>
+          <p>Add shortcuts first, then come back to test yourself.</p>
+        </div>
+      </section>
+    );
+  }
 
   if (done) {
     return (
       <section className="wrap">
         <div className="learnBox">
-
           <div className="badge">
-            🏆
+            {wrongAnswers.length === 0 ? "🏆" : "📘"}
           </div>
+          <h2>Quiz complete</h2>
+          <p className="score">{score}/{quiz.length} correct</p>
+          <p>{wrongAnswers.length} wrong answer{wrongAnswers.length === 1 ? "" : "s"}</p>
 
-          <h2>
-            Quiz complete
-          </h2>
+          {wrongAnswers.length > 0 && (
+            <div className="quizReview">
+              <h3>Review your wrong answers</h3>
+              {wrongAnswers.map((answer, index) => (
+                <article key={`${answer.question.id}-${index}`}>
+                  <kbd>{answer.question.keys}</kbd>
+                  <b>{answer.question.action}</b>
+                  <p><span>Your answer:</span> {answer.selected}</p>
+                  <p><span>Correct answer:</span> {answer.question.action}</p>
+                </article>
+              ))}
+            </div>
+          )}
 
-          <p className="score">
-            {score}/5 correct
-          </p>
-
-          <button
-            className="primary"
-            onClick={() => {
-              setN(0);
-              setScore(0);
-              setDone(false);
-            }}
-          >
-            Play again
-          </button>
-
+          <button className="primary" onClick={startQuiz}>Try a new mixed quiz</button>
         </div>
       </section>
     );
@@ -1051,7 +1085,7 @@ function Quiz({ items }) {
       <div className="learnBox">
 
         <small>
-          QUIZ · QUESTION {n + 1}/5
+          QUIZ · QUESTION {n + 1}/{quiz.length}
         </small>
 
         <h2>
@@ -1063,15 +1097,18 @@ function Quiz({ items }) {
         </p>
 
         <div className="answers">
-          {opts.map((option) => (
+          {s.options.map((option) => (
             <button
               key={option}
               onClick={() => {
-                if (option === s.action) {
-                  setScore(score + 1);
-                }
+                const answer = {
+                  question: s,
+                  selected: option,
+                  correct: option === s.action,
+                };
+                setAnswers((current) => [...current, answer]);
 
-                if (n === 4) {
+                if (n === quiz.length - 1) {
                   setDone(true);
                 } else {
                   setN(n + 1);
