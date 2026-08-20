@@ -695,7 +695,7 @@ function Tools() {
           />
 
 
-          <ToolCard
+  <ToolCard
   icon={
     <svg xmlns="http://w3.org" viewBox="100 0 600 450" style={{ width: '100%', height: 'auto', display: 'block', margin: '0 auto' }}>
       <defs>
@@ -725,7 +725,7 @@ function Tools() {
       </defs>
       
       <g filter="url(#layer-shadow)">
-        <!-- LEFT COMPONENT: 3D LAYERED PDF BLOCK -->
+        {/* LEFT COMPONENT: 3D LAYERED PDF BLOCK */}
         <g transform="translate(200, 230)">
           <path d="M -90 10 L 0 -35 L 90 10 L 0 55 Z" fill="#0F172A" opacity="0.12"/>
           <path d="M -85 0 L 0 -42 L 0 -12 L -85 30 Z" fill="url(#pdf-side-extrusion)"/>
@@ -735,14 +735,14 @@ function Tools() {
           <text x="0" y="12" fill="#FFFFFF" fontFamily="system-ui, -apple-system, sans-serif" fontWeight="900" fontSize="36" textAnchor="middle" transform="matrix(1, 0.45, 0, 0.85, 0, -10)">PDF</text>
         </g>
 
-        <!-- CENTER COMPONENT: RE-ALIGNED STRAIGHT TRACK -->
+        {/* CENTER COMPONENT: RE-ALIGNED STRAIGHT TRACK */}
         <g transform="translate(400, 205)">
           <path d="M -100 15 Q 0 -25 100 15" fill="none" stroke="url(#cyan-glow)" strokeWidth="7" strokeLinecap="round"/>
           <path d="M -100 15 Q 0 -25 100 15" fill="none" stroke="#FFFFFF" strokeWidth="2" strokeDasharray="8 18" strokeLinecap="round"/>
           <polygon points="90,7 114,17 93,24 96,15" fill="#06B6D4"/>
         </g>
 
-        <!-- RIGHT COMPONENT: 3D LAYERED JPG SLAB -->
+        {/* RIGHT COMPONENT: 3D LAYERED JPG SLAB */}
         <g transform="translate(600, 230)">
           <path d="M -90 10 L 0 -35 L 90 10 L 0 55 Z" fill="#0F172A" opacity="0.12"/>
           <path d="M -85 0 L 0 -42 L 0 -12 L -85 30 Z" fill="url(#jpg-side-extrusion)"/>
