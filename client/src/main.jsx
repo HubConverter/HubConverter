@@ -82,16 +82,27 @@ function App() {
     setTimeout(() => setToast(""), 2200);
   }
 
-  async function search() {
+  async function search(nextQ = q, nextSoftware = filter) {
     setItems(
       await api(
         "/shortcuts?" +
           new URLSearchParams({
-            q,
-            software: filter,
+            q: nextQ,
+            software: nextSoftware,
           })
       )
     );
+  }
+
+  async function openSoftware(software) {
+    setFilter(software);
+    setQ("");
+    const data = await api(
+      "/shortcuts?" +
+        new URLSearchParams({ software })
+    );
+    setItems(data);
+    setView("learn");
   }
 
   async function learn(id) {
@@ -173,25 +184,13 @@ function App() {
 
       {view === "home" && (
         <Home
-  setView={setView}
-  q={q}
-  setQ={setQ}
-  search={search}
-  soft={soft}
-  openSoftware={async (software) => {
-    setFilter(software);
-
-    const data = await api(
-      "/shortcuts?" +
-        new URLSearchParams({
-          software,
-        })
-    );
-
-    setItems(data);
-    setView("learn");
-  }}
-/>
+          setView={setView}
+          q={q}
+          setQ={setQ}
+          search={search}
+          soft={soft}
+          openSoftware={openSoftware}
+        />
       )}
 
       {view === "tools" && <Tools />}
@@ -253,6 +252,7 @@ function Home({
   setQ,
   search,
   soft,
+  openSoftware,
 }) {
   return (
     <>
@@ -278,8 +278,9 @@ function Home({
             onChange={(e) => setQ(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
+                setFilter("");
                 setView("learn");
-                search();
+                search(q, "");
               }
             }}
             placeholder='Try “Ctrl+C”, “Excel”, “Save”...'
@@ -288,8 +289,9 @@ function Home({
           <button
             className="primary"
             onClick={() => {
+              setFilter("");
               setView("learn");
-              search();
+              search(q, "");
             }}
           >
             Search
@@ -304,7 +306,7 @@ function Home({
                 onClick={() => {
                   setQ(item);
                   setView("learn");
-                  setTimeout(search, 0);
+                  search(item, "");
                 }}
               >
                 {item}
@@ -331,27 +333,15 @@ function Home({
         </div>
 
         <div className="apps">
-         {(soft.length ? soft : fallback).map(
-  (app) => (
-    <button
-      className="app"
-      key={app.software || app[0]}
-      onClick={() =>
-        openSoftware(app.software || app[0])
-      }
-    >
-      <b>{app.icon || app[1]}</b>
-
-      <strong>
-        {app.software || app[0]}
-      </strong>
-
-      <small>
-        {app.count || "Ready"} shortcuts
-      </small>
-    </button>
-  )
-)}
+          {(soft.length ? soft : fallback).map(
+            (app) => (
+              <button
+                className="app"
+                key={app.software || app[0]}
+                onClick={() =>
+                  openSoftware(app.software || app[0])
+                }
+              >
                 <b>{app.icon || app[1]}</b>
 
                 <strong>
@@ -816,7 +806,6 @@ function ToolCard({
     </article>
   );
 }
-
 /* =========================
    LEARN
 ========================= */
@@ -832,32 +821,15 @@ function Learn({ items, learn }) {
     return (
       <section className="wrap">
         <div className="learnBox">
-
-          <small>
-            LEARN MODE
-          </small>
-
-          <h2>
-            No shortcuts found
-          </h2>
-
-          <p>
-            There are no shortcuts available for
-            this selection yet.
-          </p>
-
+          <small>LEARN MODE</small>
+          <h2>No shortcuts found</h2>
+          <p>There are no shortcuts available for this selection yet.</p>
           <button
             className="primary"
-            onClick={() =>
-              window.scrollTo({
-                top: 0,
-                behavior: "smooth",
-              })
-            }
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           >
             Back
           </button>
-
         </div>
       </section>
     );
@@ -868,35 +840,22 @@ function Learn({ items, learn }) {
   return (
     <section className="wrap">
       <div className="learnBox">
+        <small>LEARN MODE · {i + 1} / {items.length}</small>
 
-        <small>
-          LEARN MODE · {i + 1} / {items.length}
-        </small>
-
-        <h2>
-          Master this shortcut
-        </h2>
+        <h2>Master this shortcut</h2>
 
         <div className="megaKey">
           {s.keys}
         </div>
 
-        <h3>
-          {s.action}
-        </h3>
+        <h3>{s.action}</h3>
 
         <p>
           {s.software}
-          {s.category
-            ? " · " + s.category
-            : ""}
+          {s.category ? " · " + s.category : ""}
         </p>
 
-        {s.example && (
-          <p>
-            {s.example}
-          </p>
-        )}
+        {s.example && <p>{s.example}</p>}
 
         <div
           style={{
@@ -906,15 +865,11 @@ function Learn({ items, learn }) {
             marginTop: "20px",
           }}
         >
-
           <button
             className="primary"
             onClick={() => {
               learn(s.id);
-              setI(
-                (current) =>
-                  (current + 1) % items.length
-              );
+              setI((current) => (current + 1) % items.length);
             }}
           >
             ✓ I know it
@@ -922,66 +877,12 @@ function Learn({ items, learn }) {
 
           <button
             onClick={() =>
-              setI(
-                (current) =>
-                  (current + 1) % items.length
-              )
+              setI((current) => (current + 1) % items.length)
             }
           >
             Next →
           </button>
-
         </div>
-
-      </div>
-    </section>
-  );
-}
-  const [i, setI] = useState(0);
-
-  const s =
-    items[i % Math.max(items.length, 1)];
-
-  return (
-    <section className="wrap">
-      <div className="learnBox">
-
-        <small>
-          LEARN MODE · {i + 1}
-        </small>
-
-        <h2>
-          Master this shortcut
-        </h2>
-
-        <div className="megaKey">
-          {s?.keys}
-        </div>
-
-        <h3>
-          {s?.action}
-        </h3>
-
-        <p>
-          {s?.software} · {s?.example}
-        </p>
-
-        <button
-          className="primary"
-          onClick={() => {
-            learn(s.id);
-            setI(i + 1);
-          }}
-        >
-          ✓ I know it
-        </button>
-
-        <button
-          onClick={() => setI(i + 1)}
-        >
-          Next →
-        </button>
-
       </div>
     </section>
   );
@@ -1120,6 +1021,11 @@ function Profile({
           <div>
             <b>Level {level}</b>
             <small>Current level</small>
+          </div>
+
+          <div>
+            <b>—</b>
+            <small>Favorites removed</small>
           </div>
 
           <div>
