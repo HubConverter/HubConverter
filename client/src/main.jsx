@@ -569,9 +569,7 @@ if (selectedTool === "pdf-to-jpg") {
   );
 }
 
-if (selectedTool === "excel-to-pdf") {
-  ...
-}
+
 if (selectedTool === "excel-to-pdf") {
   return (
     <div>
