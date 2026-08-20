@@ -1916,7 +1916,7 @@ app.get('/api/progress', auth, (req, res) => {
 app.post('/api/progress/:id', auth, (req, res) => {
   const shortcutId = Number(req.params.id);
 
-  db.prepare(`
+  const result = db.prepare(`
     INSERT OR IGNORE INTO progress
     VALUES(?,?)
   `).run(
@@ -1924,21 +1924,23 @@ app.post('/api/progress/:id', auth, (req, res) => {
     shortcutId
   );
 
-  db.prepare(`
-    INSERT INTO activity
-    (user_id,shortcut_id,kind)
-    VALUES(?,?,?)
-  `).run(
-    req.user.id,
-    shortcutId,
-    'learn'
-  );
+  if (result.changes) {
+    db.prepare(`
+      INSERT INTO activity
+      (user_id,shortcut_id,kind)
+      VALUES(?,?,?)
+    `).run(
+      req.user.id,
+      shortcutId,
+      'learn'
+    );
 
-  db.prepare(`
-    UPDATE users
-    SET xp=xp+10
-    WHERE id=?
-  `).run(req.user.id);
+    db.prepare(`
+      UPDATE users
+      SET xp=xp+10
+      WHERE id=?
+    `).run(req.user.id);
+  }
 
   const user = db.prepare(`
     SELECT xp
@@ -1948,7 +1950,8 @@ app.post('/api/progress/:id', auth, (req, res) => {
 
   res.json({
     ok: true,
-    xp: user.xp
+    xp: user.xp,
+    newlyMastered: Boolean(result.changes)
   });
 });
 
@@ -2193,6 +2196,9 @@ app.use((req, res, next) => {
 
 const HOST = '0.0.0.0';
 
+// These legacy migration drafts are kept for reference only. They contain
+// duplicate data and must never run automatically on every server start.
+if (process.env.RUN_LEGACY_MIGRATIONS === 'true') {
 
 // ShortcutHub migration: replace PowerPoint shortcuts with the latest supplied list
 const latestPowerPointShortcuts = [('Go to the next slide shortcut', 'Page Down'), ('Go to the previous slide shortcut', 'Page Up'), ('Insert new slide shortcut', 'Ctrl + M'), ('Duplicate slide shortcut', 'Ctrl + D'), ('Change the zoom for the slide shortcut', 'Alt + W, Q (or Ctrl + Mouse scroll)'), ('Send selected slides to appendix', 'Ctrl + Alt + Shift + A'), ('Create Summary Slide', 'Ctrl + Alt + Shift + D'), ('Select a theme shortcut', 'Alt + G, H'), ('Select a slide layout shortcut', 'Alt + H, L'), ('Save selected slides', 'Ctrl + Alt + Shift + V'), ('Print selected slides', 'Ctrl + Alt + Shift + P'), ('Save presentation shortcut', 'Ctrl + S'), ('Save As shortcut', 'F12'), ('Save As shortcut', 'Ctrl+Shift+S'), ('New presentation shortcut', 'Ctrl + N'), ('Print presentation shortcut', 'Ctrl + P'), ('Switch between open presentations shortcut', 'Ctrl + F6'), ('Switch between open PowerPoint windows shortcut', 'Ctrl + TAB'), ('Duplicate and active presentation (PowerPoint 2013, 2016, 365) shortcut', 'Ctrl + Shift + N'), ('Add section to presentation (PowerPoint 2013, 2016, 365) shortcut', 'Ctrl + <'), ('Close PowerPoint shortcut', 'Alt + F4 or Alt + F, X'), ('Close Presentation shortcut', 'Ctrl + W or Ctrl + F4'), ('Open Find dialog box shortcut', 'Ctrl + F'), ('Open Find and Replace dialog box shortcut', 'Ctrl + H'), ('Open Header and Footer dialog box shortcut', 'Alt + Shift + D'), ('Open Spell Check shortcut', 'F7'), ('Open Thesaurus shortcut', 'Shift + F7'), ('Format selected Chart element shortcut', 'Ctrl + 1'), ('Show or Hide the Notes pane (PowerPoint 2013, 2016, 365) shortcut', 'Ctrl + Shift + H'), ('Switch to Slide Master View shortcut', "Shift + click 'Normal View'"), ('Switch to Handout Master View shortcut', "Shift + click 'Slide Sorter View'"), ('Close Thumbnails View shortcut', "Ctrl + Shift + click 'Normal View'")];
@@ -2475,6 +2481,7 @@ for (const [keys, action] of latestWindowsShortcuts) {
 console.log('Tally, PowerPoint and Windows shortcuts updated successfully.');
 } catch (e) {
   console.error("Windows shortcut migration failed:", e);
+}
 }
 
 app.listen(PORT, HOST, () => {
