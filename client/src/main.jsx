@@ -498,6 +498,36 @@ function Tools() {
     TOOL PAGE
     When a user clicks a tool, only that tool opens.
   */
+  if (selectedTool === "word-to-pdf") {
+  return (
+    <div>
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "20px 24px 0",
+        }}
+      >
+        <button
+          onClick={() => setSelectedTool(null)}
+          style={{
+            border: "none",
+            background: "transparent",
+            color: "inherit",
+            fontSize: "15px",
+            fontWeight: "600",
+            cursor: "pointer",
+            padding: "10px 0",
+          }}
+        >
+          ← Back to Tools
+        </button>
+      </div>
+
+      <WordToPdf />
+    </div>
+  );
+}
 if (selectedTool === "excel-to-pdf") {
   return (
     <div>
