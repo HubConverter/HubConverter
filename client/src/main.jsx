@@ -529,14 +529,7 @@ function Tools() {
     </div>
   );
 }
-  if (selectedTool === "word-to-pdf") {
-  return (
-    <div>
-      ...
-      <WordToPdf />
-    </div>
-  );
-}
+  
 
 if (selectedTool === "pdf-to-jpg") {
   return (
