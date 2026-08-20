@@ -331,11 +331,27 @@ function Home({
         </div>
 
         <div className="apps">
-          {(soft.length ? soft : fallback).map(
-            (app) => (
-              onClick={() =>
-  openSoftware(app.software || app[0])
-}
+         {(soft.length ? soft : fallback).map(
+  (app) => (
+    <button
+      className="app"
+      key={app.software || app[0]}
+      onClick={() =>
+        openSoftware(app.software || app[0])
+      }
+    >
+      <b>{app.icon || app[1]}</b>
+
+      <strong>
+        {app.software || app[0]}
+      </strong>
+
+      <small>
+        {app.count || "Ready"} shortcuts
+      </small>
+    </button>
+  )
+)}
                 <b>{app.icon || app[1]}</b>
 
                 <strong>
