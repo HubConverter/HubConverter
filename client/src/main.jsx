@@ -1,6 +1,7 @@
 import JpgToPdf from "./tools/JpgToPdf.jsx";
 import ExcelToPdf from "./tools/ExcelToPdf.jsx";
 import WordToPdf from "./tools/WordToPdf.jsx";
+import PDFToJpg from "./tools/PDFToJpg.jsx";
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./style.css";
@@ -528,6 +529,49 @@ function Tools() {
     </div>
   );
 }
+  if (selectedTool === "word-to-pdf") {
+  return (
+    <div>
+      ...
+      <WordToPdf />
+    </div>
+  );
+}
+
+if (selectedTool === "pdf-to-jpg") {
+  return (
+    <div>
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "20px 24px 0",
+        }}
+      >
+        <button
+          onClick={() => setSelectedTool(null)}
+          style={{
+            border: "none",
+            background: "transparent",
+            color: "inherit",
+            fontSize: "15px",
+            fontWeight: "600",
+            cursor: "pointer",
+            padding: "10px 0",
+          }}
+        >
+          ← Back to Tools
+        </button>
+      </div>
+
+      <PDFToJpg />
+    </div>
+  );
+}
+
+if (selectedTool === "excel-to-pdf") {
+  ...
+}
 if (selectedTool === "excel-to-pdf") {
   return (
     <div>
@@ -666,12 +710,14 @@ if (selectedTool === "excel-to-pdf") {
     setSelectedTool("word-to-pdf")
   }
 />
-          <ToolCard
-            icon="📄"
-            title="PDF to JPG"
-            description="Convert PDF pages into JPG images."
-            comingSoon
-          />
+         <ToolCard
+  icon="📄"
+  title="PDF to JPG"
+  description="Convert PDF pages into JPG images."
+  onClick={() =>
+    setSelectedTool("pdf-to-jpg")
+  }
+/>
 
           <ToolCard
             icon="📑"
