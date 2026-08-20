@@ -659,6 +659,14 @@ if (selectedTool === "excel-to-pdf") {
   }
 />
           <ToolCard
+  icon="📝"
+  title="Word to PDF"
+  description="Convert Word documents into PDF files."
+  onClick={() =>
+    setSelectedTool("word-to-pdf")
+  }
+/>
+          <ToolCard
             icon="📄"
             title="PDF to JPG"
             description="Convert PDF pages into JPG images."
