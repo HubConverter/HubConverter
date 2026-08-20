@@ -93,7 +93,8 @@ function App() {
   async function search(nextQ = q, nextSoftware = filter) {
     setItems(
       await api(
-        "/shortcuts?" +
+        "/
+        shortcuts?" +
           new URLSearchParams({
             q: nextQ,
             software: nextSoftware,
@@ -709,7 +710,7 @@ if (selectedTool === "excel-to-pdf") {
   }
 />
          <ToolCard
- icon="🧾➡️🖼️"
+ icon={pdfToJpgIcon}
   title="PDF to JPG"
   description="Convert PDF pages into JPG images."
   onClick={() =>
