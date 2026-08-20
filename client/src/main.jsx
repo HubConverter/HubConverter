@@ -41,8 +41,8 @@ const themes = [
   { id: "neon", label: "Neon", icon: "✦" },
   { id: "ocean", label: "Ocean", icon: "🌊" },
   { id: "sunset", label: "Sunset", icon: "☀" },
-  { id: "forest", label: "Forest", icon: "🌿" },
   { id: "midnight", label: "Midnight", icon: "☾" },
+  { id: "light", label: "Light", icon: "☀︎" },
 ];
 
 function App() {
@@ -336,6 +336,20 @@ function Home({
   openSoftware,
   setFilter,
 }) {
+  const appList = [
+    ...fallback.map(([software, icon]) =>
+      soft.find(
+        (app) => String(app.software).toLowerCase() === software.toLowerCase()
+      ) || { software, icon, count: 0 }
+    ),
+    ...soft.filter(
+      (app) =>
+        !fallback.some(
+          ([software]) => software.toLowerCase() === String(app.software).toLowerCase()
+        )
+    ),
+  ];
+
   return (
     <>
       <section className="hero">
@@ -415,7 +429,7 @@ function Home({
         </div>
 
         <div className="apps">
-          {(soft.length ? soft : fallback).map(
+          {appList.map(
             (app) => (
               <button
                 className="app"
