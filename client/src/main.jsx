@@ -710,7 +710,7 @@ if (selectedTool === "excel-to-pdf") {
   }
 />
          <ToolCard
-  icon: "🧾➡️🖼️"
+ icon="🧾➡️🖼️"
   title="PDF to JPG"
   description="Convert PDF pages into JPG images."
   onClick={() =>
