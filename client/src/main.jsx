@@ -695,74 +695,12 @@ function Tools() {
           />
 
 
-  <ToolCard
-  icon={
-    <svg xmlns="http://w3.org" viewBox="100 0 600 450" style={{ width: '100%', height: 'auto', display: 'block', margin: '0 auto' }}>
-      <defs>
-        <filter id="layer-shadow" x="-30%" y="-30%" width="160%" height="160%">
-          <feDropShadow dx="-8" dy="18" stdDeviation="12" floodColor="#0F172A" floodOpacity="0.25"/>
-        </filter>
-        <linearGradient id="pdf-top-face" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#F87171" />
-          <stop offset="100%" stopColor="#E11D48" />
-        </linearGradient>
-        <linearGradient id="pdf-side-extrusion" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#9F1239" />
-          <stop offset="100%" stopColor="#4C0519" />
-        </linearGradient>
-        <linearGradient id="jpg-top-face" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#60A5FA" />
-          <stop offset="100%" stopColor="#2563EB" />
-        </linearGradient>
-        <linearGradient id="jpg-side-extrusion" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#1E40AF" />
-          <stop offset="100%" stopColor="#1E3A8A" />
-        </linearGradient>
-        <linearGradient id="cyan-glow" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#22D3EE" />
-          <stop offset="100%" stopColor="#06B6D4" />
-        </linearGradient>
-      </defs>
-      
-      <g filter="url(#layer-shadow)">
-        {/* LEFT COMPONENT: 3D LAYERED PDF BLOCK */}
-        <g transform="translate(200, 230)">
-          <path d="M -90 10 L 0 -35 L 90 10 L 0 55 Z" fill="#0F172A" opacity="0.12"/>
-          <path d="M -85 0 L 0 -42 L 0 -12 L -85 30 Z" fill="url(#pdf-side-extrusion)"/>
-          <path d="M 0 -42 L 85 0 L 85 30 L 0 -12 Z" fill="#881337"/>
-          <path d="M -85 -12 L 0 -54 L 85 -12 L 0 30 Z" fill="url(#pdf-top-face)"/>
-          <text x="2" y="14" fill="#4C0519" fontFamily="system-ui, -apple-system, sans-serif" fontWeight="900" fontSize="36" textAnchor="middle" transform="matrix(1, 0.45, 0, 0.85, 0, -10)">PDF</text>
-          <text x="0" y="12" fill="#FFFFFF" fontFamily="system-ui, -apple-system, sans-serif" fontWeight="900" fontSize="36" textAnchor="middle" transform="matrix(1, 0.45, 0, 0.85, 0, -10)">PDF</text>
-        </g>
-
-        {/* CENTER COMPONENT: RE-ALIGNED STRAIGHT TRACK */}
-        <g transform="translate(400, 205)">
-          <path d="M -100 15 Q 0 -25 100 15" fill="none" stroke="url(#cyan-glow)" strokeWidth="7" strokeLinecap="round"/>
-          <path d="M -100 15 Q 0 -25 100 15" fill="none" stroke="#FFFFFF" strokeWidth="2" strokeDasharray="8 18" strokeLinecap="round"/>
-          <polygon points="90,7 114,17 93,24 96,15" fill="#06B6D4"/>
-        </g>
-
-        {/* RIGHT COMPONENT: 3D LAYERED JPG SLAB */}
-        <g transform="translate(600, 230)">
-          <path d="M -90 10 L 0 -35 L 90 10 L 0 55 Z" fill="#0F172A" opacity="0.12"/>
-          <path d="M -85 0 L 0 -42 L 0 -12 L -85 30 Z" fill="url(#jpg-side-extrusion)"/>
-          <path d="M 0 -42 L 85 0 L 85 30 L 0 -12 Z" fill="#1D4ED8"/>
-          <path d="M -85 -12 L 0 -54 L 85 -12 L 0 30 Z" fill="url(#jpg-top-face)"/>
-          <path d="M -45 -12 L -10 -30 L 25 -12 L -10 6 Z" fill="#1E3A8A" opacity="0.4" transform="translate(0, -12)"/>
-          <path d="M -20 -5 L 15 -22 L 50 -5 L 15 13 Z" fill="#1D4ED8" opacity="0.5" transform="translate(0, -12)"/>
-          <text x="2" y="16" fill="#1E3A8A" fontFamily="system-ui, -apple-system, sans-serif" fontWeight="900" fontSize="34" textAnchor="middle" transform="matrix(1, 0.45, 0, 0.85, 0, -8)">JPG</text>
-          <text x="0" y="14" fill="#FFFFFF" fontFamily="system-ui, -apple-system, sans-serif" fontWeight="900" fontSize="34" textAnchor="middle" transform="matrix(1, 0.45, 0, 0.85, 0, -8)">JPG</text>
-        </g>
-      </g>
-    </svg>
-  }
-  title="PDF to JPG"
-  description="Convert PDF pages into JPG images."
-  onClick={() => setSelectedTool("pdf-to-jpg")}
-/>
-
-
-
+   <ToolCard
+            icon="🧾➡️🖼️"
+            title="PDF to JPG"
+            description="Convert PDF pages into JPG images."
+            onClick={() => setSelectedTool("pdf-to-jpg")}
+          />
           <ToolCard
             icon="📑"
             title="Merge PDF"
