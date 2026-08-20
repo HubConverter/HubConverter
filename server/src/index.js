@@ -297,12 +297,11 @@ const seed = [
    SEED / UPDATE SHORTCUTS
 ========================= */
 
-// Remove old shortcuts for apps that we are updating.
-// This allows the new Tally, PowerPoint and Windows data
-// to replace the old data.
+// Remove only PowerPoint data before adding its maintained shortcut list.
+// Tally and Windows are seeded above and must not be deleted on every start.
 db.prepare(`
   DELETE FROM shortcuts
-  WHERE software IN ('Tally', 'PowerPoint', 'Windows')
+  WHERE software = 'PowerPoint'
 `).run();
 
 // Also remove these old apps if you want them replaced
@@ -319,6 +318,33 @@ const ins = db.prepare(`
 
 for (const s of seed) {
   ins.run(...s);
+}
+
+const powerPointUpdates = [
+  ['PowerPoint', '📽️', 'Presentation', 'Ctrl + M', 'New slide', 'Beginner', 'Slides', 'Inserts a new slide.'],
+  ['PowerPoint', '📽️', 'Presentation', 'Ctrl + D', 'Duplicate slide or object', 'Beginner', 'Slides', 'Duplicates the selection.'],
+  ['PowerPoint', '📽️', 'File', 'Ctrl + S', 'Save presentation', 'Beginner', 'File', 'Saves the current presentation.'],
+  ['PowerPoint', '📽️', 'File', 'Ctrl + Shift + S', 'Save as', 'Beginner', 'File', 'Saves a copy with a new name.'],
+  ['PowerPoint', '📽️', 'File', 'Ctrl + P', 'Print presentation', 'Beginner', 'File', 'Opens print settings.'],
+  ['PowerPoint', '📽️', 'Editing', 'Ctrl + Z', 'Undo', 'Beginner', 'Editing', 'Undoes the previous action.'],
+  ['PowerPoint', '📽️', 'Editing', 'Ctrl + Y', 'Redo', 'Beginner', 'Editing', 'Redoes the previous action.'],
+  ['PowerPoint', '📽️', 'Editing', 'Ctrl + C', 'Copy', 'Beginner', 'Editing', 'Copies the selection.'],
+  ['PowerPoint', '📽️', 'Editing', 'Ctrl + V', 'Paste', 'Beginner', 'Editing', 'Pastes the clipboard.'],
+  ['PowerPoint', '📽️', 'Editing', 'Ctrl + X', 'Cut', 'Beginner', 'Editing', 'Cuts the selection.'],
+  ['PowerPoint', '📽️', 'Formatting', 'Ctrl + B', 'Bold', 'Beginner', 'Formatting', 'Makes selected text bold.'],
+  ['PowerPoint', '📽️', 'Formatting', 'Ctrl + I', 'Italic', 'Beginner', 'Formatting', 'Makes selected text italic.'],
+  ['PowerPoint', '📽️', 'Formatting', 'Ctrl + U', 'Underline', 'Beginner', 'Formatting', 'Underlines selected text.'],
+  ['PowerPoint', '📽️', 'Presentation', 'F5', 'Start slideshow from beginning', 'Beginner', 'Slideshow', 'Starts the slideshow from the first slide.'],
+  ['PowerPoint', '📽️', 'Presentation', 'Shift + F5', 'Start slideshow from current slide', 'Beginner', 'Slideshow', 'Starts from the current slide.'],
+  ['PowerPoint', '📽️', 'Presentation', 'Esc', 'End slideshow', 'Beginner', 'Slideshow', 'Ends the slideshow.'],
+  ['PowerPoint', '📽️', 'Presentation', 'Page Down', 'Next slide', 'Beginner', 'Slideshow', 'Moves to the next slide.'],
+  ['PowerPoint', '📽️', 'Presentation', 'Page Up', 'Previous slide', 'Beginner', 'Slideshow', 'Moves to the previous slide.'],
+  ['PowerPoint', '📽️', 'Views', 'Alt + W, Q', 'Open zoom dialog', 'Intermediate', 'Views', 'Opens the Zoom dialog box.'],
+  ['PowerPoint', '📽️', 'Views', 'Ctrl + F6', 'Switch presentations', 'Intermediate', 'Views', 'Switches between open presentations.'],
+];
+
+for (const shortcut of powerPointUpdates) {
+  ins.run(...shortcut);
 }
 
 // ShortcutHub migration: remove unwanted shortcut categories
