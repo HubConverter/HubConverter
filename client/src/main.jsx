@@ -1,49 +1,1040 @@
-import JpgToPdf from "./tools/JpgToPdf.jsx";import React,{useEffect,useState}from'react';import{createRoot}from'react-dom/client';import'./style.css';
-const API='/api',token=()=>localStorage.getItem('sh_token');async function api(p,o={}){let r=await fetch(API+p,{...o,headers:{'Content-Type':'application/json',...(token()?{Authorization:'Bearer '+token()}:{}),...(o.headers||{})}}),d=await r.json();if(!r.ok)throw Error(d.error||'Request failed');return d}
-const fallback=[['Excel','📊'],['Word','📄'],['PowerPoint','📽️'],['Tally','▣'],['BUSY','B'],['Photoshop','Ps'],['Windows','⊞'],['Chrome','🌐']];
-function App(){const[user,setUser]=useState(null),[view,setView]=useState('home'),[items,setItems]=useState([]),[soft,setSoft]=useState([]),[saved,setSaved]=useState([]),[prog,setProg]=useState([]),[recent,setRecent]=useState([]),[q,setQ]=useState(''),[filter,setFilter]=useState(''),[dark,setDark]=useState(localStorage.dark==='1'),[auth,setAuth]=useState(false),[toast,setToast]=useState('');useEffect(()=>{(async()=>{try{if(token())setUser(await api('/me'))}catch{localStorage.removeItem('sh_token')}setItems(await api('/shortcuts'));setSoft(await api('/software'))})()},[]);useEffect(()=>{if(user){api('/favorites').then(setSaved);api('/progress').then(setProg);api('/recent').then(setRecent)}},[user]);useEffect(()=>{document.body.className=dark?'dark':'';localStorage.dark=dark?'1':'0'},[dark]);async function selectSoftware(name){setFilter(name);setQ('');setView('library');setItems(await api('/shortcuts?'+new URLSearchParams({software:name})))}function notify(x){setToast(x);setTimeout(()=>setToast(''),2200)}async function search(){setItems(await api('/shortcuts?'+new URLSearchParams({q,software:filter})))}async function favorite(id){if(!user)return setAuth(true);let d=await api('/favorites/'+id,{method:'POST'});setSaved(x=>d.saved?[...x,id]:x.filter(v=>v!==id));notify(d.saved?'Added to favorites':'Removed from favorites')}async function learn(id){if(!user)return setAuth(true);let d=await api('/progress/'+id,{method:'POST'});setProg(x=>x.includes(id)?x:[...x,id]);notify('+10 XP · Shortcut mastered');}function logout(){localStorage.removeItem('sh_token');setUser(null);setSaved([]);setProg([]);setRecent([])}return <><header><div className="brand" onClick={()=>setView('home')}>⌨ <b>Shortcut<span>Hub</span></b><i>FINAL 3.0</i></div><nav>{['home','library','tools','favorites','learn','quiz',...(user?.role==='admin'?['admin']:[]),'profile'].map(x=><button className={view===x?'sel':''} onClick={()=>setView(x)}>{x[0].toUpperCase()+x.slice(1)}</button>)}</nav><div className="actions"><button onClick={()=>setDark(!dark)}>◐</button>{user?<><span>👤 {user.name}</span><button onClick={logout}>Logout</button></>:<button className="primary" onClick={()=>setAuth(true)}>Sign in</button>}</div></header>{view==='home'&&<Home setView={setView} q={q} setQ={setQ} search={search} soft={soft} selectSoftware={selectSoftware}/>} {view==='library'&&<Library items={items} saved={saved} prog={prog} favorite={favorite} learn={learn} q={q} setQ={setQ} filter={filter} setFilter={setFilter} search={search} soft={soft}/>} 
-{view==='tools'&&<JpgToPdf/>}
-{view==='favorites'&&<Favorites items={items} saved={saved} favorite={favorite} learn={learn}/>} {view==='learn'&&<Learn items={items} learn={learn}/>} {view==='quiz'&&<Quiz items={items}/>} {view==='profile'&&<Profile user={user} saved={saved} prog={prog} recent={recent}/>} {view==='admin'&&user?.role==='admin'&&<Admin notify={notify}/>} {auth&&<Auth close={()=>setAuth(false)} setUser={u=>{setUser(u);setAuth(false)}}/>}{toast&&<div className="toast">{toast}</div>}<footer>ShortcutHub V3.0 Final · Learn faster. Work smarter.</footer></>}
-function Home({setView,q,setQ,search,soft,selectSoftware}){return <><section className="hero"><div className="eyebrow">THE COMPLETE SHORTCUT PLATFORM</div><h1>Every shortcut.<br/><em>One place.</em></h1><p>Search, learn, practice and master shortcuts for work, study and everyday computing.</p><div className="heroSearch"><input value={q} onChange={e=>setQ(e.target.value)} onKeyDown={e=>e.key==='Enter'&&(setView('library'),search())} placeholder="Try “Ctrl+C”, “Excel”, “Save”..."/><button className="primary" onClick={()=>{setView('library');search()}}>Search</button></div><div className="quick">{['save','copy','print','undo','new tab'].map(x=><button onClick={()=>{setQ(x);setView('library');setTimeout(search,0)}}>{x}</button>)}</div></section><section className="wrap"><div className="sectionHead"><div><small>EXPLORE</small><h2>Choose an app</h2></div><span>{soft.reduce((a,x)=>a+x.count,0)}+ shortcuts</span></div><div className="apps">{(soft.length?soft:fallback).map(a=><button className="app" onClick={()=>selectSoftware(a.software||a[0])}><b>{a.icon||a[1]}</b><strong>{a.software||a[0]}</strong><small>{a.count||'Ready'} shortcuts</small></button>)}</div><div className="featureGrid"><article>⚡<b>Learn fast</b><p>Focused Learn Mode helps you build muscle memory.</p></article><article>🏆<b>Earn XP</b><p>Master shortcuts, build streaks and unlock badges.</p></article><article>☁️<b>Sync your progress</b><p>Favorites and learning data are stored in your account.</p></article></div></section></>}
-function Library({
-  items,
-  setItems,
-  saved,
-  prog,
-  favorite,
-  learn,
+import JpgToPdf from "./tools/JpgToPdf.jsx";
+import React, { useEffect, useState } from "react";
+import { createRoot } from "react-dom/client";
+import "./style.css";
+
+const API = "/api";
+
+const token = () => localStorage.getItem("sh_token");
+
+async function api(path, options = {}) {
+  const response = await fetch(API + path, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...(token() ? { Authorization: "Bearer " + token() } : {}),
+      ...(options.headers || {}),
+    },
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw Error(data.error || "Request failed");
+  }
+
+  return data;
+}
+
+const fallback = [
+  ["Excel", "📊"],
+  ["Word", "📄"],
+  ["PowerPoint", "📽️"],
+  ["Tally", "▣"],
+  ["BUSY", "B"],
+  ["Photoshop", "Ps"],
+  ["Windows", "⊞"],
+  ["Chrome", "🌐"],
+];
+
+function App() {
+  const [user, setUser] = useState(null);
+  const [view, setView] = useState("home");
+  const [items, setItems] = useState([]);
+  const [soft, setSoft] = useState([]);
+  const [prog, setProg] = useState([]);
+  const [recent, setRecent] = useState([]);
+  const [q, setQ] = useState("");
+  const [filter, setFilter] = useState("");
+  const [dark, setDark] = useState(localStorage.dark === "1");
+  const [auth, setAuth] = useState(false);
+  const [toast, setToast] = useState("");
+
+  useEffect(() => {
+    (async () => {
+      try {
+        if (token()) {
+          setUser(await api("/me"));
+        }
+      } catch {
+        localStorage.removeItem("sh_token");
+      }
+
+      setItems(await api("/shortcuts"));
+      setSoft(await api("/software"));
+    })();
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      api("/progress").then(setProg);
+      api("/recent").then(setRecent);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    document.body.className = dark ? "dark" : "";
+    localStorage.dark = dark ? "1" : "0";
+  }, [dark]);
+
+  function notify(message) {
+    setToast(message);
+    setTimeout(() => setToast(""), 2200);
+  }
+
+  async function search() {
+    setItems(
+      await api(
+        "/shortcuts?" +
+          new URLSearchParams({
+            q,
+            software: filter,
+          })
+      )
+    );
+  }
+
+  async function learn(id) {
+    if (!user) {
+      return setAuth(true);
+    }
+
+    await api("/progress/" + id, {
+      method: "POST",
+    });
+
+    setProg((current) =>
+      current.includes(id) ? current : [...current, id]
+    );
+
+    notify("+10 XP · Shortcut mastered");
+  }
+
+  function logout() {
+    localStorage.removeItem("sh_token");
+    setUser(null);
+    setProg([]);
+    setRecent([]);
+  }
+
+  return (
+    <>
+      <header>
+        <div
+          className="brand"
+          onClick={() => setView("home")}
+        >
+          ⌨ <b>Shortcut<span>Hub</span></b>
+          <i>FINAL 3.0</i>
+        </div>
+
+        <nav>
+          {[
+            "home",
+            "tools",
+            "learn",
+            "quiz",
+            ...(user?.role === "admin" ? ["admin"] : []),
+            "profile",
+          ].map((item) => (
+            <button
+              key={item}
+              className={view === item ? "sel" : ""}
+              onClick={() => setView(item)}
+            >
+              {item[0].toUpperCase() + item.slice(1)}
+            </button>
+          ))}
+        </nav>
+
+        <div className="actions">
+          <button onClick={() => setDark(!dark)}>
+            ◐
+          </button>
+
+          {user ? (
+            <>
+              <span>👤 {user.name}</span>
+
+              <button onClick={logout}>
+                Logout
+              </button>
+            </>
+          ) : (
+            <button
+              className="primary"
+              onClick={() => setAuth(true)}
+            >
+              Sign in
+            </button>
+          )}
+        </div>
+      </header>
+
+      {view === "home" && (
+        <Home
+          setView={setView}
+          q={q}
+          setQ={setQ}
+          search={search}
+          soft={soft}
+        />
+      )}
+
+      {view === "tools" && <Tools />}
+
+      {view === "learn" && (
+        <Learn
+          items={items}
+          learn={learn}
+        />
+      )}
+
+      {view === "quiz" && (
+        <Quiz items={items} />
+      )}
+
+      {view === "profile" && (
+        <Profile
+          user={user}
+          prog={prog}
+          recent={recent}
+        />
+      )}
+
+      {view === "admin" &&
+        user?.role === "admin" && (
+          <Admin notify={notify} />
+        )}
+
+      {auth && (
+        <Auth
+          close={() => setAuth(false)}
+          setUser={(u) => {
+            setUser(u);
+            setAuth(false);
+          }}
+        />
+      )}
+
+      {toast && (
+        <div className="toast">
+          {toast}
+        </div>
+      )}
+
+      <footer>
+        ShortcutHub V3.0 Final · Learn faster. Work smarter.
+      </footer>
+    </>
+  );
+}
+
+/* =========================
+   HOME
+========================= */
+
+function Home({
+  setView,
   q,
   setQ,
-  filter,
-  setFilter,
   search,
-  soft
-}) {return <section className="wrap"><div className="sectionHead"><div><small>LIBRARY</small><h2>{filter||'All shortcuts'}</h2></div><button onClick={()=>{setFilter('');setQ('');setTimeout(search,0)}}>Reset</button></div><div className="filters"><input value={q} onChange={e=>setQ(e.target.value)} onKeyDown={e=>e.key==='Enter'&&search()} placeholder="Search shortcuts..."/><select
-  value={filter}
-  onChange={e => {
-    const selectedSoftware = e.target.value;
-    setFilter(selectedSoftware);
-    setQ('');
+  soft,
+}) {
+  return (
+    <>
+      <section className="hero">
+        <div className="eyebrow">
+          THE COMPLETE SHORTCUT PLATFORM
+        </div>
 
-    const url = selectedSoftware
-      ? `/shortcuts?software=${encodeURIComponent(selectedSoftware)}`
-      : '/shortcuts';
+        <h1>
+          Every shortcut.
+          <br />
+          <em>One place.</em>
+        </h1>
 
-    api(url).then(setItems);
-  }}
->
-  <option value="">All software</option>
+        <p>
+          Search, learn, practice and master shortcuts
+          for work, study and everyday computing.
+        </p>
 
-  {soft.map(x => (
-    <option key={x.software} value={x.software}>
-      {x.software}
-    </option>
-  ))}
-</select></div><div className="cards">{items.map(s=><article className="shortcut"><div className="shortcutTop"><span className="appIcon">{s.icon}</span><div><b>{s.software}</b><small>{s.category} · {s.level}</small></div><button className={saved.includes(s.id)?'heart on':'heart'} onClick={()=>favorite(s.id)}>{saved.includes(s.id)?'★':'☆'}</button></div><div className="keys">{s.keys.split('+').map(k=><kbd>{k}</kbd>)}</div><h3>{s.action}</h3><p>{s.example}</p><div className="cardActions"><button onClick={()=>learn(s.id)}>{prog.includes(s.id)?'✓ Mastered':'Learn +10 XP'}</button><button onClick={()=>navigator.clipboard?.writeText(s.keys)}>Copy key</button></div></article>)}</div></section>}
-function Favorites({items,saved,favorite,learn}){let a=items.filter(x=>saved.includes(x.id));return <section className="wrap"><div className="sectionHead"><div><small>PERSONAL</small><h2>Favorites</h2></div></div>{a.length?<div className="cards">{a.map(s=><article className="shortcut"><div className="shortcutTop"><span className="appIcon">{s.icon}</span><b>{s.software}</b><button className="heart on" onClick={()=>favorite(s.id)}>★</button></div><div className="keys"><kbd>{s.keys}</kbd></div><h3>{s.action}</h3><button onClick={()=>learn(s.id)}>Learn +10 XP</button></article>)}</div>:<div className="empty">⭐ Star shortcuts in the Library to see them here.</div>}</section>}
-function Learn({items,learn}){const[i,setI]=useState(0),s=items[i%Math.max(items.length,1)];return <section className="wrap"><div className="learnBox"><small>LEARN MODE · {i+1}</small><h2>Master this shortcut</h2><div className="megaKey">{s?.keys}</div><h3>{s?.action}</h3><p>{s?.software} · {s?.example}</p><button className="primary" onClick={()=>{learn(s.id);setI(i+1)}}>✓ I know it</button><button onClick={()=>setI(i+1)}>Next →</button></div></section>}
-function Quiz({items}){const[n,setN]=useState(0),[score,setScore]=useState(0),[done,setDone]=useState(false);let s=items[n%Math.max(items.length,1)],opts=s?[s.action,...items.filter(x=>x.id!==s.id).slice(n%4,n%4+3).map(x=>x.action)].sort(()=>Math.random()-.5):[];if(done)return <section className="wrap"><div className="learnBox"><div className="badge">🏆</div><h2>Quiz complete</h2><p className="score">{score}/5 correct</p><button className="primary" onClick={()=>{setN(0);setScore(0);setDone(false)}}>Play again</button></div></section>;return <section className="wrap"><div className="learnBox"><small>QUIZ · QUESTION {n+1}/5</small><h2>What does <kbd>{s?.keys}</kbd> do?</h2><p>{s?.software}</p><div className="answers">{opts.map(o=><button onClick={()=>{if(o===s.action)setScore(score+1);n===4?setDone(true):setN(n+1)}}>{o}</button>)}</div></div></section>}
-function Profile({user,saved,prog,recent}){let level=Math.floor((user?.xp||0)/100)+1;return <section className="wrap"><div className="profile"><small>PROFILE</small><h2>{user?.name}</h2><p>{user?.email}</p><div className="stats"><div><b>{user?.xp||0}</b><small>XP</small></div><div><b>Level {level}</b><small>Current level</small></div><div><b>{saved.length}</b><small>Favorites</small></div><div><b>{prog.length}</b><small>Mastered</small></div></div><div className="progress"><span style={{width:`${(user?.xp||0)%100}%`}}/></div><h3>Achievements</h3><div className="badges"><span>🏁 First Step</span><span>⭐ Saver</span><span>🧠 Learner</span><span>🔥 Streak Starter</span><span>🏆 Master</span></div><h3>Recently learned</h3><p>{recent.length?recent.map(x=><span className="recent">⌨ {x.keys} · {x.action}</span>):'Your recent shortcuts will appear here.'}</p></div></section>}
-function Auth({close,setUser}){const[mode,setMode]=useState('login'),[name,setName]=useState(''),[email,setEmail]=useState(''),[password,setPassword]=useState(''),[err,setErr]=useState('');async function go(){try{let d=await api(mode==='login'?'/auth/login':'/auth/register',{method:'POST',body:JSON.stringify(mode==='login'?{email,password}:{name,email,password})});localStorage.setItem('sh_token',d.token);setUser(d.user)}catch(e){setErr(e.message)}}return <div className="modal"><div className="modalBox"><button className="close" onClick={close}>×</button><h2>{mode==='login'?'Welcome back':'Create your account'}</h2>{mode==='register'&&<input placeholder="Your name" value={name} onChange={e=>setName(e.target.value)}/>}<input placeholder="Email" value={email} onChange={e=>setEmail(e.target.value)}/><input type="password" placeholder="Password (8+ chars)" value={password} onChange={e=>setPassword(e.target.value)}/>{err&&<div className="error">{err}</div>}<button className="primary full" onClick={go}>{mode==='login'?'Sign in':'Create account'}</button><button className="link" onClick={()=>{setMode(mode==='login'?'register':'login');setErr('')}}>{mode==='login'?'Create an account':'Sign in instead'}</button></div></div>}
-function Admin({notify}){const[stats,setStats]=useState(null),[users,setUsers]=useState([]),[form,setForm]=useState({software:'Excel',icon:'📊',category:'Office',keys:'',action:'',level:'Beginner',type:'General',example:''});useEffect(()=>{api('/admin/stats').then(setStats);api('/admin/users').then(setUsers)},[]);async function add(){await api('/admin/shortcuts',{method:'POST',body:JSON.stringify(form)});setForm({...form,keys:'',action:'',example:''});notify('Shortcut added to library')}return <section className="wrap"><div className="admin"><small>ADMIN CENTER</small><h2>Platform control</h2><div className="adminStats">{stats&&Object.entries(stats).map(([k,v])=><div><b>{v}</b><small>{k}</small></div>)}</div><h3>Add shortcut</h3><div className="formGrid">{Object.keys(form).map(k=><input placeholder={k} value={form[k]} onChange={e=>setForm({...form,[k]:e.target.value})}/>)}</div><button className="primary" onClick={add}>＋ Add shortcut</button><h3>Users</h3><div className="userList">{users.map(u=><div><b>{u.name}</b><span>{u.email}</span><span>Level {Math.floor((u.xp||0)/100)+1}</span></div>)}</div></div></section>}
-createRoot(document.getElementById('root')).render(<App/>);
+        <div className="heroSearch">
+          <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                setView("learn");
+                search();
+              }
+            }}
+            placeholder='Try “Ctrl+C”, “Excel”, “Save”...'
+          />
+
+          <button
+            className="primary"
+            onClick={() => {
+              setView("learn");
+              search();
+            }}
+          >
+            Search
+          </button>
+        </div>
+
+        <div className="quick">
+          {["save", "copy", "print", "undo", "new tab"].map(
+            (item) => (
+              <button
+                key={item}
+                onClick={() => {
+                  setQ(item);
+                  setView("learn");
+                  setTimeout(search, 0);
+                }}
+              >
+                {item}
+              </button>
+            )
+          )}
+        </div>
+      </section>
+
+      <section className="wrap">
+        <div className="sectionHead">
+          <div>
+            <small>EXPLORE</small>
+            <h2>Choose an app</h2>
+          </div>
+
+          <span>
+            {soft.reduce(
+              (total, item) => total + item.count,
+              0
+            )}
+            + shortcuts
+          </span>
+        </div>
+
+        <div className="apps">
+          {(soft.length ? soft : fallback).map(
+            (app) => (
+              <button
+                className="app"
+                key={app.software || app[0]}
+                onClick={() => setView("learn")}
+              >
+                <b>{app.icon || app[1]}</b>
+
+                <strong>
+                  {app.software || app[0]}
+                </strong>
+
+                <small>
+                  {app.count || "Ready"} shortcuts
+                </small>
+              </button>
+            )
+          )}
+        </div>
+
+        <div className="featureGrid">
+          <article>
+            ⚡
+            <b>Learn fast</b>
+            <p>
+              Focused Learn Mode helps you build
+              muscle memory.
+            </p>
+          </article>
+
+          <article>
+            🏆
+            <b>Earn XP</b>
+            <p>
+              Master shortcuts, build streaks and
+              unlock badges.
+            </p>
+          </article>
+
+          <article>
+            ☁️
+            <b>Sync your progress</b>
+            <p>
+              Your learning data is stored in your
+              account.
+            </p>
+          </article>
+        </div>
+      </section>
+    </>
+  );
+}
+
+/* =========================
+   TOOLS
+========================= */
+
+function Tools() {
+  return (
+    <section className="wrap">
+
+      <div className="sectionHead">
+        <div>
+          <small>SHORTCUTHUB TOOLS</small>
+          <h2>Useful tools in one place</h2>
+        </div>
+      </div>
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns:
+            "repeat(auto-fit, minmax(230px, 1fr))",
+          gap: "18px",
+          marginTop: "25px",
+        }}
+      >
+
+        <ToolCard
+          icon="🖼️"
+          title="JPG to PDF"
+          description="Convert JPG images into a PDF document."
+          action={() => {
+            window.location.hash = "jpg-to-pdf";
+            window.scrollTo({
+              top: 0,
+              behavior: "smooth",
+            });
+          }}
+        />
+
+        <ToolCard
+          icon="📄"
+          title="PDF to JPG"
+          description="Convert PDF pages into JPG images."
+          disabled
+        />
+
+        <ToolCard
+          icon="📑"
+          title="Merge PDF"
+          description="Combine multiple PDF files into one."
+          disabled
+        />
+
+        <ToolCard
+          icon="✂️"
+          title="Split PDF"
+          description="Split a PDF into separate documents."
+          disabled
+        />
+
+        <ToolCard
+          icon="🗜️"
+          title="Compress PDF"
+          description="Reduce PDF file size."
+          disabled
+        />
+
+        <ToolCard
+          icon="📝"
+          title="PDF to Word"
+          description="Convert PDF documents to Word."
+          disabled
+        />
+
+        <ToolCard
+          icon="📊"
+          title="PDF to Excel"
+          description="Convert PDF tables to Excel."
+          disabled
+        />
+
+        <ToolCard
+          icon="📽️"
+          title="PDF to PowerPoint"
+          description="Convert PDF files to presentations."
+          disabled
+        />
+
+        <ToolCard
+          icon="🔄"
+          title="Rotate PDF"
+          description="Rotate PDF pages easily."
+          disabled
+        />
+
+        <ToolCard
+          icon="💧"
+          title="Watermark PDF"
+          description="Add a watermark to your PDF."
+          disabled
+        />
+
+        <ToolCard
+          icon="🔐"
+          title="Protect PDF"
+          description="Password protect your PDF."
+          disabled
+        />
+
+        <ToolCard
+          icon="✍️"
+          title="Sign PDF"
+          description="Add your signature to PDF documents."
+          disabled
+        />
+
+      </div>
+
+      <div
+        id="jpg-to-pdf"
+        style={{
+          marginTop: "40px",
+        }}
+      >
+        <JpgToPdf />
+      </div>
+
+    </section>
+  );
+}
+
+function ToolCard({
+  icon,
+  title,
+  description,
+  action,
+  disabled,
+}) {
+  return (
+    <article
+      className="shortcut"
+      style={{
+        cursor: disabled ? "default" : "pointer",
+      }}
+      onClick={!disabled ? action : undefined}
+    >
+      <div
+        style={{
+          fontSize: "36px",
+          marginBottom: "12px",
+        }}
+      >
+        {icon}
+      </div>
+
+      <h3>{title}</h3>
+
+      <p>{description}</p>
+
+      <button
+        disabled={disabled}
+        className={disabled ? "" : "primary"}
+        onClick={(e) => {
+          e.stopPropagation();
+
+          if (!disabled && action) {
+            action();
+          }
+        }}
+      >
+        {disabled ? "Coming soon" : "Open Tool →"}
+      </button>
+    </article>
+  );
+}
+
+/* =========================
+   LEARN
+========================= */
+
+function Learn({ items, learn }) {
+  const [i, setI] = useState(0);
+
+  const s =
+    items[i % Math.max(items.length, 1)];
+
+  return (
+    <section className="wrap">
+      <div className="learnBox">
+
+        <small>
+          LEARN MODE · {i + 1}
+        </small>
+
+        <h2>
+          Master this shortcut
+        </h2>
+
+        <div className="megaKey">
+          {s?.keys}
+        </div>
+
+        <h3>
+          {s?.action}
+        </h3>
+
+        <p>
+          {s?.software} · {s?.example}
+        </p>
+
+        <button
+          className="primary"
+          onClick={() => {
+            learn(s.id);
+            setI(i + 1);
+          }}
+        >
+          ✓ I know it
+        </button>
+
+        <button
+          onClick={() => setI(i + 1)}
+        >
+          Next →
+        </button>
+
+      </div>
+    </section>
+  );
+}
+
+/* =========================
+   QUIZ
+========================= */
+
+function Quiz({ items }) {
+  const [n, setN] = useState(0);
+  const [score, setScore] = useState(0);
+  const [done, setDone] = useState(false);
+
+  const s =
+    items[n % Math.max(items.length, 1)];
+
+  const opts = s
+    ? [
+        s.action,
+        ...items
+          .filter((x) => x.id !== s.id)
+          .slice(n % 4, n % 4 + 3)
+          .map((x) => x.action),
+      ].sort(() => Math.random() - 0.5)
+    : [];
+
+  if (done) {
+    return (
+      <section className="wrap">
+        <div className="learnBox">
+
+          <div className="badge">
+            🏆
+          </div>
+
+          <h2>
+            Quiz complete
+          </h2>
+
+          <p className="score">
+            {score}/5 correct
+          </p>
+
+          <button
+            className="primary"
+            onClick={() => {
+              setN(0);
+              setScore(0);
+              setDone(false);
+            }}
+          >
+            Play again
+          </button>
+
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="wrap">
+      <div className="learnBox">
+
+        <small>
+          QUIZ · QUESTION {n + 1}/5
+        </small>
+
+        <h2>
+          What does <kbd>{s?.keys}</kbd> do?
+        </h2>
+
+        <p>
+          {s?.software}
+        </p>
+
+        <div className="answers">
+          {opts.map((option) => (
+            <button
+              key={option}
+              onClick={() => {
+                if (option === s.action) {
+                  setScore(score + 1);
+                }
+
+                if (n === 4) {
+                  setDone(true);
+                } else {
+                  setN(n + 1);
+                }
+              }}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+
+      </div>
+    </section>
+  );
+}
+
+/* =========================
+   PROFILE
+========================= */
+
+function Profile({
+  user,
+  prog,
+  recent,
+}) {
+  const level =
+    Math.floor((user?.xp || 0) / 100) + 1;
+
+  return (
+    <section className="wrap">
+      <div className="profile">
+
+        <small>PROFILE</small>
+
+        <h2>
+          {user?.name}
+        </h2>
+
+        <p>
+          {user?.email}
+        </p>
+
+        <div className="stats">
+
+          <div>
+            <b>{user?.xp || 0}</b>
+            <small>XP</small>
+          </div>
+
+          <div>
+            <b>Level {level}</b>
+            <small>Current level</small>
+          </div>
+
+          <div>
+            <b>—</b>
+            <small>Favorites removed</small>
+          </div>
+
+          <div>
+            <b>{prog.length}</b>
+            <small>Mastered</small>
+          </div>
+
+        </div>
+
+        <div className="progress">
+          <span
+            style={{
+              width: `${(user?.xp || 0) % 100}%`,
+            }}
+          />
+        </div>
+
+        <h3>
+          Achievements
+        </h3>
+
+        <div className="badges">
+          <span>🏁 First Step</span>
+          <span>🧠 Learner</span>
+          <span>🔥 Streak Starter</span>
+          <span>🏆 Master</span>
+        </div>
+
+        <h3>
+          Recently learned
+        </h3>
+
+        <p>
+          {recent.length
+            ? recent.map((x) => (
+                <span
+                  className="recent"
+                  key={x.id || x.keys}
+                >
+                  ⌨ {x.keys} · {x.action}
+                </span>
+              ))
+            : "Your recent shortcuts will appear here."}
+        </p>
+
+      </div>
+    </section>
+  );
+}
+
+/* =========================
+   AUTH
+========================= */
+
+function Auth({
+  close,
+  setUser,
+}) {
+  const [mode, setMode] = useState("login");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [err, setErr] = useState("");
+
+  async function go() {
+    try {
+      const data = await api(
+        mode === "login"
+          ? "/auth/login"
+          : "/auth/register",
+        {
+          method: "POST",
+          body: JSON.stringify(
+            mode === "login"
+              ? {
+                  email,
+                  password,
+                }
+              : {
+                  name,
+                  email,
+                  password,
+                }
+          ),
+        }
+      );
+
+      localStorage.setItem(
+        "sh_token",
+        data.token
+      );
+
+      setUser(data.user);
+    } catch (e) {
+      setErr(e.message);
+    }
+  }
+
+  return (
+    <div className="modal">
+      <div className="modalBox">
+
+        <button
+          className="close"
+          onClick={close}
+        >
+          ×
+        </button>
+
+        <h2>
+          {mode === "login"
+            ? "Welcome back"
+            : "Create your account"}
+        </h2>
+
+        {mode === "register" && (
+          <input
+            placeholder="Your name"
+            value={name}
+            onChange={(e) =>
+              setName(e.target.value)
+            }
+          />
+        )}
+
+        <input
+          placeholder="Email"
+          value={email}
+          onChange={(e) =>
+            setEmail(e.target.value)
+          }
+        />
+
+        <input
+          type="password"
+          placeholder="Password (8+ chars)"
+          value={password}
+          onChange={(e) =>
+            setPassword(e.target.value)
+          }
+        />
+
+        {err && (
+          <div className="error">
+            {err}
+          </div>
+        )}
+
+        <button
+          className="primary full"
+          onClick={go}
+        >
+          {mode === "login"
+            ? "Sign in"
+            : "Create account"}
+        </button>
+
+        <button
+          className="link"
+          onClick={() => {
+            setMode(
+              mode === "login"
+                ? "register"
+                : "login"
+            );
+            setErr("");
+          }}
+        >
+          {mode === "login"
+            ? "Create an account"
+            : "Sign in instead"}
+        </button>
+
+      </div>
+    </div>
+  );
+}
+
+/* =========================
+   ADMIN
+========================= */
+
+function Admin({ notify }) {
+  const [stats, setStats] = useState(null);
+  const [users, setUsers] = useState([]);
+
+  const [form, setForm] = useState({
+    software: "Excel",
+    icon: "📊",
+    category: "Office",
+    keys: "",
+    action: "",
+    level: "Beginner",
+    type: "General",
+    example: "",
+  });
+
+  useEffect(() => {
+    api("/admin/stats").then(setStats);
+    api("/admin/users").then(setUsers);
+  }, []);
+
+  async function add() {
+    await api("/admin/shortcuts", {
+      method: "POST",
+      body: JSON.stringify(form),
+    });
+
+    setForm({
+      ...form,
+      keys: "",
+      action: "",
+      example: "",
+    });
+
+    notify("Shortcut added");
+  }
+
+  return (
+    <section className="wrap">
+      <div className="admin">
+
+        <small>
+          ADMIN CENTER
+        </small>
+
+        <h2>
+          Platform control
+        </h2>
+
+        <div className="adminStats">
+          {stats &&
+            Object.entries(stats).map(
+              ([key, value]) => (
+                <div key={key}>
+                  <b>{value}</b>
+                  <small>{key}</small>
+                </div>
+              )
+            )}
+        </div>
+
+        <h3>
+          Add shortcut
+        </h3>
+
+        <div className="formGrid">
+          {Object.keys(form).map(
+            (key) => (
+              <input
+                key={key}
+                placeholder={key}
+                value={form[key]}
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    [key]: e.target.value,
+                  })
+                }
+              />
+            )
+          )}
+        </div>
+
+        <button
+          className="primary"
+          onClick={add}
+        >
+          ＋ Add shortcut
+        </button>
+
+        <h3>
+          Users
+        </h3>
+
+        <div className="userList">
+          {users.map((u) => (
+            <div key={u.id || u.email}>
+              <b>{u.name}</b>
+              <span>{u.email}</span>
+              <span>
+                Level{" "}
+                {Math.floor(
+                  (u.xp || 0) / 100
+                ) + 1}
+              </span>
+            </div>
+          ))}
+        </div>
+
+      </div>
+    </section>
+  );
+}
+
+createRoot(
+  document.getElementById("root")
+).render(<App />);
