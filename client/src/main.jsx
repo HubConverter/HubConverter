@@ -1,4 +1,5 @@
 import JpgToPdf from "./tools/JpgToPdf.jsx";
+import ExcelToPdf from "./tools/ExcelToPdf.jsx";
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./style.css";
