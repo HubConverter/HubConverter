@@ -136,18 +136,14 @@ const excelShortcuts = [
 // =========================
 
 const tallyUpdates = [
-  ['Tally','▣','Accounting','F12','Configure','Beginner','Configuration','Opens the Configure screen.'],
-  ['Tally','▣','Accounting','Alt+F12','Configure','Beginner','Configuration','Opens Tally configuration options.'],
+
+  
   ['Tally','▣','Accounting','Ctrl+F12','Configure','Beginner','Configuration','Opens configuration options.'],
 
   ['Tally','▣','Accounting','Alt+P','Print','Beginner','Reports','Prints the report.'],
   ['Tally','▣','Accounting','Alt+E','Export','Beginner','Reports','Exports the report.'],
 
-  ['Tally','▣','Accounting','ALC','Create Ledger','Beginner','Masters','Creates a new Ledger.'],
-
-
- 
-
+  
   ['Tally','▣','Accounting','Alt+C','Create Ledger','Beginner','Masters','Creates a Ledger.'],
   ['Tally','▣','Accounting','Ctrl+Enter','Alter Ledger','Intermediate','Masters','Changes or alters the selected Ledger.'],
 
