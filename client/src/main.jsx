@@ -41,6 +41,7 @@ function App() {
   const [user, setUser] = useState(null);
   const [view, setView] = useState("home");
   const [items, setItems] = useState([]);
+  const [allItems, setAllItems] = useState([]);
   const [soft, setSoft] = useState([]);
   const [prog, setProg] = useState([]);
   const [recent, setRecent] = useState([]);
@@ -60,7 +61,9 @@ function App() {
         localStorage.removeItem("sh_token");
       }
 
-      setItems(await api("/shortcuts"));
+      const allShortcuts = await api("/shortcuts");
+      setAllItems(allShortcuts);
+      setItems(allShortcuts);
       setSoft(await api("/software"));
     })();
   }, []);
@@ -94,13 +97,18 @@ function App() {
     );
   }
 
-  async function openSoftware(software) {
-    setFilter(software);
+  function openSoftware(software) {
+    const selected = String(software || "").trim();
+    setFilter(selected);
     setQ("");
-    const data = await api(
-      "/shortcuts?" +
-        new URLSearchParams({ software })
-    );
+
+    const normalized = selected.toLowerCase();
+
+    const data = allItems.filter((shortcut) => {
+      const name = String(shortcut.software || "").trim().toLowerCase();
+      return name === normalized;
+    });
+
     setItems(data);
     setView("learn");
   }
