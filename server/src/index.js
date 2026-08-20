@@ -144,15 +144,14 @@ const tallyUpdates = [
   ['Tally','▣','Accounting','Alt+E','Export','Beginner','Reports','Exports the report.'],
 
   ['Tally','▣','Accounting','ALC','Create Ledger','Beginner','Masters','Creates a new Ledger.'],
-  ['Tally','▣','Accounting','ALA','Alter Ledger','Intermediate','Masters','Alters an existing Ledger.'],
 
-  ['Tally','▣','Accounting','DD','Daybook','Beginner','Reports','Displays Daybook and allows period selection.'],
-  ['Tally','▣','Accounting','DAL','Book Ledger','Beginner','Reports','Opens the Book Ledger.'],
+
+ 
 
   ['Tally','▣','Accounting','Alt+C','Create Ledger','Beginner','Masters','Creates a Ledger.'],
   ['Tally','▣','Accounting','Ctrl+Enter','Alter Ledger','Intermediate','Masters','Changes or alters the selected Ledger.'],
 
-  ['Tally','▣','Accounting','Enter Enter','Accept','Beginner','Navigation','Accepts the selected option.'],
+ 
   ['Tally','▣','Accounting','Ctrl+A','Accept','Beginner','Forms','Accepts a form.'],
   ['Tally','▣','Accounting','Ctrl+N','Calculator','Beginner','Utilities','Switches to Calculator / ODBC section.'],
 
