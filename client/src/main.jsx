@@ -61,9 +61,9 @@ function App() {
         localStorage.removeItem("sh_token");
       }
 
-      const allShortcuts = await api("/shortcuts");
-      setAllItems(allShortcuts);
-      setItems(allShortcuts);
+      const shortcuts = await api("/shortcuts");
+      setAllItems(shortcuts);
+      setItems(shortcuts);
       setSoft(await api("/software"));
     })();
   }, []);
@@ -85,31 +85,50 @@ function App() {
     setTimeout(() => setToast(""), 2200);
   }
 
-  async function search(nextQ = q, nextSoftware = filter) {
-    setItems(
-      await api(
-        "/shortcuts?" +
-          new URLSearchParams({
-            q: nextQ,
-            software: nextSoftware,
-          })
-      )
-    );
-  }
+  function search(nextQ = q, nextSoftware = filter) {
+    const query = String(nextQ || "").trim().toLowerCase();
+    const software = String(nextSoftware || "").trim().toLowerCase();
 
-  function openSoftware(software) {
-    const selected = String(software || "").trim();
-    setFilter(selected);
-    setQ("");
+    const source = allItems.length ? allItems : items;
 
-    const normalized = selected.toLowerCase();
+    const filtered = source.filter((item) => {
+      const itemSoftware = String(item.software || "").toLowerCase();
+      const text = [
+        item.keys,
+        item.action,
+        item.software,
+        item.category,
+        item.example,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
 
-    const data = allItems.filter((shortcut) => {
-      const name = String(shortcut.software || "").trim().toLowerCase();
-      return name === normalized;
+      const matchesSoftware =
+        !software || itemSoftware === software;
+      const matchesQuery = !query || text.includes(query);
+
+      return matchesSoftware && matchesQuery;
     });
 
-    setItems(data);
+    setItems(filtered);
+  }
+
+  function openSoftware(softwareName) {
+    const name = String(softwareName || "").trim();
+    setFilter(name);
+    setQ("");
+
+    const normalized = name.toLowerCase();
+    const source = allItems.length ? allItems : items;
+
+    const filtered = source.filter(
+      (item) =>
+        String(item.software || "").trim().toLowerCase() ===
+        normalized
+    );
+
+    setItems(filtered);
     setView("learn");
   }
 
@@ -286,9 +305,8 @@ function Home({
             onChange={(e) => setQ(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
-                setFilter("");
                 setView("learn");
-                search(q, "");
+                search(q);
               }
             }}
             placeholder='Try “Ctrl+C”, “Excel”, “Save”...'
@@ -297,9 +315,8 @@ function Home({
           <button
             className="primary"
             onClick={() => {
-              setFilter("");
               setView("learn");
-              search(q, "");
+              search(q);
             }}
           >
             Search
@@ -313,6 +330,7 @@ function Home({
                 key={item}
                 onClick={() => {
                   setQ(item);
+                  setFilter("");
                   setView("learn");
                   search(item, "");
                 }}
@@ -396,6 +414,10 @@ function Home({
     </>
   );
 }
+
+/* =========================
+   TOOLS
+========================= */
 
 /* =========================
    TOOLS
@@ -814,6 +836,176 @@ function ToolCard({
     </article>
   );
 }
+  return (
+    <section className="wrap">
+
+      <div className="sectionHead">
+        <div>
+          <small>SHORTCUTHUB TOOLS</small>
+          <h2>Useful tools in one place</h2>
+        </div>
+      </div>
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns:
+            "repeat(auto-fit, minmax(230px, 1fr))",
+          gap: "18px",
+          marginTop: "25px",
+        }}
+      >
+
+        <ToolCard
+          icon="🖼️"
+          title="JPG to PDF"
+          description="Convert JPG images into a PDF document."
+          action={() => {
+            window.location.hash = "jpg-to-pdf";
+            window.scrollTo({
+              top: 0,
+              behavior: "smooth",
+            });
+          }}
+        />
+
+        <ToolCard
+          icon="📄"
+          title="PDF to JPG"
+          description="Convert PDF pages into JPG images."
+          disabled
+        />
+
+        <ToolCard
+          icon="📑"
+          title="Merge PDF"
+          description="Combine multiple PDF files into one."
+          disabled
+        />
+
+        <ToolCard
+          icon="✂️"
+          title="Split PDF"
+          description="Split a PDF into separate documents."
+          disabled
+        />
+
+        <ToolCard
+          icon="🗜️"
+          title="Compress PDF"
+          description="Reduce PDF file size."
+          disabled
+        />
+
+        <ToolCard
+          icon="📝"
+          title="PDF to Word"
+          description="Convert PDF documents to Word."
+          disabled
+        />
+
+        <ToolCard
+          icon="📊"
+          title="PDF to Excel"
+          description="Convert PDF tables to Excel."
+          disabled
+        />
+
+        <ToolCard
+          icon="📽️"
+          title="PDF to PowerPoint"
+          description="Convert PDF files to presentations."
+          disabled
+        />
+
+        <ToolCard
+          icon="🔄"
+          title="Rotate PDF"
+          description="Rotate PDF pages easily."
+          disabled
+        />
+
+        <ToolCard
+          icon="💧"
+          title="Watermark PDF"
+          description="Add a watermark to your PDF."
+          disabled
+        />
+
+        <ToolCard
+          icon="🔐"
+          title="Protect PDF"
+          description="Password protect your PDF."
+          disabled
+        />
+
+        <ToolCard
+          icon="✍️"
+          title="Sign PDF"
+          description="Add your signature to PDF documents."
+          disabled
+        />
+
+      </div>
+
+      <div
+        id="jpg-to-pdf"
+        style={{
+          marginTop: "40px",
+        }}
+      >
+        <JpgToPdf />
+      </div>
+
+    </section>
+  );
+}
+
+function ToolCard({
+  icon,
+  title,
+  description,
+  action,
+  disabled,
+}) {
+  return (
+    <article
+      className="shortcut"
+      style={{
+        cursor: disabled ? "default" : "pointer",
+      }}
+      onClick={!disabled ? action : undefined}
+    >
+      <div
+        style={{
+          fontSize: "36px",
+          marginBottom: "12px",
+        }}
+      >
+        {icon}
+      </div>
+
+      <h3>{title}</h3>
+
+      <p>{description}</p>
+
+      <button
+        disabled={disabled}
+        className={disabled ? "" : "primary"}
+        onClick={(e) => {
+          e.stopPropagation();
+
+          if (!disabled && action) {
+            action();
+          }
+        }}
+      >
+        {disabled ? "Coming soon" : "Open Tool →"}
+      </button>
+    </article>
+  );
+}
+
 /* =========================
    LEARN
 ========================= */
@@ -831,13 +1023,7 @@ function Learn({ items, learn }) {
         <div className="learnBox">
           <small>LEARN MODE</small>
           <h2>No shortcuts found</h2>
-          <p>There are no shortcuts available for this selection yet.</p>
-          <button
-            className="primary"
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          >
-            Back
-          </button>
+          <p>There are no shortcuts for this selection yet.</p>
         </div>
       </section>
     );
@@ -848,49 +1034,43 @@ function Learn({ items, learn }) {
   return (
     <section className="wrap">
       <div className="learnBox">
-        <small>LEARN MODE · {i + 1} / {items.length}</small>
 
-        <h2>Master this shortcut</h2>
+        <small>
+          LEARN MODE · {i + 1}
+        </small>
+
+        <h2>
+          Master this shortcut
+        </h2>
 
         <div className="megaKey">
-          {s.keys}
+          {s?.keys}
         </div>
 
-        <h3>{s.action}</h3>
+        <h3>
+          {s?.action}
+        </h3>
 
         <p>
-          {s.software}
-          {s.category ? " · " + s.category : ""}
+          {s?.software} · {s?.example}
         </p>
 
-        {s.example && <p>{s.example}</p>}
-
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            gap: "10px",
-            marginTop: "20px",
+        <button
+          className="primary"
+          onClick={() => {
+            learn(s.id);
+            setI(i + 1);
           }}
         >
-          <button
-            className="primary"
-            onClick={() => {
-              learn(s.id);
-              setI((current) => (current + 1) % items.length);
-            }}
-          >
-            ✓ I know it
-          </button>
+          ✓ I know it
+        </button>
 
-          <button
-            onClick={() =>
-              setI((current) => (current + 1) % items.length)
-            }
-          >
-            Next →
-          </button>
-        </div>
+        <button
+          onClick={() => setI(i + 1)}
+        >
+          Next →
+        </button>
+
       </div>
     </section>
   );
