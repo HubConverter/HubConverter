@@ -2,6 +2,7 @@ import JpgToPdf from "./tools/JpgToPdf.jsx";
 import ExcelToPdf from "./tools/ExcelToPdf.jsx";
 import WordToPdf from "./tools/WordToPdf.jsx";
 import PDFToJpg from "./tools/PDFToJpg.jsx";
+import pdfToJpgIcon from "./assets/pdf-to-jpg.png";
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./style.css";
@@ -709,7 +710,7 @@ if (selectedTool === "excel-to-pdf") {
   }
 />
          <ToolCard
-  icon="📄"
+  icon: "🧾➡️🖼️"
   title="PDF to JPG"
   description="Convert PDF pages into JPG images."
   onClick={() =>
