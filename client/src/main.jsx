@@ -426,11 +426,6 @@ function Home({
 function Tools() {
   const [selectedTool, setSelectedTool] = useState(null);
 
-  /*
-    TOOL PAGE
-    When a user clicks a tool, only that tool opens.
-  */
-
   if (selectedTool === "jpg-to-pdf") {
     return (
       <div>
@@ -456,383 +451,115 @@ function Tools() {
             ← Back to Tools
           </button>
         </div>
-
         <JpgToPdf />
       </div>
     );
   }
 
-  /*
-    TOOLS HOME
-    Only cards appear here.
-  */
-
   return (
     <section className="wrap">
-
       <div className="sectionHead">
         <div>
           <small>SHORTCUTHUB TOOLS</small>
-
-          <h2>
-            All Tools
-          </h2>
+          <h2>Useful tools in one place</h2>
         </div>
-
-        <span>
-          PDF & File Tools
-        </span>
+        <span>PDF & File Tools</span>
       </div>
 
-      {/* =========================
-          PDF TOOLS
-      ========================= */}
-
-      <div style={{ marginTop: "30px" }}>
-
-        <div
-          style={{
-            marginBottom: "18px",
-          }}
-        >
-          <small>PDF TOOLS</small>
-
-          <h2
-            style={{
-              marginTop: "5px",
-            }}
-          >
-            PDF Tools
-          </h2>
-        </div>
-
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns:
-              "repeat(auto-fit, minmax(210px, 1fr))",
-            gap: "18px",
-          }}
-        >
-
-          <ToolCard
-            icon="🖼️"
-            title="JPG to PDF"
-            description="Convert JPG images into a PDF document."
-            onClick={() =>
-              setSelectedTool("jpg-to-pdf")
-            }
-          />
-
-          <ToolCard
-            icon="📄"
-            title="PDF to JPG"
-            description="Convert PDF pages into JPG images."
-            comingSoon
-          />
-
-          <ToolCard
-            icon="📑"
-            title="Merge PDF"
-            description="Combine multiple PDF files into one."
-            comingSoon
-          />
-
-          <ToolCard
-            icon="✂️"
-            title="Split PDF"
-            description="Split a PDF into separate documents."
-            comingSoon
-          />
-
-          <ToolCard
-            icon="🗜️"
-            title="Compress PDF"
-            description="Reduce PDF file size."
-            comingSoon
-          />
-
-          <ToolCard
-            icon="📝"
-            title="PDF to Word"
-            description="Convert PDF documents to Word."
-            comingSoon
-          />
-
-          <ToolCard
-            icon="📊"
-            title="PDF to Excel"
-            description="Convert PDF tables to Excel."
-            comingSoon
-          />
-
-          <ToolCard
-            icon="📽️"
-            title="PDF to PowerPoint"
-            description="Convert PDF files to presentations."
-            comingSoon
-          />
-
-          <ToolCard
-            icon="🔄"
-            title="Rotate PDF"
-            description="Rotate PDF pages easily."
-            comingSoon
-          />
-
-          <ToolCard
-            icon="💧"
-            title="Watermark PDF"
-            description="Add a watermark to your PDF."
-            comingSoon
-          />
-
-          <ToolCard
-            icon="🔐"
-            title="Protect PDF"
-            description="Password protect your PDF."
-            comingSoon
-          />
-
-          <ToolCard
-            icon="🔓"
-            title="Unlock PDF"
-            description="Remove password protection from a PDF."
-            comingSoon
-          />
-
-          <ToolCard
-            icon="✍️"
-            title="Sign PDF"
-            description="Add your signature to PDF documents."
-            comingSoon
-          />
-
-          <ToolCard
-            icon="📋"
-            title="Extract PDF Pages"
-            description="Extract selected pages from a PDF."
-            comingSoon
-          />
-
-          <ToolCard
-            icon="🗑️"
-            title="Delete PDF Pages"
-            description="Remove unwanted pages from a PDF."
-            comingSoon
-          />
-
-          <ToolCard
-            icon="↕️"
-            title="Reorder PDF"
-            description="Change the order of PDF pages."
-            comingSoon
-          />
-
-        </div>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))",
+          gap: "18px",
+          marginTop: "25px",
+        }}
+      >
+        <ToolCard
+          icon="🖼️"
+          title="JPG to PDF"
+          description="Convert JPG images into a PDF document."
+          onClick={() => setSelectedTool("jpg-to-pdf")}
+        />
+        <ToolCard icon="📄" title="PDF to JPG" description="Convert PDF pages into JPG images." comingSoon />
+        <ToolCard icon="📑" title="Merge PDF" description="Combine multiple PDF files into one." comingSoon />
+        <ToolCard icon="✂️" title="Split PDF" description="Split a PDF into separate documents." comingSoon />
+        <ToolCard icon="🗜️" title="Compress PDF" description="Reduce PDF file size." comingSoon />
+        <ToolCard icon="📝" title="PDF to Word" description="Convert PDF documents to Word." comingSoon />
+        <ToolCard icon="📊" title="PDF to Excel" description="Convert PDF tables to Excel." comingSoon />
+        <ToolCard icon="📽️" title="PDF to PowerPoint" description="Convert PDF files to presentations." comingSoon />
+        <ToolCard icon="🔄" title="Rotate PDF" description="Rotate PDF pages easily." comingSoon />
+        <ToolCard icon="💧" title="Watermark PDF" description="Add a watermark to your PDF." comingSoon />
+        <ToolCard icon="🔐" title="Protect PDF" description="Password protect your PDF." comingSoon />
+        <ToolCard icon="✍️" title="Sign PDF" description="Add your signature to PDF documents." comingSoon />
+        <ToolCard icon="🔓" title="Unlock PDF" description="Remove password protection from a PDF." comingSoon />
+        <ToolCard icon="📋" title="Extract PDF Pages" description="Extract selected pages from a PDF." comingSoon />
+        <ToolCard icon="🗑️" title="Delete PDF Pages" description="Remove unwanted PDF pages." comingSoon />
+        <ToolCard icon="↕️" title="Reorder PDF" description="Change the order of PDF pages." comingSoon />
       </div>
-
-      {/* =========================
-          IMAGE TOOLS
-      ========================= */}
 
       <div style={{ marginTop: "55px" }}>
-
         <div style={{ marginBottom: "18px" }}>
           <small>IMAGE TOOLS</small>
-
-          <h2
-            style={{
-              marginTop: "5px",
-            }}
-          >
-            Image Tools
-          </h2>
+          <h2 style={{ marginTop: "5px" }}>Image Tools</h2>
         </div>
-
         <div
           style={{
             display: "grid",
-            gridTemplateColumns:
-              "repeat(auto-fit, minmax(210px, 1fr))",
+            gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))",
             gap: "18px",
           }}
         >
-
-          <ToolCard
-            icon="🔄"
-            title="JPG to PNG"
-            description="Convert JPG images to PNG."
-            comingSoon
-          />
-
-          <ToolCard
-            icon="🖼️"
-            title="PNG to JPG"
-            description="Convert PNG images to JPG."
-            comingSoon
-          />
-
-          <ToolCard
-            icon="🗜️"
-            title="Image Compressor"
-            description="Reduce image file size."
-            comingSoon
-          />
-
-          <ToolCard
-            icon="📐"
-            title="Image Resizer"
-            description="Resize images to any dimensions."
-            comingSoon
-          />
-
-          <ToolCard
-            icon="✂️"
-            title="Image Cropper"
-            description="Crop images quickly."
-            comingSoon
-          />
-
-          <ToolCard
-            icon="🔃"
-            title="Image Rotator"
-            description="Rotate your images."
-            comingSoon
-          />
-
-          <ToolCard
-            icon="📄"
-            title="Image to PDF"
-            description="Convert images into PDF documents."
-            comingSoon
-          />
-
+          <ToolCard icon="🔄" title="JPG to PNG" description="Convert JPG images to PNG." comingSoon />
+          <ToolCard icon="🖼️" title="PNG to JPG" description="Convert PNG images to JPG." comingSoon />
+          <ToolCard icon="🗜️" title="Image Compressor" description="Reduce image file size." comingSoon />
+          <ToolCard icon="📐" title="Image Resizer" description="Resize images to any dimensions." comingSoon />
+          <ToolCard icon="✂️" title="Image Cropper" description="Crop images quickly." comingSoon />
+          <ToolCard icon="🔃" title="Image Rotator" description="Rotate your images." comingSoon />
         </div>
       </div>
-
-      {/* =========================
-          TEXT TOOLS
-      ========================= */}
 
       <div style={{ marginTop: "55px" }}>
-
         <div style={{ marginBottom: "18px" }}>
           <small>TEXT TOOLS</small>
-
-          <h2
-            style={{
-              marginTop: "5px",
-            }}
-          >
-            Text Tools
-          </h2>
+          <h2 style={{ marginTop: "5px" }}>Text Tools</h2>
         </div>
-
         <div
           style={{
             display: "grid",
-            gridTemplateColumns:
-              "repeat(auto-fit, minmax(210px, 1fr))",
+            gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))",
             gap: "18px",
           }}
         >
-
-          <ToolCard
-            icon="🔢"
-            title="Word Counter"
-            description="Count words and characters in text."
-            comingSoon
-          />
-
-          <ToolCard
-            icon="🔠"
-            title="Case Converter"
-            description="Convert text to uppercase or lowercase."
-            comingSoon
-          />
-
-          <ToolCard
-            icon="🧹"
-            title="Text Cleaner"
-            description="Clean and format your text."
-            comingSoon
-          />
-
-          <ToolCard
-            icon="📊"
-            title="Text Sorter"
-            description="Sort lines and text instantly."
-            comingSoon
-          />
-
+          <ToolCard icon="🔢" title="Word Counter" description="Count words and characters in text." comingSoon />
+          <ToolCard icon="🔠" title="Case Converter" description="Convert text to uppercase or lowercase." comingSoon />
+          <ToolCard icon="🧹" title="Text Cleaner" description="Clean and format your text." comingSoon />
+          <ToolCard icon="📊" title="Text Sorter" description="Sort lines and text instantly." comingSoon />
         </div>
       </div>
-
     </section>
   );
 }
 
-
-/* =========================
-   TOOL CARD
-========================= */
-
-function ToolCard({
-  icon,
-  title,
-  description,
-  onClick,
-  comingSoon,
-}) {
+function ToolCard({ icon, title, description, onClick, comingSoon }) {
   return (
     <article
       className="shortcut"
-      style={{
-        cursor: comingSoon
-          ? "default"
-          : "pointer",
-      }}
+      style={{ cursor: comingSoon ? "default" : "pointer" }}
       onClick={comingSoon ? undefined : onClick}
     >
-
-      <div
-        style={{
-          fontSize: "36px",
-          marginBottom: "12px",
-        }}
-      >
-        {icon}
-      </div>
-
-      <h3>
-        {title}
-      </h3>
-
-      <p>
-        {description}
-      </p>
-
+      <div style={{ fontSize: "36px", marginBottom: "12px" }}>{icon}</div>
+      <h3>{title}</h3>
+      <p>{description}</p>
       <button
         disabled={comingSoon}
-        className={
-          comingSoon
-            ? ""
-            : "primary"
-        }
+        className={comingSoon ? "" : "primary"}
         onClick={(event) => {
           event.stopPropagation();
-
-          if (!comingSoon && onClick) {
-            onClick();
-          }
+          if (!comingSoon && onClick) onClick();
         }}
       >
-        {comingSoon
-          ? "Coming soon"
-          : "Open Tool →"}
+        {comingSoon ? "Coming soon" : "Open Tool →"}
       </button>
-
     </article>
   );
 }
