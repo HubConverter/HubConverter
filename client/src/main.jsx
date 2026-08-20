@@ -906,88 +906,91 @@ function ToolCard({
    LEARN
 ========================= */
 
-function Learn({ items, learn, prog }) {
-  const [i, setI] = useState(0);
+function Learn({ items }) {
+  const [exam, setExam] = useState([]);
+  const [answers, setAnswers] = useState({});
+  const [submitted, setSubmitted] = useState(false);
+
+  function shuffle(list) {
+    return [...list].sort(() => Math.random() - 0.5);
+  }
+
+  function buildExam(source) {
+    return shuffle(source)
+      .slice(0, Math.min(25, source.length))
+      .map((question) => ({
+        ...question,
+        options: shuffle([
+          question.action,
+          ...shuffle(
+            source
+              .filter((item) => item.id !== question.id && item.action !== question.action)
+              .map((item) => item.action)
+          ).slice(0, 3),
+        ]),
+      }));
+  }
 
   useEffect(() => {
-    setI(0);
+    setExam(buildExam(items || []));
+    setAnswers({});
+    setSubmitted(false);
   }, [items]);
 
-  if (!items || items.length === 0) {
+  if (!exam.length) {
     return (
-      <section className="wrap">
-        <div className="learnBox">
-          <small>LEARN MODE</small>
-          <h2>No shortcuts found</h2>
-          <p>There are no shortcuts available for this selection yet.</p>
-          <button
-            className="primary"
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          >
-            Back
-          </button>
-        </div>
-      </section>
+      <section className="wrap"><div className="learnBox">
+        <small>LEARN MODE</small><h2>No shortcuts found</h2>
+        <p>There are no shortcuts available for this selection yet.</p>
+      </div></section>
     );
   }
 
-  const s = items[i % items.length];
-  const mastered = prog.includes(s.id);
-  const masteredCount = items.filter((item) => prog.includes(item.id)).length;
+  const correct = exam.filter((question) => answers[question.id] === question.action);
+  const wrong = exam.filter((question) => answers[question.id] !== question.action);
+
+  if (submitted) {
+    return (
+      <section className="wrap"><div className="learnBox examResults">
+        <div className="badge">{wrong.length ? "📘" : "🏆"}</div>
+        <small>LEARN RESULTS</small>
+        <h2>Practice complete</h2>
+        <p className="score">{correct.length}/{exam.length} correct</p>
+        <p>{wrong.length} wrong answer{wrong.length === 1 ? "" : "s"}</p>
+        {wrong.length > 0 && <div className="quizReview">
+          <h3>Review wrong answers</h3>
+          {wrong.map((question, index) => <article key={`${question.id}-${index}`}>
+            <kbd>{question.keys}</kbd><b>{question.action}</b>
+            <p><span>Your answer:</span> {answers[question.id] || "Not answered"}</p>
+            <p><span>Correct answer:</span> {question.action}</p>
+          </article>)}
+        </div>}
+        <button className="primary" onClick={() => {
+          setExam(buildExam(items)); setAnswers({}); setSubmitted(false);
+        }}>Try another 25 questions</button>
+      </div></section>
+    );
+  }
 
   return (
-    <section className="wrap">
-      <div className="learnBox">
-        <small>LEARN MODE · {i + 1} / {items.length}</small>
-
-        <div className="learnProgress" aria-label={`${masteredCount} of ${items.length} shortcuts mastered`}>
-          <span style={{ width: `${(masteredCount / items.length) * 100}%` }} />
-        </div>
-        <p className="learnCount">{masteredCount} of {items.length} mastered</p>
-
-        <h2>Master this shortcut</h2>
-
-        <div className="megaKey">
-          {s.keys}
-        </div>
-
-        <h3>{s.action}</h3>
-
-        <p>
-          {s.software}
-          {s.category ? " · " + s.category : ""}
-        </p>
-
-        {s.example && <p>{s.example}</p>}
-
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            gap: "10px",
-            marginTop: "20px",
-          }}
-        >
-          <button
-            className="primary"
-            onClick={() => {
-              learn(s.id);
-              setI((current) => (current + 1) % items.length);
-            }}
-          >
-            {mastered ? "✓ Mastered" : "✓ I know it"}
-          </button>
-
-          <button
-            onClick={() =>
-              setI((current) => (current + 1) % items.length)
-            }
-          >
-            Next →
-          </button>
-        </div>
-      </div>
-    </section>
+    <section className="wrap"><form className="examBox" onSubmit={(event) => {
+      event.preventDefault(); setSubmitted(true); window.scrollTo({ top: 0, behavior: "smooth" });
+    }}>
+      <small>LEARN PRACTICE · {exam.length} QUESTIONS</small>
+      <h2>Shortcut knowledge test</h2>
+      <p>Answer all questions, then submit to see your result.</p>
+      {exam.map((question, index) => <fieldset key={question.id} className="examQuestion">
+        <legend>{index + 1}. What does <kbd>{question.keys}</kbd> do?</legend>
+        <small>{question.software}</small>
+        {question.options.map((option) => <label key={option}>
+          <input type="radio" name={`question-${question.id}`} value={option}
+            checked={answers[question.id] === option}
+            onChange={() => setAnswers((current) => ({ ...current, [question.id]: option }))} />
+          {option}
+        </label>)}
+      </fieldset>)}
+      <button className="primary" type="submit">Submit answers</button>
+    </form></section>
   );
 }
 
