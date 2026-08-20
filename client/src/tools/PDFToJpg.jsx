@@ -200,7 +200,16 @@ export default function PDFToJpg() {
               marginBottom: "10px",
             }}
           >
-            📄
+           <img
+  src="/src/assets/pdf-to-jpg.png"
+  alt="PDF to JPG"
+  style={{
+    width: "64px",
+    height: "64px",
+    objectFit: "contain",
+    marginBottom: "18px",
+  }}
+/>
           </div>
 
           <h1
