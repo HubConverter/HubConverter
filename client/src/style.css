@@ -1798,12 +1798,13 @@ body.theme-sunset {
   background: radial-gradient(circle at 78% 22%, rgba(251, 146, 60, 0.34), transparent 30%), radial-gradient(circle at 20% 75%, rgba(236, 72, 153, 0.24), transparent 34%), linear-gradient(135deg, #2a0d27 0%, #6b1d3e 48%, #3b1235 100%);
 }
 
-body.theme-forest {
-  background: radial-gradient(circle at 76% 20%, rgba(34, 197, 94, 0.28), transparent 30%), radial-gradient(circle at 18% 78%, rgba(20, 184, 166, 0.20), transparent 35%), linear-gradient(135deg, #061d16 0%, #0b3d2e 48%, #08281f 100%);
-}
-
 body.theme-midnight {
   background: radial-gradient(circle at 76% 20%, rgba(129, 140, 248, 0.28), transparent 30%), radial-gradient(circle at 18% 78%, rgba(168, 85, 247, 0.20), transparent 35%), linear-gradient(135deg, #0a0618 0%, #1e1248 48%, #100a29 100%);
+}
+
+body.theme-light {
+  color: #15213b;
+  background: radial-gradient(circle at 85% 10%, rgba(125, 211, 252, 0.58), transparent 30%), radial-gradient(circle at 12% 82%, rgba(196, 181, 253, 0.42), transparent 34%), linear-gradient(135deg, #f8fbff 0%, #e7f3ff 50%, #f7f2ff 100%);
 }
 
 body.theme-ocean header,
@@ -1812,18 +1813,61 @@ body.theme-ocean .themeMenu { background: rgba(3, 37, 60, 0.88) !important; }
 body.theme-sunset header,
 body.theme-sunset footer,
 body.theme-sunset .themeMenu { background: rgba(54, 12, 43, 0.89) !important; }
-body.theme-forest header,
-body.theme-forest footer,
-body.theme-forest .themeMenu { background: rgba(4, 43, 31, 0.89) !important; }
 body.theme-midnight header,
 body.theme-midnight footer,
 body.theme-midnight .themeMenu { background: rgba(16, 9, 42, 0.90) !important; }
+body.theme-light header,
+body.theme-light footer,
+body.theme-light .themeMenu { background: rgba(255, 255, 255, 0.88) !important; }
 
 body.theme-ocean .primary,
 body.theme-ocean .heroSearch button { background: linear-gradient(135deg, #06b6d4, #0284c7, #2563eb) !important; }
 body.theme-sunset .primary,
 body.theme-sunset .heroSearch button { background: linear-gradient(135deg, #f97316, #ec4899, #9333ea) !important; }
-body.theme-forest .primary,
-body.theme-forest .heroSearch button { background: linear-gradient(135deg, #22c55e, #0f766e, #14b8a6) !important; }
 body.theme-midnight .primary,
 body.theme-midnight .heroSearch button { background: linear-gradient(135deg, #818cf8, #7c3aed, #c026d3) !important; }
+body.theme-light .primary,
+body.theme-light .heroSearch button { background: linear-gradient(135deg, #0284c7, #2563eb, #7c3aed) !important; }
+
+body.theme-light .brand,
+body.theme-light nav button,
+body.theme-light .sectionHead h2,
+body.theme-light .hero h1,
+body.theme-light .shortcut h3,
+body.theme-light .shortcut,
+body.theme-light .featureGrid article,
+body.theme-light .learnBox,
+body.theme-light .toolBox h1,
+body.theme-light .themeMenu,
+body.theme-light .themeMenu > b,
+body.theme-light .themeChoice { color: #15213b !important; }
+
+body.theme-light .hero p,
+body.theme-light .featureGrid p,
+body.theme-light .shortcut p,
+body.theme-light .app small,
+body.theme-light footer { color: #52627d !important; }
+
+body.theme-light .app,
+body.theme-light .shortcut,
+body.theme-light .featureGrid article,
+body.theme-light .learnBox,
+body.theme-light .profile,
+body.theme-light .toolBox,
+body.theme-light .uploadBox,
+body.theme-light .fileItem,
+body.theme-light .sizeOption {
+  background: rgba(255, 255, 255, 0.76) !important;
+  border-color: rgba(37, 99, 235, 0.18) !important;
+  box-shadow: 0 12px 32px rgba(30, 64, 175, 0.10) !important;
+}
+
+body.theme-light .heroSearch,
+body.theme-light .themeToggle {
+  background: rgba(255, 255, 255, 0.80) !important;
+  color: #15213b !important;
+}
+
+body.theme-light .heroSearch input { color: #15213b !important; }
+body.theme-light .app strong { color: #7c3aed !important; }
+body.theme-light kbd { color: #15213b !important; background: #eff6ff !important; }
