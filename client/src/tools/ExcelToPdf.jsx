@@ -265,55 +265,64 @@ function convertToPdf() {
             </p>
           </div>
 
-          {!file && (
-            <label
-              style={{
-                display: "block",
-                border: "2px dashed #94a3b8",
-                borderRadius: "18px",
-                padding: "45px 25px",
-                textAlign: "center",
-                cursor: "pointer",
-                background: "#f8fafc",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: "38px",
-                  marginBottom: "10px",
-                }}
-              >
-                📁
-              </div>
+         {!file && (
+  <div
+    onClick={() => document.getElementById("excel-system-picker").click()}
+    onDragOver={(e) => e.preventDefault()}
+    onDrop={(e) => {
+      e.preventDefault();
+      setMessage("Please click to browse files instead of dropping them.");
+    }}
+    style={{
+      display: "block",
+      border: "2px solid rgba(148, 163, 184, 0.4)",
+      borderRadius: "18px",
+      padding: "45px 25px",
+      textAlign: "center",
+      cursor: "pointer",
+      background: "#f8fafc",
+      transition: "0.2s ease",
+    }}
+  >
+    <div
+      style={{
+        fontSize: "38px",
+        marginBottom: "10px",
+      }}
+    >
+      📁
+    </div>
 
-              <strong
-                style={{
-                  display: "block",
-                  fontSize: "18px",
-                  color: "#111827",
-                  marginBottom: "7px",
-                }}
-              >
-                Select Excel File
-              </strong>
+    <strong
+      style={{
+        display: "block",
+        fontSize: "18px",
+        color: "#111827",
+        marginBottom: "7px",
+      }}
+    >
+      Click to Browse Excel File
+    </strong>
 
-              <span
-                style={{
-                  color: "#64748b",
-                  fontSize: "14px",
-                }}
-              >
-                Supports .xlsx and .xls files
-              </span>
+    <span
+      style={{
+        color: "#64748b",
+        fontSize: "14px",
+      }}
+    >
+      Select directly from your system storage (.xlsx, .xls)
+    </span>
 
-              <input
-                type="file"
-                accept=".xlsx,.xls"
-                onChange={handleFile}
-                style={{ display: "none" }}
-              />
-            </label>
-          )}
+    <input
+      id="excel-system-picker"
+      type="file"
+      accept=".xlsx,.xls"
+      onChange={handleFile}
+      style={{ display: "none" }}
+    />
+  </div>
+)}
+
 
           {file && (
             <div>
