@@ -799,15 +799,7 @@ function Tools({ selectedTool, setSelectedTool }) {
             comingSoon
           />
 
-
-          <ToolCard
-            icon="📊"
-            title="PDF to Excel"
-            description="Convert PDF tables to Excel."
-            comingSoon
-          />
-
-
+          
           <ToolCard
             icon="📽️"
             title="PDF to PowerPoint"
