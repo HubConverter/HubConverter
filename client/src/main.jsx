@@ -63,22 +63,6 @@ function App() {
   const [theme, setTheme] = useState(localStorage.getItem("sh_theme") || "neon");
   const [showThemes, setShowThemes] = useState(false);
   const [toast, setToast] = useState("");
-  const [selectedSoftware, setSelectedSoftware] = useState("");
-  const [items, setItems] = useState([]);
-  const [allItems, setAllItems] = useState([]);
-  const [soft, setSoft] = useState([]);
-  const [prog, setProg] = useState([]);
-  const [favorites, setFavorites] = useState([]);
-  const [recent, setRecent] = useState([]);
-  const [q, setQ] = useState("");
-  const [filter, setFilter] = useState("");
-  const [theme, setTheme] = useState(localStorage.getItem("sh_theme") || "neon");
-  const [showThemes, setShowThemes] = useState(false);
-  const [toast, setToast] = useState("");
-  
-  // ADD THIS LINE HERE:
-  const [selectedTool, setSelectedTool] = useState(null);
-
 
   useEffect(() => {
     (async () => {
@@ -166,7 +150,7 @@ function App() {
           <i>FINAL 3.0</i>
         </div>
 
-                        <nav>
+        <nav>
           {[
             "home",
             "tools",
@@ -176,19 +160,12 @@ function App() {
             <button
               key={item}
               className={view === item ? "sel" : ""}
-              onClick={() => {
-                if (item === "tools") {
-                  setSelectedTool(null);
-                }
-                setView(item);
-              }}
+              onClick={() => setView(item)}
             >
-              {item.toUpperCase() + item.slice(1)}
+              {item[0].toUpperCase() + item.slice(1)}
             </button>
           ))}
         </nav>
-
-
 
         <div className="actions">
           <div className="themePicker">
@@ -236,8 +213,7 @@ function App() {
         />
       )}
 
-      {view === "tools" && <Tools selectedTool={selectedTool} setSelectedTool={setSelectedTool} />}
-
+      {view === "tools" && <Tools />}
 
       {view === "software" && (
         <SoftwarePage
@@ -517,13 +493,8 @@ function Home({
    TOOLS
 ========================= */
 
-/* =========================
-   TOOLS
-========================= */
-
-function Tools({ selectedTool, setSelectedTool }) {
-  // The duplicate useState line is successfully removed from here
-
+function Tools() {
+  const [selectedTool, setSelectedTool] = useState(null);
 
   // =========================
   // TOOL PAGES
@@ -560,38 +531,36 @@ function Tools({ selectedTool, setSelectedTool }) {
     );
   }
   if (selectedTool === "pdf-to-excel") {
-    return (
-      <div>
-        <div
+  return (
+    <div>
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "20px 24px 0",
+        }}
+      >
+        <button
+          onClick={() => setSelectedTool(null)}
           style={{
-            maxWidth: "1200px",
-            margin: "0 auto",
-            padding: "20px 24px 0",
+            border: "none",
+            background: "transparent",
+            color: "inherit",
+            fontSize: "15px",
+            fontWeight: "600",
+            cursor: "pointer",
+            padding: "10px 0",
           }}
         >
-          <button
-            onClick={() => setSelectedTool(null)}
-            style={{
-              border: "none",
-              background: "transparent",
-              color: "inherit",
-              fontSize: "15px",
-              fontWeight: "600",
-              cursor: "pointer",
-              padding: "10px 0",
-            }}
-          >
-            ← Back to Tools
-          </button>
-        </div>
-
-        <PdfToExcel />
+          ← Back to Tools
+        </button>
       </div>
-    );
-  }
 
-  // normal App return
-  
+      <PdfToExcel />
+    </div>
+  );
+}
+
   if (selectedTool === "pdf-to-jpg") {
     return (
       <div>
@@ -799,7 +768,15 @@ function Tools({ selectedTool, setSelectedTool }) {
             comingSoon
           />
 
-          
+
+          <ToolCard
+            icon="📊"
+            title="PDF to Excel"
+            description="Convert PDF tables to Excel."
+            comingSoon
+          />
+
+
           <ToolCard
             icon="📽️"
             title="PDF to PowerPoint"
@@ -1514,10 +1491,10 @@ function Auth({
         </button>
 
       </div>
-   </div>
-
-);
+    </div>
+  );
 }
+*/
 
 /* =========================
    ADMIN
@@ -1636,6 +1613,6 @@ function Admin({ notify }) {
   );
 }
 
-ReactDOM.createRoot(
+createRoot(
   document.getElementById("root")
 ).render(<App />);
