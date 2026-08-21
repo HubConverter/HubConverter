@@ -63,8 +63,6 @@ function App() {
   const [theme, setTheme] = useState(localStorage.getItem("sh_theme") || "neon");
   const [showThemes, setShowThemes] = useState(false);
   const [toast, setToast] = useState("");
-  function App() {
-  const [view, setView] = useState("home");
   const [selectedSoftware, setSelectedSoftware] = useState("");
   const [items, setItems] = useState([]);
   const [allItems, setAllItems] = useState([]);
@@ -594,7 +592,6 @@ function Tools({ selectedTool, setSelectedTool }) {
 
   // normal App return
   
-
   if (selectedTool === "pdf-to-jpg") {
     return (
       <div>
