@@ -63,6 +63,24 @@ function App() {
   const [theme, setTheme] = useState(localStorage.getItem("sh_theme") || "neon");
   const [showThemes, setShowThemes] = useState(false);
   const [toast, setToast] = useState("");
+  function App() {
+  const [view, setView] = useState("home");
+  const [selectedSoftware, setSelectedSoftware] = useState("");
+  const [items, setItems] = useState([]);
+  const [allItems, setAllItems] = useState([]);
+  const [soft, setSoft] = useState([]);
+  const [prog, setProg] = useState([]);
+  const [favorites, setFavorites] = useState([]);
+  const [recent, setRecent] = useState([]);
+  const [q, setQ] = useState("");
+  const [filter, setFilter] = useState("");
+  const [theme, setTheme] = useState(localStorage.getItem("sh_theme") || "neon");
+  const [showThemes, setShowThemes] = useState(false);
+  const [toast, setToast] = useState("");
+  
+  // ADD THIS LINE HERE:
+  const [selectedTool, setSelectedTool] = useState(null);
+
 
   useEffect(() => {
     (async () => {
@@ -150,28 +168,28 @@ function App() {
           <i>FINAL 3.0</i>
         </div>
 
-        <nav>
-  {[
-    "home",
-    "tools",
-    "learn",
-    "quiz",
-  ].map((item) => (
-    <button
-      key={item}
-      className={view === item ? "sel" : ""}
-      onClick={() => {
-        // This line resets the deep page selection when you click "Tools"
-        if (item === "tools") {
-          setSelectedTool(null);
-        }
-        setView(item);
-      }}
-    >
-      {item[0].toUpperCase() + item.slice(1)}
-    </button>
-  ))}
-</nav>
+                <nav>
+          {[
+            "home",
+            "tools",
+            "learn",
+            "quiz",
+          ].map((item) => (
+            <button
+              key={item}
+              className={view === item ? "sel" : ""}
+              onClick={() => {
+                // Safely clear the active converter sub-page view
+                if (item === "tools") {
+                  setSelectedTool(null);
+                }
+                setView(item);
+              }}
+            >
+              {item[0].toUpperCase() + item.slice(1)}
+            </button>
+          ))}
+        </nav>
 
 
         <div className="actions">
@@ -220,7 +238,8 @@ function App() {
         />
       )}
 
-      {view === "tools" && <Tools />}
+      {view === "tools" && <Tools selectedTool={selectedTool} setSelectedTool={setSelectedTool} />}
+
 
       {view === "software" && (
         <SoftwarePage
@@ -500,8 +519,13 @@ function Home({
    TOOLS
 ========================= */
 
-function Tools() {
-  const [selectedTool, setSelectedTool] = useState(null);
+/* =========================
+   TOOLS
+========================= */
+
+function Tools({ selectedTool, setSelectedTool }) {
+  // The duplicate useState line is successfully removed from here
+
 
   // =========================
   // TOOL PAGES
