@@ -562,33 +562,39 @@ function Tools({ selectedTool, setSelectedTool }) {
     );
   }
   if (selectedTool === "pdf-to-excel") {
-  return (
-    <div>
-      <div
-        style={{
-          maxWidth: "1200px",
-          margin: "0 auto",
-          padding: "20px 24px 0",
-        }}
-      >
-        <button
-          onClick={() => setSelectedTool(null)}
+    return (
+      <div>
+        <div
           style={{
-            border: "none",
-            background: "transparent",
-            color: "inherit",
-            fontSize: "15px",
-            fontWeight: "600",
-            cursor: "pointer",
-            padding: "10px 0",
+            maxWidth: "1200px",
+            margin: "0 auto",
+            padding: "20px 24px 0",
           }}
         >
-          ← Back to Tools
-        </button>
-      </div>
+          <button
+            onClick={() => setSelectedTool(null)}
+            style={{
+              border: "none",
+              background: "transparent",
+              color: "inherit",
+              fontSize: "15px",
+              fontWeight: "600",
+              cursor: "pointer",
+              padding: "10px 0",
+            }}
+          >
+            ← Back to Tools
+          </button>
+        </div>
 
-      <PdfToExcel />
-    </div>
+        <PdfToExcel />
+      </div>
+    );
+  }
+
+  // normal App return
+  return (
+    ...
   );
 }
 
@@ -1514,10 +1520,10 @@ function Auth({
         </button>
 
       </div>
-    </div>
-  );
+   </div>
+
+);
 }
-*/
 
 /* =========================
    ADMIN
@@ -1636,6 +1642,6 @@ function Admin({ notify }) {
   );
 }
 
-createRoot(
+ReactDOM.createRoot(
   document.getElementById("root")
 ).render(<App />);
