@@ -2,6 +2,7 @@ import JpgToPdf from "./tools/JpgToPdf.jsx";
 import ExcelToPdf from "./tools/ExcelToPdf.jsx";
 import WordToPdf from "./tools/WordToPdf.jsx";
 import PDFToJpg from "./tools/PDFToJpg.jsx";
+import PdfToExcel from "./tools/PdfToExcel";
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./style.css";
@@ -529,6 +530,36 @@ function Tools() {
       </div>
     );
   }
+  if (selectedTool === "pdf-to-excel") {
+  return (
+    <div>
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "20px 24px 0",
+        }}
+      >
+        <button
+          onClick={() => setSelectedTool(null)}
+          style={{
+            border: "none",
+            background: "transparent",
+            color: "inherit",
+            fontSize: "15px",
+            fontWeight: "600",
+            cursor: "pointer",
+            padding: "10px 0",
+          }}
+        >
+          ← Back to Tools
+        </button>
+      </div>
+
+      <PdfToExcel />
+    </div>
+  );
+}
 
   if (selectedTool === "pdf-to-jpg") {
     return (
@@ -677,7 +708,12 @@ function Tools() {
             description="Convert JPG images into a PDF document."
             onClick={() => setSelectedTool("jpg-to-pdf")}
           />
-
+<ToolCard
+  icon="📊"
+  title="PDF to Excel"
+  description="Convert PDF tables into an Excel spreadsheet."
+  onClick={() => setSelectedTool("pdf-to-excel")}
+/>
 
           <ToolCard
             icon="📊"
