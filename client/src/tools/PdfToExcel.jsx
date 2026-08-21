@@ -493,98 +493,8 @@ export default function PdfToExcel() {
       )}
 
       {/* Success */}
-      {rows.length > 0 && (
-        <div style={{ marginTop: "25px" }}>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: "15px",
-              marginBottom: "15px",
-              flexWrap: "wrap",
-            }}
-          >
-            <div>
-              <h2
-                style={{
-                  margin: 0,
-                  color: "#172554",
-                }}
-              >
-                Preview
-              </h2>
-
-              <p
-                style={{
-                  margin: "5px 0 0",
-                  color: "#64748b",
-                  fontSize: "14px",
-                }}
-              >
-                {rows.length} rows extracted
-              </p>
-            </div>
-
-            <button
-              onClick={downloadExcel}
-              style={{
-                border: "none",
-                borderRadius: "10px",
-                padding: "13px 22px",
-                background: "#16a34a",
-                color: "white",
-                fontWeight: 700,
-                cursor: "pointer",
-              }}
-            >
-              📊 Download Excel
-            </button>
-          </div>
-
-          {/* Table preview */}
-          <div
-            style={{
-              overflow: "auto",
-              border: "1px solid #e2e8f0",
-              borderRadius: "12px",
-              background: "white",
-              maxHeight: "500px",
-            }}
-          >
-            <table
-              style={{
-                width: "100%",
-                borderCollapse: "collapse",
-                minWidth: "600px",
-              }}
-            >
-              <tbody>
-                {rows.slice(0, 100).map((row, rowIndex) => (
-                  <tr key={rowIndex}>
-                    {row.map((cell, cellIndex) => (
-                      <td
-                        key={cellIndex}
-                        style={{
-                          borderBottom:
-                            "1px solid #e2e8f0",
-                          borderRight:
-                            "1px solid #e2e8f0",
-                          padding: "10px 12px",
-                          fontSize: "14px",
-                          whiteSpace: "nowrap",
-                        }}
-                      >
-                        {cell}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {rows.length > 0 && (
+     {/* Success */}
+{rows.length > 0 && (
   <div
     style={{
       marginTop: "30px",
@@ -654,7 +564,7 @@ export default function PdfToExcel() {
         ⬇️ Download Excel
       </button>
 
-            <button
+      <button
         onClick={clearFile}
         style={{
           minWidth: "260px",
