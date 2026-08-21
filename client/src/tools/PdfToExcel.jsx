@@ -584,64 +584,92 @@ export default function PdfToExcel() {
             </table>
           </div>
 
-          {rows.length > 100 && (
-            <p
-              style={{
-                color: "#64748b",
-                fontSize: "13px",
-                marginTop: "8px",
-              }}
-            >
-              Preview shows the first 100 rows. The complete
-              data will be included in the Excel file.
-            </p>
-          )}
-
-          {/* Bottom buttons */}
-          <div
-            style={{
-              display: "flex",
-              gap: "12px",
-              marginTop: "20px",
-              flexWrap: "wrap",
-            }}
-          >
-            <button
-              onClick={downloadExcel}
-              style={{
-                flex: 1,
-                minWidth: "200px",
-                padding: "14px",
-                border: "none",
-                borderRadius: "10px",
-                background: "#16a34a",
-                color: "white",
-                fontWeight: 700,
-                cursor: "pointer",
-              }}
-            >
-              ⬇️ Download Excel
-            </button>
-
-            <button
-              onClick={clearFile}
-              style={{
-                flex: 1,
-                minWidth: "200px",
-                padding: "14px",
-                border: "1px solid #cbd5e1",
-                borderRadius: "10px",
-                background: "white",
-                color: "#334155",
-                fontWeight: 600,
-                cursor: "pointer",
-              }}
-            >
-              🔄 Convert Another PDF
-            </button>
-          </div>
-        </div>
-      )}
+          {rows.length > 0 && (
+  <div
+    style={{
+      marginTop: "30px",
+      background: "white",
+      borderRadius: "18px",
+      padding: "35px 25px",
+      textAlign: "center",
+      boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
+    }}
+  >
+    <div
+      style={{
+        width: "70px",
+        height: "70px",
+        margin: "0 auto 15px",
+        borderRadius: "50%",
+        background: "#dcfce7",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontSize: "35px",
+      }}
+    >
+      ✓
     </div>
-  );
-}
+
+    <h2
+      style={{
+        margin: "0 0 8px",
+        color: "#166534",
+      }}
+    >
+      Conversion Completed!
+    </h2>
+
+    <p
+      style={{
+        margin: "0 0 25px",
+        color: "#64748b",
+      }}
+    >
+      Your PDF has been successfully converted to Excel.
+    </p>
+
+    <div
+      style={{
+        display: "flex",
+        gap: "15px",
+        justifyContent: "center",
+        flexWrap: "wrap",
+      }}
+    >
+      <button
+        onClick={downloadExcel}
+        style={{
+          minWidth: "260px",
+          padding: "15px 25px",
+          border: "none",
+          borderRadius: "12px",
+          background: "#16a34a",
+          color: "white",
+          fontSize: "16px",
+          fontWeight: "700",
+          cursor: "pointer",
+        }}
+      >
+        ⬇️ Download Excel
+      </button>
+
+      <button
+        onClick={clearFile}
+        style={{
+          minWidth: "260px",
+          padding: "15px 25px",
+          border: "1px solid #cbd5e1",
+          borderRadius: "12px",
+          background: "white",
+          color: "#334155",
+          fontSize: "16px",
+          fontWeight: "600",
+          cursor: "pointer",
+        }}
+      >
+        🔄 Convert Another PDF
+      </button>
+    </div>
+  </div>
+)}
