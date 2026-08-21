@@ -593,10 +593,7 @@ function Tools({ selectedTool, setSelectedTool }) {
   }
 
   // normal App return
-  return (
-    ...
-  );
-}
+  
 
   if (selectedTool === "pdf-to-jpg") {
     return (
