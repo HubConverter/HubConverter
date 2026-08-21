@@ -654,7 +654,7 @@ export default function PdfToExcel() {
         ⬇️ Download Excel
       </button>
 
-      <button
+            <button
         onClick={clearFile}
         style={{
           minWidth: "260px",
@@ -673,3 +673,6 @@ export default function PdfToExcel() {
     </div>
   </div>
 )}
+</div>
+);
+}
