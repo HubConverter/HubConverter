@@ -168,7 +168,7 @@ function App() {
           <i>FINAL 3.0</i>
         </div>
 
-                <nav>
+                        <nav>
           {[
             "home",
             "tools",
@@ -179,17 +179,17 @@ function App() {
               key={item}
               className={view === item ? "sel" : ""}
               onClick={() => {
-                // Safely clear the active converter sub-page view
                 if (item === "tools") {
                   setSelectedTool(null);
                 }
                 setView(item);
               }}
             >
-              {item[0].toUpperCase() + item.slice(1)}
+              {item.toUpperCase() + item.slice(1)}
             </button>
           ))}
         </nav>
+
 
 
         <div className="actions">
