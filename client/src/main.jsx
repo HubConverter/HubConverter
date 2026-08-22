@@ -8,6 +8,9 @@ import SplitPdf from "./tools/SplitPdf.jsx";
 import CompressPdf from "./tools/CompressPdf.jsx";
 import PdfToWord from "./tools/PdfToWord.jsx";
 import PDFToPowerPoint from "./tools/PDFToPowerPoint.jsx";
+import RotatePdf from "./tools/RotatePdf.jsx";
+
+
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./style.css";
@@ -808,6 +811,36 @@ if (selectedTool === "merge-pdf") {
     </div>
   );
 }
+  if (selectedTool === "rotate-pdf") {
+  return (
+    <div>
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "20px 24px 0",
+        }}
+      >
+        <button
+          onClick={() => setSelectedTool(null)}
+          style={{
+            border: "none",
+            background: "transparent",
+            color: "inherit",
+            fontSize: "15px",
+            fontWeight: "600",
+            cursor: "pointer",
+            padding: "10px 0",
+          }}
+        >
+          ← Back to Tools
+        </button>
+      </div>
+
+      <RotatePdf />
+    </div>
+  );
+}
   // =========================
   // TOOLS HOME
   // =========================
@@ -932,12 +965,12 @@ if (selectedTool === "merge-pdf") {
 />
 
 
-          <ToolCard
-            icon="🔄"
-            title="Rotate PDF"
-            description="Rotate PDF pages easily."
-            comingSoon
-          />
+         <ToolCard
+  icon="🔄"
+  title="Rotate PDF"
+  description="Rotate PDF pages."
+  onClick={() => setSelectedTool("rotate-pdf")}
+/>
 
 
           <ToolCard
@@ -1023,19 +1056,7 @@ if (selectedTool === "merge-pdf") {
           }}
         >
 
-          <ToolCard
-            icon="🔄"
-            title="JPG to PNG"
-            description="Convert JPG images to PNG."
-            comingSoon
-          />
-
-          <ToolCard
-            icon="🖼️"
-            title="PNG to JPG"
-            description="Convert PNG images to JPG."
-            comingSoon
-          />
+          
 
           <ToolCard
             icon="🗜️"
