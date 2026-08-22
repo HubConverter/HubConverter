@@ -1,39 +1,3 @@
-import React, { useState } from "react";
-import * as pdfjsLib from "pdfjs-dist";
-import { Document, Packer, Paragraph, TextRun } from "docx";
-
-// PDF.js worker
-pdfjsLib.GlobalWorkerOptions.workerSrc =
-  new URL(
-    "pdfjs-dist/build/pdf.worker.min.mjs",
-    import.meta.url
-  ).toString();
-
-export default function PdfToWord() {
-  const [file, setFile] = useState(null);
-  const [processing, setProcessing] = useState(false);
-  const [message, setMessage] = useState("");
-
-  const handleFileChange = (event) => {
-    const selectedFile = event.target.files?.[0];
-
-    if (!selectedFile) {
-      return;
-    }
-
-    if (
-      selectedFile.type !== "application/pdf" &&
-      !selectedFile.name.toLowerCase().endsWith(".pdf")
-    ) {
-      setFile(null);
-      setMessage("Please select a PDF file.");
-      return;
-    }
-
-    setFile(selectedFile);
-    setMessage("");
-  };
-
   const convertToWord = async () => {
     if (!file) {
       setMessage("Please select a PDF file first.");
@@ -46,20 +10,21 @@ export default function PdfToWord() {
 
       const arrayBuffer = await file.arrayBuffer();
 
+      // Initialize the PDF Document safely
       const pdf = await pdfjsLib.getDocument({
         data: new Uint8Array(arrayBuffer),
       }).promise;
 
-      const paragraphs = [];
+      const docxParagraphs = [];
 
       for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
-        setMessage(
-          `Reading page ${pageNumber} of ${pdf.numPages}...`
-        );
+        setMessage(`Reading page ${pageNumber} of ${pdf.numPages}...`);
 
         const page = await pdf.getPage(pageNumber);
-
         const textContent = await page.getTextContent();
+
+        // Safe extraction check
+        if (!textContent || !textContent.items) continue;
 
         let currentLine = "";
         let previousY = null;
@@ -68,241 +33,73 @@ export default function PdfToWord() {
           if (!item.str) continue;
 
           const text = item.str.trim();
-
           if (!text) continue;
 
-          const currentY = item.transform
-            ? item.transform[5]
+          // Safely access the 6th element in the transformation matrix for Y coordinates
+          const currentY = item.transform && item.transform.length >= 6 
+            ? item.transform[5] 
             : null;
 
+          // Check if text has shifted to a new line visually
           if (
             previousY !== null &&
             currentY !== null &&
             Math.abs(currentY - previousY) > 5
           ) {
             if (currentLine.trim()) {
-              paragraphs.push(
+              docxParagraphs.push(
                 new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: currentLine.trim(),
-                      size: 22,
-                    }),
-                  ],
-                  spacing: {
-                    after: 120,
-                  },
+                  children: [new TextRun(currentLine.trim())],
                 })
               );
             }
-
             currentLine = text;
           } else {
-            if (currentLine) {
-              currentLine += " ";
-            }
-
-            currentLine += text;
+            // Build text along the same visual line segment
+            currentLine += (currentLine ? " " : "") + text;
           }
-
-          if (currentY !== null) {
-            previousY = currentY;
-          }
+          previousY = currentY;
         }
 
+        // Push any remaining text from the final line processing loop
         if (currentLine.trim()) {
-          paragraphs.push(
+          docxParagraphs.push(
             new Paragraph({
-              children: [
-                new TextRun({
-                  text: currentLine.trim(),
-                  size: 22,
-                }),
-              ],
-              spacing: {
-                after: 120,
-              },
-            })
-          );
-        }
-
-        // Page break between PDF pages
-        if (pageNumber < pdf.numPages) {
-          paragraphs.push(
-            new Paragraph({
-              pageBreakBefore: true,
+              children: [new TextRun(currentLine.trim())],
             })
           );
         }
       }
 
-      if (paragraphs.length === 0) {
-        setMessage(
-          "No selectable text was found. This PDF may contain scanned images."
-        );
-        return;
-      }
+      setMessage("Generating Word Document...");
 
-      setMessage("Creating Word document...");
-
-      const document = new Document({
+      // Structural layout wrapper for docx module
+      const doc = new Document({
         sections: [
           {
             properties: {},
-            children: paragraphs,
+            children: docxParagraphs,
           },
         ],
       });
 
-      const blob = await Packer.toBlob(document);
-
+      // Export binary structure to browser local save prompt
+      const blob = await Packer.toBlob(doc);
       const url = URL.createObjectURL(blob);
-
       const link = document.createElement("a");
-
       link.href = url;
-
-      const originalName = file.name
-        .replace(/\.pdf$/i, "")
-        .replace(/[<>:"/\\|?*]+/g, "_");
-
-      link.download = `${originalName}-Word.docx`;
-
+      link.download = `${file.name.replace(/\.[^/.]+$/, "")}.docx`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-
       URL.revokeObjectURL(url);
 
-      setMessage("PDF successfully converted to Word.");
+      setMessage("Conversion complete!");
     } catch (error) {
-      console.error("PDF to Word error:", error);
-
-      setMessage(
-        "Could not convert this PDF. Please try another PDF file."
-      );
+      // Logs the real technical breakdown to your developer tools console
+      console.error("Conversion breakdown detail:", error);
+      setMessage("Could not convert this PDF. Please try another PDF file.");
     } finally {
       setProcessing(false);
     }
   };
-
-  return (
-    <div
-      style={{
-        maxWidth: "850px",
-        margin: "0 auto",
-        padding: "30px",
-      }}
-    >
-      <div
-        style={{
-          background: "#fff",
-          borderRadius: "20px",
-          padding: "35px",
-          boxShadow: "0 10px 35px rgba(0,0,0,0.08)",
-          border: "1px solid #e5e7eb",
-        }}
-      >
-        <h2
-          style={{
-            marginTop: 0,
-            marginBottom: "10px",
-            fontSize: "28px",
-          }}
-        >
-          PDF to Word
-        </h2>
-
-        <p
-          style={{
-            color: "#64748b",
-            marginBottom: "28px",
-          }}
-        >
-          Convert a PDF into an editable Microsoft Word document.
-        </p>
-
-        <div
-          style={{
-            border: "2px dashed #cbd5e1",
-            borderRadius: "16px",
-            padding: "40px 20px",
-            textAlign: "center",
-            background: "#f8fafc",
-          }}
-        >
-          <div
-            style={{
-              fontSize: "45px",
-              marginBottom: "15px",
-            }}
-          >
-            📄
-          </div>
-
-          <input
-            type="file"
-            accept=".pdf,application/pdf"
-            onChange={handleFileChange}
-            style={{
-              display: "block",
-              margin: "0 auto",
-              maxWidth: "100%",
-            }}
-          />
-
-          {file && (
-            <div
-              style={{
-                marginTop: "18px",
-                color: "#334155",
-                fontWeight: "600",
-              }}
-            >
-              Selected: {file.name}
-            </div>
-          )}
-        </div>
-
-        <button
-          type="button"
-          onClick={convertToWord}
-          disabled={!file || processing}
-          style={{
-            width: "100%",
-            marginTop: "30px",
-            padding: "16px",
-            border: "none",
-            borderRadius: "12px",
-            background:
-              !file || processing ? "#94a3b8" : "#2563eb",
-            color: "#fff",
-            fontSize: "17px",
-            fontWeight: "700",
-            cursor:
-              !file || processing
-                ? "not-allowed"
-                : "pointer",
-          }}
-        >
-          {processing ? "Converting..." : "Convert to Word"}
-        </button>
-
-        {message && (
-          <div
-            style={{
-              marginTop: "20px",
-              padding: "14px",
-              borderRadius: "10px",
-              background: "#f1f5f9",
-              color: "#334155",
-              lineHeight: "1.5",
-            }}
-          >
-            {message}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
