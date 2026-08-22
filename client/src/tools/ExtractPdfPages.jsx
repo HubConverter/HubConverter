@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { PDFDocument } from "pdf-lib";
 
-export default function SplitPdf() {
+export default function ExtractPdf() {
   const [file, setFile] = useState(null);
   const [pages, setPages] = useState("");
   const [loading, setLoading] = useState(false);
@@ -26,7 +26,7 @@ export default function SplitPdf() {
     setPages("");
   }
 
-  async function splitPdf() {
+  async function ExtractPdf() {
     if (!file) {
       setMessage("Please select a PDF file first.");
       return;
@@ -53,13 +53,13 @@ export default function SplitPdf() {
       const pageNumbers = [];
 
       const parts = pages
-        .split(",")
+        .Extract(",")
         .map((part) => part.trim())
         .filter(Boolean);
 
       for (const part of parts) {
         if (part.includes("-")) {
-          const range = part.split("-").map((value) => value.trim());
+          const range = part.Extract("-").map((value) => value.trim());
 
           if (range.length !== 2) {
             throw new Error(`Invalid page range: ${part}`);
@@ -128,7 +128,7 @@ export default function SplitPdf() {
 
       const link = document.createElement("a");
       link.href = url;
-      link.download = `ShortcutHub-Split-PDF.pdf`;
+      link.download = `ShortcutHub-Extract-Pdf.pdf`;
 
       document.body.appendChild(link);
       link.click();
@@ -143,7 +143,7 @@ export default function SplitPdf() {
       );
     } catch (error) {
       console.error(error);
-      setMessage(error.message || "Unable to split the PDF.");
+      setMessage(error.message || "Unable to Extract the PDF.");
     } finally {
       setLoading(false);
     }
@@ -174,7 +174,7 @@ export default function SplitPdf() {
         </div>
 
         <h1 style={{ marginBottom: "10px" }}>
-          Split PDF
+          Extract Pdf
         </h1>
 
         <p style={{ marginBottom: "28px" }}>
@@ -254,14 +254,14 @@ export default function SplitPdf() {
 
         <button
           className="primary"
-          onClick={splitPdf}
+          onClick={ExtractPdf}
           disabled={!file || loading}
           style={{
             minWidth: "180px",
             opacity: !file || loading ? 0.6 : 1,
           }}
         >
-          {loading ? "Splitting..." : "✂️ Split PDF"}
+          {loading ? "Extractting..." : "✂️ Extract Pdf"}
         </button>
 
         {message && (
