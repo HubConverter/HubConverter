@@ -302,7 +302,54 @@ setMessage(
         >
           {processing ? "Converting..." : "Convert to Word"}
         </button>
+{downloadUrl && (
+  <div
+    style={{
+      marginTop: "20px",
+      padding: "20px",
+      borderRadius: "14px",
+      background: "#ecfdf5",
+      border: "1px solid #a7f3d0",
+      textAlign: "center",
+    }}
+  >
+    <div
+      style={{
+        fontSize: "32px",
+        marginBottom: "8px",
+      }}
+    >
+      ✅
+    </div>
 
+    <div
+      style={{
+        fontWeight: "700",
+        color: "#166534",
+        marginBottom: "12px",
+      }}
+    >
+      Word file is ready!
+    </div>
+
+    <a
+      href={downloadUrl}
+      download={downloadName}
+      style={{
+        display: "inline-block",
+        padding: "13px 24px",
+        background: "#16a34a",
+        color: "#fff",
+        borderRadius: "10px",
+        textDecoration: "none",
+        fontWeight: "700",
+        fontSize: "16px",
+      }}
+    >
+      ⬇️ Download Word File
+    </a>
+  </div>
+)}
         {message && (
           <div
             style={{
