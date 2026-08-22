@@ -9,9 +9,11 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
 ).toString();
 
 export default function PdfToWord() {
-  const [file, setFile] = useState(null);
-  const [processing, setProcessing] = useState(false);
-  const [message, setMessage] = useState("");
+ const [file, setFile] = useState(null);
+const [processing, setProcessing] = useState(false);
+const [message, setMessage] = useState("");
+const [downloadUrl, setDownloadUrl] = useState(null);
+const [downloadName, setDownloadName] = useState("");
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files?.[0];
