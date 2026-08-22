@@ -844,8 +844,8 @@ if (selectedTool === "merge-pdf") {
 />
 
 
-   <ToolCard
-  icon="/images/compress-pdf.webp"
+ <ToolCard
+  icon="🗜️"
   title="Compress PDF"
   description="Reduce PDF file size."
   onClick={() => setSelectedTool("compress-pdf")}
