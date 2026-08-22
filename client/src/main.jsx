@@ -3,6 +3,8 @@ import ExcelToPdf from "./tools/ExcelToPdf.jsx";
 import WordToPdf from "./tools/WordToPdf.jsx";
 import PDFToJpg from "./tools/PDFToJpg.jsx";
 import PdfToExcel from "./tools/PdfToExcel";
+import MergePdf from "./tools/MergePdf.jsx";
+
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./style.css";
@@ -653,7 +655,36 @@ function Tools() {
       </div>
     );
   }
+if (selectedTool === "merge-pdf") {
+  return (
+    <div>
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "20px 24px 0",
+        }}
+      >
+        <button
+          onClick={() => setSelectedTool(null)}
+          style={{
+            border: "none",
+            background: "transparent",
+            color: "inherit",
+            fontSize: "15px",
+            fontWeight: "600",
+            cursor: "pointer",
+            padding: "10px 0",
+          }}
+        >
+          ← Back to Tools
+        </button>
+      </div>
 
+      <MergePdf />
+    </div>
+  );
+}
   // =========================
   // TOOLS HOME
   // =========================
@@ -738,11 +769,11 @@ function Tools() {
             onClick={() => setSelectedTool("pdf-to-jpg")}
           />
           <ToolCard
-            icon="📑"
-            title="Merge PDF"
-            description="Combine multiple PDF files into one."
-            comingSoon
-          />
+  icon="📑"
+  title="Merge PDF"
+  description="Combine multiple PDF files into one."
+  onClick={() => setSelectedTool("merge-pdf")}
+/>
 
 
           <ToolCard
