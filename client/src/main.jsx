@@ -151,28 +151,21 @@ function App() {
         </div>
 
         <nav>
-  {[
-    "home",
-    "tools",
-    "learn",
-    "quiz",
-  ].map((item) => (
-    <button
-      key={item}
-      className={view === item ? "sel" : ""}
-      onClick={() => {
-        // This line resets the deep page selection when you click "Tools"
-        if (item === "tools") {
-          setSelectedTool(null);
-        }
-        setView(item);
-      }}
-    >
-      {item[0].toUpperCase() + item.slice(1)}
-    </button>
-  ))}
-</nav>
-
+          {[
+            "home",
+            "tools",
+            "learn",
+            "quiz",
+          ].map((item) => (
+            <button
+              key={item}
+              className={view === item ? "sel" : ""}
+              onClick={() => setView(item)}
+            >
+              {item[0].toUpperCase() + item.slice(1)}
+            </button>
+          ))}
+        </nav>
 
         <div className="actions">
           <div className="themePicker">
