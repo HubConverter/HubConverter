@@ -4,7 +4,7 @@ import WordToPdf from "./tools/WordToPdf.jsx";
 import PDFToJpg from "./tools/PDFToJpg.jsx";
 import PdfToExcel from "./tools/PdfToExcel";
 import MergePdf from "./tools/MergePdf.jsx";
-import Extract PDF Pages from "./tools/ExtractPDFPages.jsx";
+import ExtractPdfPages from "./tools/ExtractPdfPages.jsx";
 import CompressPdf from "./tools/CompressPdf.jsx";
 import PdfToWord from "./tools/PdfToWord.jsx";
 import PDFToPowerPoint from "./tools/PDFToPowerPoint.jsx";
@@ -717,7 +717,7 @@ if (selectedTool === "merge-pdf") {
         </button>
       </div>
 
-      <Extract PDF Pages />
+    <ExtractPDFPages />
     </div>
   );
 }
@@ -934,9 +934,9 @@ if (selectedTool === "merge-pdf") {
 
         <ToolCard
   icon="✂️"
-  title="Extract PDF Pages"
-  description="Extract pages from a PDF into a new file."
-  onClick={() => setSelectedTool("Extract PDF Pages")}
+   title="Extract PDF Pages"
+  description="Extract selected pages from a PDF."
+  onClick={() => setSelectedTool("extract-pdf-pages")}
 />
 
 
