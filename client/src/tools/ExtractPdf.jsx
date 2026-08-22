@@ -12,6 +12,7 @@ export default function ExtractPdf() {
 
     if (!selectedFile) {
       setFile(null);
+      setMessage("");
       return;
     }
 
@@ -26,7 +27,7 @@ export default function ExtractPdf() {
     setPages("");
   }
 
-  async function ExtractPdf() {
+  async function handleExtractPdf() {
     if (!file) {
       setMessage("Please select a PDF file first.");
       return;
@@ -46,20 +47,22 @@ export default function ExtractPdf() {
       const sourcePdf = await PDFDocument.load(inputBytes);
       const totalPages = sourcePdf.getPageCount();
 
-      // Example:
+      // Examples:
       // 1,3,5
       // 1-3
       // 1,3-5
       const pageNumbers = [];
 
       const parts = pages
-        .Extract(",")
+        .split(",")
         .map((part) => part.trim())
         .filter(Boolean);
 
       for (const part of parts) {
         if (part.includes("-")) {
-          const range = part.Extract("-").map((value) => value.trim());
+          const range = part
+            .split("-")
+            .map((value) => value.trim());
 
           if (range.length !== 2) {
             throw new Error(`Invalid page range: ${part}`);
@@ -100,7 +103,7 @@ export default function ExtractPdf() {
         }
       }
 
-      // Remove duplicate pages while keeping the entered order.
+      // Remove duplicate pages while keeping entered order.
       const uniquePages = [...new Set(pageNumbers)];
 
       if (!uniquePages.length) {
@@ -128,7 +131,7 @@ export default function ExtractPdf() {
 
       const link = document.createElement("a");
       link.href = url;
-      link.download = `ShortcutHub-Extract-Pdf.pdf`;
+      link.download = "ShortcutHub-Extract-Pdf.pdf";
 
       document.body.appendChild(link);
       link.click();
@@ -143,7 +146,9 @@ export default function ExtractPdf() {
       );
     } catch (error) {
       console.error(error);
-      setMessage(error.message || "Unable to Extract the PDF.");
+      setMessage(
+        error.message || "Unable to extract the PDF."
+      );
     } finally {
       setLoading(false);
     }
@@ -254,14 +259,14 @@ export default function ExtractPdf() {
 
         <button
           className="primary"
-          onClick={ExtractPdf}
+          onClick={handleExtractPdf}
           disabled={!file || loading}
           style={{
             minWidth: "180px",
             opacity: !file || loading ? 0.6 : 1,
           }}
         >
-          {loading ? "Extractting..." : "✂️ Extract Pdf"}
+          {loading ? "Extracting..." : "✂️ Extract Pdf"}
         </button>
 
         {message && (
