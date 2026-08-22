@@ -691,7 +691,7 @@ if (selectedTool === "merge-pdf") {
     </div>
   );
 }
-  if (selectedTool === "Extract PDF Pages") {
+  if (selectedTool === "extract-pdf-pages") {
   return (
     <div>
       <div
@@ -717,7 +717,7 @@ if (selectedTool === "merge-pdf") {
         </button>
       </div>
 
-    <ExtractPDFPages />
+      <ExtractPdfPages />
     </div>
   );
 }
