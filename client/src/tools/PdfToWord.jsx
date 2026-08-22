@@ -169,32 +169,20 @@ const [downloadName, setDownloadName] = useState("");
       });
 
       const blob = await Packer.toBlob(wordDocument);
+const url = URL.createObjectURL(blob);
 
-      const url = URL.createObjectURL(blob);
+const originalName = file.name
+  .replace(/\.pdf$/i, "")
+  .replace(/[<>:"/\\|?*]+/g, "_");
 
-      // Use browser's document object
-      const link = window.document.createElement("a");
+const finalFileName = `${originalName}-Word.docx`;
 
-      link.href = url;
+setDownloadUrl(url);
+setDownloadName(finalFileName);
 
-      const originalName = file.name
-        .replace(/\.pdf$/i, "")
-        .replace(/[<>:"/\\|?*]+/g, "_");
-
-      link.download = `${originalName}-Word.docx`;
-
-      window.document.body.appendChild(link);
-
-      link.click();
-
-      window.document.body.removeChild(link);
-
-      // Give browser time to start download
-      setTimeout(() => {
-        URL.revokeObjectURL(url);
-      }, 1000);
-
-      setMessage("PDF successfully converted to Word.");
+setMessage(
+  "PDF successfully converted. Your Word file is ready to download."
+);
     } catch (error) {
       console.error("PDF to Word error:", error);
 
