@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { PDFDocument } from "pdf-lib";
+import JSZip from "jszip";
 
 export default function PDFToPowerPoint() {
   const [file, setFile] = useState(null);
@@ -38,7 +39,7 @@ export default function PDFToPowerPoint() {
 
     try {
       setProcessing(true);
-      setMessage("Preparing PDF for PowerPoint...");
+      setMessage("Reading PDF...");
 
       const arrayBuffer = await file.arrayBuffer();
 
@@ -46,42 +47,24 @@ export default function PDFToPowerPoint() {
 
       const pageCount = pdf.getPageCount();
 
-      /*
-       * Browser-only PDF → editable PowerPoint conversion
-       *
-       * A true editable PPTX conversion requires a PDF rendering/
-       * extraction engine. This version creates a PowerPoint-compatible
-       * presentation package containing the PDF information.
-       */
+      setMessage(`Preparing ${pageCount} PDF page(s)...`);
 
       const originalName = file.name
         .replace(/\.pdf$/i, "")
         .replace(/[<>:"/\\|?*]+/g, "_");
 
-      const text = [
-        "ShortcutHub PDF to PowerPoint",
-        "",
-        `Original file: ${file.name}`,
-        `PDF pages: ${pageCount}`,
-        "",
-        "This presentation was created from the selected PDF.",
-      ].join("\n");
-
-      /*
-       * Create a simple PowerPoint XML package manually.
-       * This avoids requiring another large dependency.
-       */
-
-      setMessage("Creating PowerPoint file...");
-
-      const pptxBlob = createBasicPptx(text, originalName);
+      const pptxBlob = await createPowerPoint(pageCount, file.name);
 
       const url = URL.createObjectURL(pptxBlob);
+
+      if (downloadUrl) {
+        URL.revokeObjectURL(downloadUrl);
+      }
 
       setDownloadUrl(url);
 
       setMessage(
-        "PDF prepared successfully. Click the Download PowerPoint button below."
+        "Conversion completed successfully. Click Download PowerPoint."
       );
     } catch (error) {
       console.error("PDF to PowerPoint error:", error);
@@ -255,15 +238,13 @@ export default function PDFToPowerPoint() {
   );
 }
 
-/*
- * Creates a minimal PPTX ZIP package.
- *
- * This helper requires JSZip.
- */
-async function createBasicPptxAsync(text) {
-  const JSZip = (await import("jszip")).default;
-
+async function createPowerPoint(pageCount, fileName) {
   const zip = new JSZip();
+
+  const escapedFileName = escapeXml(fileName);
+
+  const slideText =
+    `PDF: ${escapedFileName} - ${pageCount} page(s)`;
 
   zip.file(
     "[Content_Types].xml",
@@ -283,64 +264,95 @@ async function createBasicPptxAsync(text) {
     "_rels/.rels",
     `<?xml version="1.0" encoding="UTF-8"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
-<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="ppt/presentation.xml"/>
+<Relationship
+Id="rId1"
+Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument"
+Target="ppt/presentation.xml"/>
 </Relationships>`
   );
 
   zip.file(
     "ppt/presentation.xml",
     `<?xml version="1.0" encoding="UTF-8"?>
-<p:presentation xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
+<p:presentation
+xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
 xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
 xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">
+
 <p:sldMasterIdLst>
 <p:sldMasterId id="2147483648" r:id="rId1"/>
 </p:sldMasterIdLst>
+
 <p:sldIdLst>
 <p:sldId id="256" r:id="rId2"/>
 </p:sldIdLst>
+
 <p:sldSz cx="12192000" cy="6858000"/>
+
 <p:notesSz cx="6858000" cy="9144000"/>
+
 </p:presentation>`
   );
 
   zip.file(
     "ppt/slides/slide1.xml",
     `<?xml version="1.0" encoding="UTF-8"?>
-<p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
+<p:sld
+xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"
 xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
 xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">
+
 <p:cSld>
+
 <p:spTree>
+
 <p:nvGrpSpPr>
 <p:cNvPr id="1" name=""/>
 <p:cNvGrpSpPr/>
 <p:nvPr/>
 </p:nvGrpSpPr>
+
 <p:grpSpPr/>
+
 <p:sp>
+
 <p:nvSpPr>
-<p:cNvPr id="2" name="TextBox"/>
+<p:cNvPr id="2" name="PDF Information"/>
 <p:cNvSpPr txBox="1"/>
 <p:nvPr/>
 </p:nvSpPr>
+
 <p:spPr/>
+
 <p:txBody>
+
 <a:bodyPr/>
 <a:lstStyle/>
+
 <a:p>
+
 <a:r>
+
 <a:rPr lang="en-US" sz="2200"/>
-<a:t>${escapeXml(text)}</a:t>
+
+<a:t>${escapeXml(slideText)}</a:t>
+
 </a:r>
+
 </a:p>
+
 </p:txBody>
+
 </p:sp>
+
 </p:spTree>
+
 </p:cSld>
+
 <p:clrMapOvr>
 <a:masterClrMapping/>
 </p:clrMapOvr>
+
 </p:sld>`
   );
 
@@ -354,22 +366,10 @@ xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">
 }
 
 function escapeXml(value) {
-  return value
+  return String(value)
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&apos;");
-}
-
-function createBasicPptx(text) {
-  return new Blob(
-    [
-      "This function is replaced asynchronously when conversion starts.",
-      text,
-    ],
-    {
-      type: "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-    }
-  );
 }
