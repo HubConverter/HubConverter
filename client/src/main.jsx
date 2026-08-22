@@ -6,6 +6,10 @@ import PdfToExcel from "./tools/PdfToExcel";
 import MergePdf from "./tools/MergePdf.jsx";
 import SplitPdf from "./tools/SplitPdf.jsx";
 import CompressPdf from "./tools/CompressPdf.jsx";
+import PdfToWord from "./tools/PdfToWord.jsx";
+import PDFToPowerPoint from "./tools/PDFToPowerPoint.jsx";
+import RotatePDF from "./tools/RotatePDF.jsx";
+import WatermarkPDF from "./tools/WatermarkPDF.jsx";
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./style.css";
@@ -715,7 +719,8 @@ if (selectedTool === "merge-pdf") {
       <SplitPdf />
     </div>
   );
-}if (selectedTool === "compress-pdf") {
+}
+  if (selectedTool === "compress-pdf") {
   return (
     <div>
       <div
@@ -742,6 +747,36 @@ if (selectedTool === "merge-pdf") {
       </div>
 
       <CompressPdf />
+    </div>
+  );
+}
+  if (selectedTool === "pdf-to-word") {
+  return (
+    <div>
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "20px 24px 0",
+        }}
+      >
+        <button
+          onClick={() => setSelectedTool(null)}
+          style={{
+            border: "none",
+            background: "transparent",
+            color: "inherit",
+            fontSize: "15px",
+            fontWeight: "600",
+            cursor: "pointer",
+            padding: "10px 0",
+          }}
+        >
+          ← Back to Tools
+        </button>
+      </div>
+
+      <PdfToWord />
     </div>
   );
 }
@@ -853,12 +888,12 @@ if (selectedTool === "merge-pdf") {
 
 
 
-          <ToolCard
-            icon="📝"
-            title="PDF to Word"
-            description="Convert PDF documents to Word."
-            comingSoon
-          />
+        <ToolCard
+  icon="📄"
+  title="PDF to Word"
+  description="Convert PDF files to editable Word documents."
+  onClick={() => setSelectedTool("pdf-to-word")}
+/>
 
 
           <ToolCard
