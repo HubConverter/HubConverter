@@ -150,7 +150,7 @@ function App() {
           <i>FINAL 3.0</i>
         </div>
 
-       <nav>
+        <nav>
   {[
     "home",
     "tools",
@@ -161,16 +161,18 @@ function App() {
       key={item}
       className={view === item ? "sel" : ""}
       onClick={() => {
+        // This line resets the deep page selection when you click "Tools"
         if (item === "tools") {
           setSelectedTool(null);
         }
         setView(item);
       }}
     >
-      {item.toUpperCase() + item.slice(1)}
+      {item[0].toUpperCase() + item.slice(1)}
     </button>
   ))}
 </nav>
+
 
         <div className="actions">
           <div className="themePicker">
