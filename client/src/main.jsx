@@ -4,7 +4,7 @@ import WordToPdf from "./tools/WordToPdf.jsx";
 import PDFToJpg from "./tools/PDFToJpg.jsx";
 import PdfToExcel from "./tools/PdfToExcel";
 import MergePdf from "./tools/MergePdf.jsx";
-
+import SplitPdf from "./tools/SplitPdf.jsx";
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./style.css";
@@ -685,6 +685,36 @@ if (selectedTool === "merge-pdf") {
     </div>
   );
 }
+  if (selectedTool === "split-pdf") {
+  return (
+    <div>
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "20px 24px 0",
+        }}
+      >
+        <button
+          onClick={() => setSelectedTool(null)}
+          style={{
+            border: "none",
+            background: "transparent",
+            color: "inherit",
+            fontSize: "15px",
+            fontWeight: "600",
+            cursor: "pointer",
+            padding: "10px 0",
+          }}
+        >
+          ← Back to Tools
+        </button>
+      </div>
+
+      <SplitPdf />
+    </div>
+  );
+}
   // =========================
   // TOOLS HOME
   // =========================
@@ -776,12 +806,12 @@ if (selectedTool === "merge-pdf") {
 />
 
 
-          <ToolCard
-            icon="✂️"
-            title="Split PDF"
-            description="Split a PDF into separate documents."
-            comingSoon
-          />
+        <ToolCard
+  icon="✂️"
+  title="Split PDF"
+  description="Extract pages from a PDF into a new file."
+  onClick={() => setSelectedTool("split-pdf")}
+/>
 
 
           <ToolCard
