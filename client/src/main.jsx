@@ -163,10 +163,7 @@ function App() {
       onClick={() => {
         if (item === "tools") {
           setSelectedTool(null);
-          setView("tools");
-          return;
         }
-
         setView(item);
       }}
     >
