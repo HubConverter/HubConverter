@@ -934,7 +934,7 @@ if (selectedTool === "merge-pdf") {
 
         <ToolCard
   icon="✂️"
-   title="Extract PDF Pages"
+  title="Extract PDF Pages"
   description="Extract selected pages from a PDF."
   onClick={() => setSelectedTool("extract-pdf-pages")}
 />
