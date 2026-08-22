@@ -7,7 +7,7 @@ import MergePdf from "./tools/MergePdf.jsx";
 import SplitPdf from "./tools/SplitPdf.jsx";
 import CompressPdf from "./tools/CompressPdf.jsx";
 import PdfToWord from "./tools/PdfToWord.jsx";
-
+import PDFToPowerPoint from "./tools/PDFToPowerPoint.jsx";
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./style.css";
@@ -778,6 +778,36 @@ if (selectedTool === "merge-pdf") {
     </div>
   );
 }
+  if (selectedTool === "pdf-to-powerpoint") {
+  return (
+    <div>
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "20px 24px 0",
+        }}
+      >
+        <button
+          onClick={() => setSelectedTool(null)}
+          style={{
+            border: "none",
+            background: "transparent",
+            color: "inherit",
+            fontSize: "15px",
+            fontWeight: "600",
+            cursor: "pointer",
+            padding: "10px 0",
+          }}
+        >
+          ← Back to Tools
+        </button>
+      </div>
+
+      <PDFToPowerPoint />
+    </div>
+  );
+}
   // =========================
   // TOOLS HOME
   // =========================
@@ -894,12 +924,12 @@ if (selectedTool === "merge-pdf") {
 />
 
 
-          <ToolCard
-            icon="📽️"
-            title="PDF to PowerPoint"
-            description="Convert PDF files to presentations."
-            comingSoon
-          />
+         <ToolCard
+  icon="📊"
+  title="PDF to PowerPoint"
+  description="Convert PDF files to PowerPoint."
+  onClick={() => setSelectedTool("pdf-to-powerpoint")}
+/>
 
 
           <ToolCard
