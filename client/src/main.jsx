@@ -2,7 +2,7 @@ import JpgToPdf from "./tools/JpgToPdf.jsx";
 import ExcelToPdf from "./tools/ExcelToPdf.jsx";
 import WordToPdf from "./tools/WordToPdf.jsx";
 import PDFToJpg from "./tools/PDFToJpg.jsx";
-import PdfToExcel from "./tools/PdfToExcel";
+import PdfToExcel from "./tools/PdfToExcel.jsx";
 import MergePdf from "./tools/MergePdf.jsx";
 import ExtractPdf from "./tools/ExtractPdf.jsx";
 import CompressPdf from "./tools/CompressPdf.jsx";
@@ -235,11 +235,7 @@ function App() {
       )}
 
       {view === "learn" && (
-        <Learn
-          items={items}
-          learn={learn}
-          prog={prog}
-        />
+      <Learn items={items} />
       )}
 
       {view === "quiz" && (
@@ -387,8 +383,8 @@ function Home({
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 setFilter("");
-                setView("learn");
-                search(q, "");
+                setFilter("");
+                 search(q, "");
               }
             }}
             placeholder='Try “Ctrl+C”, “Excel”, “Save”...'
@@ -447,7 +443,7 @@ function Home({
                 className="app"
                 key={app.software || app[0]}
                 onClick={() =>
-                  openSoftware(app.software || app[0])
+                 openSoftware(app.software || app.name || app[0])
                 }
               >
                 <b>{app.icon || app[1]}</b>
