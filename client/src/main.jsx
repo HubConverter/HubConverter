@@ -150,22 +150,30 @@ function App() {
           <i>FINAL 3.0</i>
         </div>
 
-        <nav>
-          {[
-            "home",
-            "tools",
-            "learn",
-            "quiz",
-          ].map((item) => (
-            <button
-              key={item}
-              className={view === item ? "sel" : ""}
-              onClick={() => setView(item)}
-            >
-              {item[0].toUpperCase() + item.slice(1)}
-            </button>
-          ))}
-        </nav>
+       <nav>
+  {[
+    "home",
+    "tools",
+    "learn",
+    "quiz",
+  ].map((item) => (
+    <button
+      key={item}
+      className={view === item ? "sel" : ""}
+      onClick={() => {
+        if (item === "tools") {
+          setSelectedTool(null);
+          setView("tools");
+          return;
+        }
+
+        setView(item);
+      }}
+    >
+      {item.toUpperCase() + item.slice(1)}
+    </button>
+  ))}
+</nav>
 
         <div className="actions">
           <div className="themePicker">
