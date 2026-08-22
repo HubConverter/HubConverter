@@ -7,9 +7,7 @@ import MergePdf from "./tools/MergePdf.jsx";
 import SplitPdf from "./tools/SplitPdf.jsx";
 import CompressPdf from "./tools/CompressPdf.jsx";
 import PdfToWord from "./tools/PdfToWord.jsx";
-import PDFToPowerPoint from "./tools/PDFToPowerPoint.jsx";
-import RotatePDF from "./tools/RotatePDF.jsx";
-import WatermarkPDF from "./tools/WatermarkPDF.jsx";
+
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./style.css";
