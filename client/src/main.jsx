@@ -1873,6 +1873,8 @@ function Admin({ notify }) {
   );
 }
 
-createRoot(
+const root = createRoot(
   document.getElementById("root")
-).render(<App />);
+);
+
+root.render(<App />);
