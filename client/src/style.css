@@ -2029,3 +2029,28 @@ body.theme-sunset .protect-pdf-card input::placeholder,
 body.theme-midnight .protect-pdf-card input::placeholder {
   color: rgba(255, 255, 255, 0.60) !important;
 }
+/* PROTECT PDF MAIN BOX - DARK THEMES ONLY */
+
+body.theme-neon .protectPdfBox,
+body.theme-ocean .protectPdfBox,
+body.theme-sunset .protectPdfBox,
+body.theme-midnight .protectPdfBox {
+  background: rgba(10, 18, 40, 0.72) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(18px);
+}
+
+body.theme-neon .protectPdfBox h1,
+body.theme-ocean .protectPdfBox h1,
+body.theme-sunset .protectPdfBox h1,
+body.theme-midnight .protectPdfBox h1 {
+  color: #ffffff !important;
+}
+
+body.theme-neon .protectPdfBox p,
+body.theme-ocean .protectPdfBox p,
+body.theme-sunset .protectPdfBox p,
+body.theme-midnight .protectPdfBox p {
+  color: #e5e7eb !important;
+}
