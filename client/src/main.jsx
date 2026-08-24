@@ -994,7 +994,36 @@ if (selectedTool === "unlock-pdf") {
     </div>
   );
 }
+if (selectedTool === "sign-pdf") {
+  return (
+    <div>
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "20px 24px 0",
+        }}
+      >
+        <button
+          onClick={() => setSelectedTool(null)}
+          style={{
+            border: "none",
+            background: "transparent",
+            color: "inherit",
+            fontSize: "15px",
+            fontWeight: "600",
+            cursor: "pointer",
+            padding: "10px 0",
+          }}
+        >
+          ← Back to Tools
+        </button>
+      </div>
 
+      <SignPdf />
+    </div>
+  );
+}
   // =========================
   // TOOLS HOME
   // =========================
@@ -1168,12 +1197,11 @@ if (selectedTool === "unlock-pdf") {
 
 
           <ToolCard
-            icon="↕️"
-            title="Reorder PDF"
-            description="Change the order of PDF pages."
-            comingSoon
-          />
-
+  icon="🗑️"
+  title="Delete PDF Pages"
+  description="Remove unwanted pages from a PDF instantly."
+  onClick={() => setActiveTool("delete-pdf-pages")}
+/>
         </div>
       </div>
 
