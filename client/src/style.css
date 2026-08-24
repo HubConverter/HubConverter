@@ -1962,137 +1962,147 @@ body.theme-light .heroSearch input { color: #15213b !important; }
 body.theme-light .app strong { color: #7c3aed !important; }
 body.theme-light kbd { color: #15213b !important; background: #eff6ff !important; }
 /* =========================================================
-   PROTECT PDF - DARK THEMES ONLY
-   Neon / Ocean / Sunset / Midnight
+  /* =========================================================
+   PROTECT PDF — SPECIAL DARK STYLE
+   ONLY FOR: NEON / OCEAN / SUNSET / MIDNIGHT
    ========================================================= */
 
-body.theme-neon .protect-pdf-card,
-body.theme-ocean .protect-pdf-card,
-body.theme-sunset .protect-pdf-card,
-body.theme-midnight .protect-pdf-card {
-  background: rgba(8, 15, 35, 0.72) !important;
-  color: #ffffff !important;
-  border: 1px solid rgba(120, 190, 255, 0.25);
-  box-shadow:
-    0 15px 45px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-}
+/* Neon */
+body.theme-neon .protect-pdf-page,
+body.neon .protect-pdf-page,
+body[data-theme="neon"] .protect-pdf-page,
 
-/* Text inside Protect PDF */
-body.theme-neon .protect-pdf-card h1,
-body.theme-neon .protect-pdf-card p,
-body.theme-neon .protect-pdf-card label,
-body.theme-neon .protect-pdf-card strong,
+/* Ocean */
+body.theme-ocean .protect-pdf-page,
+body.ocean .protect-pdf-page,
+body[data-theme="ocean"] .protect-pdf-page,
 
-body.theme-ocean .protect-pdf-card h1,
-body.theme-ocean .protect-pdf-card p,
-body.theme-ocean .protect-pdf-card label,
-body.theme-ocean .protect-pdf-card strong,
+/* Sunset */
+body.theme-sunset .protect-pdf-page,
+body.sunset .protect-pdf-page,
+body[data-theme="sunset"] .protect-pdf-page,
 
-body.theme-sunset .protect-pdf-card h1,
-body.theme-sunset .protect-pdf-card p,
-body.theme-sunset .protect-pdf-card label,
-body.theme-sunset .protect-pdf-card strong,
-
-body.theme-midnight .protect-pdf-card h1,
-body.theme-midnight .protect-pdf-card p,
-body.theme-midnight .protect-pdf-card label,
-body.theme-midnight .protect-pdf-card strong {
+/* Midnight */
+body.theme-midnight .protect-pdf-page,
+body.midnight .protect-pdf-page,
+body[data-theme="midnight"] .protect-pdf-page {
   color: #ffffff !important;
 }
 
 /* Selected PDF box */
 body.theme-neon .protect-pdf-selected,
+body.neon .protect-pdf-selected,
+body[data-theme="neon"] .protect-pdf-selected,
+
 body.theme-ocean .protect-pdf-selected,
+body.ocean .protect-pdf-selected,
+body[data-theme="ocean"] .protect-pdf-selected,
+
 body.theme-sunset .protect-pdf-selected,
-body.theme-midnight .protect-pdf-selected {
-  background: rgba(255, 255, 255, 0.09) !important;
+body.sunset .protect-pdf-selected,
+body[data-theme="sunset"] .protect-pdf-selected,
+
+body.theme-midnight .protect-pdf-selected,
+body.midnight .protect-pdf-selected,
+body[data-theme="midnight"] .protect-pdf-selected {
+  background: rgba(10, 15, 30, 0.65) !important;
   color: #ffffff !important;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
 }
 
-/* Inputs */
-body.theme-neon .protect-pdf-card input,
-body.theme-ocean .protect-pdf-card input,
-body.theme-sunset .protect-pdf-card input,
-body.theme-midnight .protect-pdf-card input {
-  background: rgba(255, 255, 255, 0.08) !important;
-  color: #ffffff !important;
-  border-color: rgba(255, 255, 255, 0.20) !important;
-}
+/* ALL TEXT inside Protect PDF */
+body.theme-neon .protect-pdf-page *,
+body.neon .protect-pdf-page *,
+body[data-theme="neon"] .protect-pdf-page *,
 
-body.theme-neon .protect-pdf-card input::placeholder,
-body.theme-ocean .protect-pdf-card input::placeholder,
-body.theme-sunset .protect-pdf-card input::placeholder,
-body.theme-midnight .protect-pdf-card input::placeholder {
-  color: rgba(255, 255, 255, 0.60) !important;
-}
-/* PROTECT PDF MAIN BOX - DARK THEMES ONLY */
+body.theme-ocean .protect-pdf-page *,
+body.ocean .protect-pdf-page *,
+body[data-theme="ocean"] .protect-pdf-page *,
 
-body.theme-neon .protectPdfBox,
-body.theme-ocean .protectPdfBox,
-body.theme-sunset .protectPdfBox,
-body.theme-midnight .protectPdfBox {
-  background: rgba(10, 18, 40, 0.72) !important;
-  color: #ffffff !important;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  backdrop-filter: blur(18px);
-}
+body.theme-sunset .protect-pdf-page *,
+body.sunset .protect-pdf-page *,
+body[data-theme="sunset"] .protect-pdf-page *,
 
-body.theme-neon .protectPdfBox h1,
-body.theme-ocean .protectPdfBox h1,
-body.theme-sunset .protectPdfBox h1,
-body.theme-midnight .protectPdfBox h1 {
+body.theme-midnight .protect-pdf-page *,
+body.midnight .protect-pdf-page *,
+body[data-theme="midnight"] .protect-pdf-page * {
   color: #ffffff !important;
 }
 
-body.theme-neon .protectPdfBox p,
-body.theme-ocean .protectPdfBox p,
-body.theme-sunset .protectPdfBox p,
-body.theme-midnight .protectPdfBox p {
-  color: #e5e7eb !important;
-}
-/* =========================================================
-   PROTECT PDF — DARK THEMES TEXT FIX
-   Neon / Ocean / Sunset / Midnight ONLY
-   ========================================================= */
+/* Password inputs */
+body.theme-neon .protect-pdf-page input[type="password"],
+body.neon .protect-pdf-page input[type="password"],
+body[data-theme="neon"] .protect-pdf-page input[type="password"],
 
-.theme-neon .protect-pdf,
-.theme-ocean .protect-pdf,
-.theme-sunset .protect-pdf,
-.theme-midnight .protect-pdf {
+body.theme-ocean .protect-pdf-page input[type="password"],
+body.ocean .protect-pdf-page input[type="password"],
+body[data-theme="ocean"] .protect-pdf-page input[type="password"],
+
+body.theme-sunset .protect-pdf-page input[type="password"],
+body.sunset .protect-pdf-page input[type="password"],
+body[data-theme="sunset"] .protect-pdf-page input[type="password"],
+
+body.theme-midnight .protect-pdf-page input[type="password"],
+body.midnight .protect-pdf-page input[type="password"],
+body[data-theme="midnight"] .protect-pdf-page input[type="password"] {
+  background: rgba(10, 15, 30, 0.65) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.35) !important;
+}
+
+/* Password placeholders */
+body.theme-neon .protect-pdf-page input::placeholder,
+body.neon .protect-pdf-page input::placeholder,
+body[data-theme="neon"] .protect-pdf-page input::placeholder,
+
+body.theme-ocean .protect-pdf-page input::placeholder,
+body.ocean .protect-pdf-page input::placeholder,
+body[data-theme="ocean"] .protect-pdf-page input::placeholder,
+
+body.theme-sunset .protect-pdf-page input::placeholder,
+body.sunset .protect-pdf-page input::placeholder,
+body[data-theme="sunset"] .protect-pdf-page input::placeholder,
+
+body.theme-midnight .protect-pdf-page input::placeholder,
+body.midnight .protect-pdf-page input::placeholder,
+body[data-theme="midnight"] .protect-pdf-page input::placeholder {
+  color: rgba(255, 255, 255, 0.72) !important;
+}
+
+/* PDF upload area */
+body.theme-neon .protect-pdf-page label,
+body.neon .protect-pdf-page label,
+body[data-theme="neon"] .protect-pdf-page label,
+
+body.theme-ocean .protect-pdf-page label,
+body.ocean .protect-pdf-page label,
+body[data-theme="ocean"] .protect-pdf-page label,
+
+body.theme-sunset .protect-pdf-page label,
+body.sunset .protect-pdf-page label,
+body[data-theme="sunset"] .protect-pdf-page label,
+
+body.theme-midnight .protect-pdf-page label,
+body.midnight .protect-pdf-page label,
+body[data-theme="midnight"] .protect-pdf-page label {
   color: #ffffff !important;
 }
 
-.theme-neon .protect-pdf *,
-.theme-ocean .protect-pdf *,
-.theme-sunset .protect-pdf *,
-.theme-midnight .protect-pdf * {
-  color: #ffffff !important;
-}
+/* Upload area's secondary text */
+body.theme-neon .protect-pdf-page label div,
+body.neon .protect-pdf-page label div,
+body[data-theme="neon"] .protect-pdf-page label div,
 
-/* Selected PDF filename */
-.theme-neon .protect-pdf .selected-file,
-.theme-ocean .protect-pdf .selected-file,
-.theme-sunset .protect-pdf .selected-file,
-.theme-midnight .protect-pdf .selected-file {
-  color: #ffffff !important;
-}
+body.theme-ocean .protect-pdf-page label div,
+body.ocean .protect-pdf-page label div,
+body[data-theme="ocean"] .protect-pdf-page label div,
 
-/* Make the filename itself white */
-.theme-neon .protect-pdf .selected-file strong,
-.theme-ocean .protect-pdf .selected-file strong,
-.theme-sunset .protect-pdf .selected-file strong,
-.theme-midnight .protect-pdf .selected-file strong {
-  color: #ffffff !important;
-}
+body.theme-sunset .protect-pdf-page label div,
+body.sunset .protect-pdf-page label div,
+body[data-theme="sunset"] .protect-pdf-page label div,
 
-/* Password labels */
-.theme-neon .protect-pdf label,
-.theme-ocean .protect-pdf label,
-.theme-sunset .protect-pdf label,
-.theme-midnight .protect-pdf label {
-  color: #ffffff !important;
+body.theme-midnight .protect-pdf-page label div,
+body.midnight .protect-pdf-page label div,
+body[data-theme="midnight"] .protect-pdf-page label div {
+  color: rgba(255, 255, 255, 0.8) !important;
 }
