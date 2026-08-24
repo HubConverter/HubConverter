@@ -878,36 +878,67 @@ if (selectedTool === "merge-pdf") {
       <ProtectPdf />
     </div>
   );
-if (selectedTool === "unlock-pdf") {
-  return (
-    <div>
-      <div
-        style={{
-          maxWidth: "1200px",
-          margin: "0 auto",
-          padding: "20px 24px 0",
-        }}
-      >
-        <button
-          onClick={() => setSelectedTool(null)}
+  if (selectedTool === "protect-pdf") {
+    return (
+      <div>
+        <div
           style={{
-            border: "none",
-            background: "transparent",
-            color: "inherit",
-            fontSize: "15px",
-            fontWeight: "600",
-            cursor: "pointer",
-            padding: "10px 0",
+            maxWidth: "1200px",
+            margin: "0 auto",
+            padding: "20px 24px 0",
           }}
         >
-          ← Back to Tools
-        </button>
-      </div>
+          <button
+            onClick={() => setSelectedTool(null)}
+            style={{
+              border: "none",
+              background: "transparent",
+              color: "inherit",
+              fontSize: "15px",
+              fontWeight: "600",
+              cursor: "pointer",
+              padding: "10px 0",
+            }}
+          >
+            ← Back to Tools
+          </button>
+        </div>
 
-      <UnlockPdf />
-    </div>
-  );
-}
+        <ProtectPdf />
+      </div>
+    );
+  }
+
+  if (selectedTool === "unlock-pdf") {
+    return (
+      <div>
+        <div
+          style={{
+            maxWidth: "1200px",
+            margin: "0 auto",
+            padding: "20px 24px 0",
+          }}
+        >
+          <button
+            onClick={() => setSelectedTool(null)}
+            style={{
+              border: "none",
+              background: "transparent",
+              color: "inherit",
+              fontSize: "15px",
+              fontWeight: "600",
+              cursor: "pointer",
+              padding: "10px 0",
+            }}
+          >
+            ← Back to Tools
+          </button>
+        </div>
+
+        <UnlockPdf />
+      </div>
+    );
+  }
   // =========================
   // TOOLS HOME
   // =========================
