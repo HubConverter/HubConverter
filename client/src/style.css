@@ -1964,40 +1964,73 @@ body.theme-light kbd { color: #15213b !important; background: #eff6ff !important
 /* =========================================================
   /* =========================================================
   /* =========================================================
-   PROTECT PDF — SPECIAL DARK STYLE
-   ONLY FOR: NEON / OCEAN / SUNSET / MIDNIGHT
-   ========================================================= */
+   /* =========================================================
+    PROTECT PDF — DARK THEMES ONLY
+    ========================================================= */
 
-/* Selected file box */
+/* NEON */
+html.theme-neon .protect-pdf-selected,
 body.theme-neon .protect-pdf-selected,
-body.neon .protect-pdf-selected,
+#root.theme-neon .protect-pdf-selected,
+html[data-theme="neon"] .protect-pdf-selected,
 body[data-theme="neon"] .protect-pdf-selected,
+#root[data-theme="neon"] .protect-pdf-selected,
+
+/* OCEAN */
+html.theme-ocean .protect-pdf-selected,
 body.theme-ocean .protect-pdf-selected,
-body.ocean .protect-pdf-selected,
+#root.theme-ocean .protect-pdf-selected,
+html[data-theme="ocean"] .protect-pdf-selected,
 body[data-theme="ocean"] .protect-pdf-selected,
+#root[data-theme="ocean"] .protect-pdf-selected,
+
+/* SUNSET */
+html.theme-sunset .protect-pdf-selected,
 body.theme-sunset .protect-pdf-selected,
-body.sunset .protect-pdf-selected,
+#root.theme-sunset .protect-pdf-selected,
+html[data-theme="sunset"] .protect-pdf-selected,
 body[data-theme="sunset"] .protect-pdf-selected,
+#root[data-theme="sunset"] .protect-pdf-selected,
+
+/* MIDNIGHT */
+html.theme-midnight .protect-pdf-selected,
 body.theme-midnight .protect-pdf-selected,
-body.midnight .protect-pdf-selected,
-body[data-theme="midnight"] .protect-pdf-selected {
+#root.theme-midnight .protect-pdf-selected,
+html[data-theme="midnight"] .protect-pdf-selected,
+body[data-theme="midnight"] .protect-pdf-selected,
+#root[data-theme="midnight"] .protect-pdf-selected {
   background: rgba(0, 0, 0, 0.45) !important;
   color: #ffffff !important;
   border: 1px solid rgba(255, 255, 255, 0.25) !important;
 }
 
-/* Selected filename must stay WHITE */
+/* FORCE EVERYTHING INSIDE THE SELECTED BOX TO WHITE */
+html.theme-neon .protect-pdf-selected *,
 body.theme-neon .protect-pdf-selected *,
-body.neon .protect-pdf-selected *,
+#root.theme-neon .protect-pdf-selected *,
+html[data-theme="neon"] .protect-pdf-selected *,
 body[data-theme="neon"] .protect-pdf-selected *,
+#root[data-theme="neon"] .protect-pdf-selected *,
+
+html.theme-ocean .protect-pdf-selected *,
 body.theme-ocean .protect-pdf-selected *,
-body.ocean .protect-pdf-selected *,
+#root.theme-ocean .protect-pdf-selected *,
+html[data-theme="ocean"] .protect-pdf-selected *,
 body[data-theme="ocean"] .protect-pdf-selected *,
+#root[data-theme="ocean"] .protect-pdf-selected *,
+
+html.theme-sunset .protect-pdf-selected *,
 body.theme-sunset .protect-pdf-selected *,
-body.sunset .protect-pdf-selected *,
+#root.theme-sunset .protect-pdf-selected *,
+html[data-theme="sunset"] .protect-pdf-selected *,
 body[data-theme="sunset"] .protect-pdf-selected *,
+#root[data-theme="sunset"] .protect-pdf-selected *,
+
+html.theme-midnight .protect-pdf-selected *,
 body.theme-midnight .protect-pdf-selected *,
-body.midnight .protect-pdf-selected *,
-body[data-theme="midnight"] .protect-pdf-selected * {
+#root.theme-midnight .protect-pdf-selected *,
+html[data-theme="midnight"] .protect-pdf-selected *,
+body[data-theme="midnight"] .protect-pdf-selected *,
+#root[data-theme="midnight"] .protect-pdf-selected * {
   color: #ffffff !important;
 }
