@@ -1987,4 +1987,24 @@ body.theme-sunset .fileItem *,
 body.theme-midnight .fileItem * {
   color: #ffffff !important; /* White Filename */
 }
+/* =========================================================
+   FIX FOR "SELECTED: FILENAME" TEXT ON MAIN PAGE
+   Forces global text color to white across all dark theme states
+   ========================================================= */
+
+body,
+body.theme-neon,
+body.theme-ocean,
+body.theme-sunset,
+body.theme-midnight {
+  color: #ffffff !important;
+}
+
+/* Fixes the text specifically if it's placed inside layout sections */
+body.theme-neon main, body.theme-neon section,
+body.theme-ocean main, body.theme-ocean section,
+body.theme-sunset main, body.theme-sunset section,
+body.theme-midnight main, body.theme-midnight section {
+  color: #ffffff !important;
+}
 
