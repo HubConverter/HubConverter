@@ -165,7 +165,12 @@ function App() {
   >
     🔄 PDF Converter Tools
   </button>
-
+<button
+  className={view === "jpg-tools" ? "active" : ""}
+  onClick={() => setView("jpg-tools")}
+>
+  🖼️ JPG Tools
+</button>
   <button
     className={view === "converter" ? "active" : ""}
     onClick={() => setView("converter")}
