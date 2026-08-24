@@ -13,6 +13,9 @@ import WatermarkPdf from "./tools/WatermarkPdf.jsx";
 import ProtectPdf from "./tools/ProtectPdf.jsx";
 import UnlockPdf from "./tools/UnlockPdf.jsx";
 import SignPdf from "./tools/SignPdf.jsx";
+import DeletePdfPages from "./tools/DeletePdfPages.jsx";
+
+
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./style.css";
