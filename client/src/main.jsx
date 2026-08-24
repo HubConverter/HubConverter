@@ -12,6 +12,7 @@ import RotatePdf from "./tools/RotatePdf.jsx";
 import WatermarkPdf from "./tools/WatermarkPdf.jsx";
 import ProtectPdf from "./tools/ProtectPdf.jsx";
 import UnlockPdf from "./tools/UnlockPdf.jsx";
+import SignPdf from "./tools/SignPdf.jsx";
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./style.css";
@@ -963,6 +964,36 @@ if (selectedTool === "unlock-pdf") {
     </div>
   );
 }
+  if (selectedTool === "sign-pdf") {
+  return (
+    <div>
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "20px 24px 0",
+        }}
+      >
+        <button
+          onClick={() => setSelectedTool(null)}
+          style={{
+            border: "none",
+            background: "transparent",
+            color: "inherit",
+            fontSize: "15px",
+            fontWeight: "600",
+            cursor: "pointer",
+            padding: "10px 0",
+          }}
+        >
+          ← Back to Tools
+        </button>
+      </div>
+
+      <SignPdf />
+    </div>
+  );
+}
 
   // =========================
   // TOOLS HOME
@@ -1119,14 +1150,12 @@ if (selectedTool === "unlock-pdf") {
   onClick={() => setSelectedTool("unlock-pdf")}
 />
 
-
-          <ToolCard
-            icon="✍️"
-            title="Sign PDF"
-            description="Add your signature to PDF documents."
-            comingSoon
-          />
-
+<ToolCard
+  icon="✍️"
+  title="Sign PDF"
+  description="Add your signature to PDF documents."
+  onClick={() => setSelectedTool("sign-pdf")}
+/>
 
         
 
