@@ -1007,7 +1007,7 @@ if (selectedTool === "merge-pdf") {
   icon="💧"
   title="Watermark PDF"
   description="Add a watermark to your PDF."
-  onClick={() => setActiveTool("watermark-pdf")}
+  onClick={() => setSelectedTool("watermark-pdf")}
 />
 
 
