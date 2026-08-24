@@ -1962,25 +1962,29 @@ body.theme-light .heroSearch input { color: #15213b !important; }
 body.theme-light .app strong { color: #7c3aed !important; }
 body.theme-light kbd { color: #15213b !important; background: #eff6ff !important; }
 /* =========================================================
- /* =========================================================
-   PROTECT PDF — DARK THEMES ONLY
+/* =========================================================
+   PROTECT PDF — ALL DARK THEMES FIX 
    Neon / Ocean / Sunset / Midnight
    ========================================================= */
 
-/* Fix: Targeted .fileItem instead of .protect-pdf-selected */
+/* 1. Force the container background to dark using a stronger selector */
 body.theme-neon .fileItem,
 body.theme-ocean .fileItem,
 body.theme-sunset .fileItem,
 body.theme-midnight .fileItem {
-  background: #111827 !important;
-  color: #ffffff !important;
+  background: #111827 !important; /* Dark Box */
   border: 1px solid rgba(255, 255, 255, 0.18) !important;
 }
 
-/* Ensure all text inside the file container turns white */
+/* 2. Force all text elements inside the box to turn crisp white */
+body.theme-neon .fileItem,
+body.theme-ocean .fileItem,
+body.theme-sunset .fileItem,
+body.theme-midnight .fileItem,
 body.theme-neon .fileItem *,
 body.theme-ocean .fileItem *,
 body.theme-sunset .fileItem *,
 body.theme-midnight .fileItem * {
-  color: #ffffff !important;
+  color: #ffffff !important; /* White Filename */
 }
+
