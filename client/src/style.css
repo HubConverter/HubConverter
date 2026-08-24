@@ -437,28 +437,1519 @@ nav button:hover {
   backdrop-filter: blur(18px);
 }
 
+.heroSearch input {
+  flex: 1;
+
+  min-width: 0;
+
+  border: 0 !important;
+
+  outline: 0;
+
+  padding: 14px;
+
+  background: transparent !important;
+
+  color: #ffffff !important;
+}
+
+.heroSearch input::placeholder {
+  color: #9db1d2 !important;
+}
+
+.heroSearch button {
+  border: 0 !important;
+
+  border-radius: 10px;
+
+  padding: 12px 18px;
+
+  color: #ffffff !important;
+
+  background:
+    linear-gradient(
+      135deg,
+      #00bfff,
+      #426eff,
+      #7c42ff
+    ) !important;
+
+  box-shadow:
+    0 0 22px rgba(0, 180, 255, 0.28);
+}
+
+
 /* =========================================================
-   UNIVERSAL THEME SWITCHER - FIXED & TESTED
+   QUICK BUTTONS
    ========================================================= */
 
-/* --- 1. LIGHT THEME CONFIGURATION --- */
-body.theme-light {
-  color: #15213b !important;
+.quick {
+  margin-top: 13px;
 }
+
+.quick button {
+  border:
+    1px solid rgba(111, 190, 255, 0.18);
+
+  border-radius: 18px;
+
+  padding: 6px 11px;
+
+  margin: 3px;
+
+  color: #d7e6ff;
+
+  background:
+    rgba(25, 48, 92, 0.55);
+}
+
+
+/* =========================================================
+   MAIN WRAPPER
+   ========================================================= */
+
+.wrap {
+  position: relative;
+
+  max-width: 1280px;
+
+  margin: auto;
+
+  padding:
+    45px 20px;
+}
+
+.sectionHead {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  margin-bottom: 20px;
+}
+
+.sectionHead h2 {
+  margin: 7px 0;
+
+  color: #ffffff !important;
+
+  font-size: 34px;
+
+  text-shadow:
+    0 0 20px rgba(0, 195, 255, 0.14);
+}
+
+.sectionHead > button {
+  border:
+    1px solid rgba(100, 180, 255, 0.25);
+
+  background:
+    rgba(15, 28, 65, 0.65);
+
+  color: #cde0ff;
+
+  padding: 8px 12px;
+
+  border-radius: 8px;
+}
+
+
+/* =========================================================
+   APP GRID
+   ========================================================= */
+
+.apps {
+  position: relative;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(5, minmax(0, 1fr));
+
+  gap: 16px;
+}
+
+
+/* =========================================================
+   APP CARD
+   ========================================================= */
+
+.app {
+  position: relative;
+
+  min-height: 205px;
+
+  border:
+    1px solid rgba(115, 190, 255, 0.34) !important;
+
+  border-radius: 17px !important;
+
+  padding:
+    28px 10px 25px !important;
+
+  text-align: center;
+
+  color: #ffffff !important;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(31, 56, 112, 0.72),
+      rgba(9, 18, 52, 0.86)
+    ) !important;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 12px 40px rgba(0, 0, 0, 0.35),
+    0 0 22px rgba(0, 130, 255, 0.07);
+
+  backdrop-filter: blur(17px);
+
+  -webkit-backdrop-filter: blur(17px);
+
+  overflow: hidden;
+
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+
+/* NEON LINE */
+
+.app::after {
+  content: "";
+
+  position: absolute;
+
+  left: 18px;
+  right: 18px;
+
+  bottom: 10px;
+
+  height: 3px;
+
+  border-radius: 20px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #00d5ff,
+      #376cff,
+      #9b45ff
+    );
+
+  box-shadow:
+    0 0 12px rgba(0, 195, 255, 0.55);
+}
+
+
+/* APP HOVER */
+
+.app:hover {
+  transform:
+    translateY(-8px)
+    scale(1.015);
+
+  border-color:
+    rgba(0, 205, 255, 0.85) !important;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 22px 55px rgba(0, 0, 0, 0.48),
+    0 0 32px rgba(0, 180, 255, 0.22),
+    0 0 60px rgba(100, 55, 255, 0.14);
+}
+
+
+/* =========================================================
+   APP ICON
+   ========================================================= */
+
+.app b {
+  display: block;
+
+  font-size: 44px;
+
+  line-height: 1;
+
+  margin-bottom: 19px;
+
+  color: #ffffff;
+
+  filter:
+    drop-shadow(
+      0 0 10px rgba(0, 195, 255, 0.38)
+    );
+}
+
+
+/* =========================================================
+   APP NAME
+   THIS MAKES BUSY / CHROME / EXCEL / TALLY / ETC YELLOW
+   ========================================================= */
+
+.app strong {
+  display: block;
+
+  margin-top: 7px;
+
+  color: #ffd84d !important;
+
+  font-size: 20px;
+
+  font-weight: 800;
+
+  text-shadow:
+    0 0 9px rgba(255, 216, 77, 0.20);
+}
+
+
+/* SHORTCUT COUNT */
+
+.app small {
+  display: block;
+
+  margin-top: 9px;
+
+  color: #9eb8df !important;
+
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   FEATURE BOXES
+   ========================================================= */
+
+.featureGrid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  gap: 16px;
+
+  margin-top: 24px;
+}
+
+.featureGrid article,
+.featureGrid > *,
+.learnBox,
+.profile,
+.admin {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(24, 42, 87, 0.68),
+      rgba(8, 16, 45, 0.82)
+    ) !important;
+
+  border:
+    1px solid rgba(100, 175, 255, 0.23) !important;
+
+  border-radius: 16px !important;
+
+  padding: 20px;
+
+  color: #e8f1ff !important;
+
+  box-shadow:
+    0 12px 35px rgba(0, 0, 0, 0.30);
+
+  backdrop-filter: blur(15px);
+}
+
+.featureGrid p {
+  color: #9db3d5 !important;
+
+  font-size: 13px;
+}
+
+
+/* =========================================================
+   SHORTCUT CARDS
+   ========================================================= */
+
+.filters {
+  display: flex;
+
+  gap: 8px;
+
+  margin-bottom: 16px;
+}
+
+.filters input,
+.filters select,
+.formGrid input,
+.modalBox input {
+  border:
+    1px solid rgba(100, 180, 255, 0.28) !important;
+
+  background:
+    rgba(10, 20, 50, 0.65) !important;
+
+  color: #ffffff !important;
+
+  border-radius: 8px;
+
+  padding: 10px;
+
+  outline: 0;
+}
+
+.filters input {
+  flex: 1;
+}
+
+.cards {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  gap: 16px;
+}
+
+.shortcut {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(24, 42, 87, 0.68),
+      rgba(8, 16, 45, 0.82)
+    ) !important;
+
+  border:
+    1px solid rgba(100, 175, 255, 0.23) !important;
+
+  border-radius: 16px;
+
+  padding: 20px;
+
+  color: #e8f1ff !important;
+}
+
+.shortcutTop {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+}
+
+.shortcutTop small {
+  display: block;
+
+  color: #9db3d5 !important;
+}
+
+.appIcon {
+  font-size: 30px;
+
+  filter:
+    drop-shadow(
+      0 0 9px rgba(0, 195, 255, 0.38)
+    );
+}
+
+.heart {
+  margin-left: auto;
+
+  border: 0;
+
+  background: transparent;
+
+  color: #c8d8f2;
+
+  font-size: 23px;
+}
+
+.heart.on {
+  color: #ff4f91;
+}
+
+.keys {
+  display: flex;
+
+  gap: 5px;
+
+  margin: 20px 0 12px;
+
+  flex-wrap: wrap;
+}
+
+kbd {
+  color: #ffffff;
+
+  background:
+    rgba(34, 50, 82, 0.90) !important;
+
+  border:
+    1px solid rgba(115, 175, 235, 0.32) !important;
+
+  border-bottom-width: 2px;
+
+  border-radius: 6px;
+
+  padding: 5px 8px;
+
+  font-weight: 750;
+}
+
+.shortcut h3 {
+  color: #ffffff !important;
+}
+
+.shortcut p {
+  color: #9db3d5 !important;
+
+  font-size: 13px;
+}
+
+.cardActions {
+  display: flex;
+
+  gap: 6px;
+}
+
+.cardActions button,
+.shortcut > button {
+  border:
+    1px solid rgba(100, 180, 255, 0.28);
+
+  background:
+    rgba(20, 35, 70, 0.70);
+
+  color: #e8f2ff;
+
+  border-radius: 8px;
+
+  padding: 8px;
+}
+
+
+/* =========================================================
+   PROFILE / ADMIN / LEARN
+   ========================================================= */
+
+.learnBox {
+  max-width: 800px;
+
+  margin: 20px auto;
+
+  text-align: center;
+}
+
+.examBox {
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 28px;
+  border: 1px solid rgba(100, 175, 255, 0.23);
+  border-radius: 16px;
+  background: linear-gradient(145deg, rgba(24, 42, 87, 0.68), rgba(8, 16, 45, 0.82));
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.30);
+}
+
+.examBox > h2 { margin: 8px 0; color: #ffffff; }
+.examBox > p { color: #b6c7e3; }
+
+.examQuestion {
+  display: grid;
+  gap: 10px;
+  margin: 22px 0;
+  padding: 18px;
+  border: 1px solid rgba(100, 175, 255, 0.20);
+  border-radius: 12px;
+  background: rgba(9, 22, 56, 0.45);
+}
+
+.examQuestion legend {
+  max-width: 100%;
+  padding: 0 6px;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.examQuestion > small { color: #82cfff; }
+
+.examQuestion label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  color: #dce9ff;
+  cursor: pointer;
+}
+
+.examQuestion label:hover { background: rgba(96, 165, 250, 0.12); }
+.examQuestion input { accent-color: #38bdf8; }
+
+body.theme-light .examBox,
+body.theme-light .examQuestion { background: rgba(255, 255, 255, 0.78) !important; }
+body.theme-light .examBox > h2,
+body.theme-light .examQuestion legend,
+body.theme-light .examQuestion label { color: #15213b !important; }
+
+.learnProgress {
+  width: min(460px, 100%);
+  height: 8px;
+  margin: 18px auto 0;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.22);
+}
+
+.learnProgress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #22d3ee, #6366f1, #a855f7);
+  transition: width 0.25s ease;
+}
+
+.learnCount {
+  margin: 9px 0 0;
+  color: #9db3d5 !important;
+  font-size: 13px;
+}
+
+.megaKey {
+  font-size: 38px;
+
+  font-weight: 850;
+
+  margin: 30px;
+
+  color: #ffffff;
+}
+
+.answers {
+  display: grid;
+
+  gap: 9px;
+
+  max-width: 600px;
+
+  margin: 20px auto;
+}
+
+.answers button {
+  text-align: left;
+
+  border:
+    1px solid rgba(100, 180, 255, 0.28);
+
+  background:
+    rgba(20, 35, 70, 0.70);
+
+  color: #ffffff;
+
+  border-radius: 8px;
+
+  padding: 10px;
+}
+
+.badge {
+  font-size: 45px;
+}
+
+.score {
+  font-size: 28px;
+
+  font-weight: 800;
+
+  color: #ffd84d;
+}
+
+.quizReview {
+  max-width: 620px;
+  margin: 28px auto;
+  text-align: left;
+}
+
+.quizReview h3 {
+  margin-bottom: 12px;
+  color: #ffffff;
+}
+
+.quizReview article {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 16px;
+  border: 1px solid rgba(251, 113, 133, 0.38);
+  border-radius: 12px;
+  background: rgba(127, 29, 29, 0.16);
+}
+
+.quizReview article b {
+  color: #ffffff;
+}
+
+.quizReview article p {
+  margin: 0;
+  color: #d9e5fb;
+}
+
+.quizReview article p span:first-child {
+  color: #fda4af;
+  font-weight: 700;
+}
+
+.quizReview article p:last-child span:first-child {
+  color: #86efac;
+}
+
+.profile,
+.admin {
+  max-width: 900px;
+
+  margin: 15px auto;
+}
+
+.stats,
+.adminStats {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, 1fr);
+
+  gap: 10px;
+
+  margin: 24px 0;
+}
+
+.stats div,
+.adminStats div {
+  background:
+    rgba(20, 35, 70, 0.72) !important;
+
+  border:
+    1px solid rgba(100, 175, 255, 0.18);
+
+  border-radius: 9px;
+
+  padding: 16px;
+
+  text-align: center;
+}
+
+.stats b,
+.stats small,
+.adminStats b,
+.adminStats small {
+  display: block;
+}
+
+.stats b,
+.adminStats b {
+  font-size: 22px;
+
+  color: #ffffff;
+}
+
+.stats small,
+.adminStats small {
+  color: #9db3d5 !important;
+}
+
+.progress {
+  height: 8px;
+
+  background: #182745;
+
+  border-radius: 10px;
+
+  overflow: hidden;
+}
+
+.progress span {
+  display: block;
+
+  height: 100%;
+
+  background:
+    linear-gradient(
+      90deg,
+      #00cfff,
+      #496dff,
+      #8d43ff
+    );
+}
+
+.badges {
+  display: flex;
+
+  gap: 8px;
+
+  flex-wrap: wrap;
+}
+
+.badges span {
+  padding: 8px 11px;
+
+  border-radius: 18px;
+
+  background:
+    rgba(0, 170, 255, 0.10);
+
+  border:
+    1px solid rgba(0, 195, 255, 0.18);
+
+  color: #a9ddff;
+
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   MODAL
+   ========================================================= */
+
+.modal {
+  position: fixed;
+
+  inset: 0;
+
+  background:
+    rgba(1, 5, 20, 0.78);
+
+  display: grid;
+
+  place-items: center;
+
+  z-index: 300;
+
+  padding: 20px;
+
+  backdrop-filter: blur(8px);
+}
+
+.modalBox {
+  background:
+    linear-gradient(
+      145deg,
+      #152853,
+      #080f2d
+    ) !important;
+
+  color: #ffffff !important;
+
+  border:
+    1px solid rgba(100, 180, 255, 0.28) !important;
+
+  border-radius: 15px;
+
+  padding: 26px;
+
+  width: min(420px, 100%);
+
+  position: relative;
+
+  box-shadow:
+    0 25px 80px rgba(0, 0, 0, 0.55);
+}
+
+.modalBox input {
+  width: 100%;
+
+  margin: 6px 0;
+}
+
+.close {
+  position: absolute;
+
+  right: 10px;
+
+  top: 5px;
+
+  border: 0;
+
+  background: transparent;
+
+  color: #ffffff;
+
+  font-size: 25px;
+}
+
+.full {
+  width: 100%;
+
+  margin-top: 8px;
+}
+
+.link {
+  display: block;
+
+  margin: 10px auto;
+
+  border: 0;
+
+  background: transparent;
+
+  color: #48c8ff;
+}
+
+.error {
+  color: #ff7c91 !important;
+
+  font-size: 12px;
+
+  padding: 6px;
+}
+
+
+/* =========================================================
+   TOAST / FOOTER
+   ========================================================= */
+
+.toast {
+  position: fixed;
+
+  right: 20px;
+
+  bottom: 20px;
+
+  background: #132b4d;
+
+  color: #ffffff;
+
+  padding: 12px 16px;
+
+  border:
+    1px solid rgba(100, 180, 255, 0.25);
+
+  border-radius: 9px;
+
+  z-index: 500;
+
+  box-shadow:
+    0 10px 35px rgba(0, 0, 0, 0.35);
+}
+
+footer {
+  text-align: center;
+
+  padding: 28px;
+
+  background:
+    rgba(3, 8, 28, 0.85) !important;
+
+  color: #a8bad8 !important;
+
+  border-top:
+    1px solid rgba(100, 180, 255, 0.15);
+
+  margin-top: 20px;
+}
+
+
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
+
+::-webkit-scrollbar {
+  width: 9px;
+}
+
+::-webkit-scrollbar-track {
+  background: #04081c;
+}
+
+::-webkit-scrollbar-thumb {
+  background:
+    linear-gradient(
+      #00bfff,
+      #6d45ff
+    );
+
+  border-radius: 10px;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+  header {
+    height: auto;
+
+    flex-wrap: wrap;
+
+    padding: 10px 15px;
+  }
+
+  .brand {
+    min-width: 200px;
+  }
+
+  nav {
+    order: 3;
+
+    width: 100%;
+
+    overflow-x: auto;
+  }
+
+  .apps {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+  }
+
+  .cards {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
+
+
+@media (max-width: 600px) {
+
+  .hero {
+    padding:
+      65px 15px 55px;
+  }
+
+  .hero h1 {
+    font-size: 40px;
+  }
+
+  .apps,
+  .cards,
+  .featureGrid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .stats,
+  .adminStats {
+    grid-template-columns:
+      1fr 1fr;
+  }
+
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .wrap {
+    padding:
+      28px 14px;
+  }
+
+  .app {
+    min-height: 180px;
+  }
+}
+
+
+@media (max-width: 420px) {
+
+  .apps,
+  .cards,
+  .featureGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .heroSearch {
+    display: block;
+
+    background: transparent !important;
+
+    border: 0 !important;
+
+    box-shadow: none !important;
+  }
+
+  .heroSearch input {
+    width: 100%;
+
+    background:
+      rgba(12, 25, 65, 0.75) !important;
+
+    border:
+      1px solid rgba(91, 181, 255, 0.45) !important;
+
+    border-radius: 9px;
+
+    margin-bottom: 7px;
+  }
+
+  .heroSearch button {
+    width: 100%;
+  }
+}
+
+/* ================================
+   JPG TO PDF - SIZE SELECTOR
+================================ */
+
+.toolPage {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 60px 20px;
+}
+
+.toolBox {
+  width: min(900px, 100%);
+  margin: 0 auto;
+  text-align: center;
+}
+
+.toolBox h1 {
+  font-size: 52px;
+  margin: 10px 0 15px;
+  color: #ffffff;
+}
+
+.toolBox > p {
+  font-size: 20px;
+  color: #c8d8f2;
+  margin-bottom: 30px;
+}
+
+.uploadBox {
+  width: min(700px, 100%);
+  min-height: 170px;
+  margin: 25px auto;
+  padding: 35px 25px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  border: 2px dashed rgba(80, 190, 255, 0.45);
+  border-radius: 18px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(20, 50, 100, 0.65),
+      rgba(7, 18, 50, 0.85)
+    );
+
+  color: #ffffff;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.uploadBox:hover {
+  border-color: #38bdf8;
+  transform: translateY(-2px);
+  box-shadow: 0 0 30px rgba(56, 189, 248, 0.15);
+}
+
+.uploadBox input {
+  display: none;
+}
+
+.uploadIcon {
+  font-size: 42px;
+  margin-bottom: 12px;
+}
+
+.uploadBox strong {
+  font-size: 20px;
+  color: #ffffff;
+}
+
+.uploadBox span {
+  margin-top: 8px;
+  color: #9fb5d9;
+}
+
+.fileList {
+  width: min(700px, 100%);
+  margin: 20px auto;
+  text-align: left;
+}
+
+.fileItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 10px 14px;
+  margin-bottom: 8px;
+
+  border-radius: 10px;
+  background: rgba(20, 45, 85, 0.65);
+  color: #ffffff;
+}
+
+
+/* =========================================
+   SIZE SELECTOR
+   ========================================= */
+
+.sizeSelector {
+  width: min(850px, 100%);
+  margin: 30px auto 20px;
+  text-align: center;
+}
+
+.sizeSelector > strong {
+  display: block;
+  margin-bottom: 15px;
+
+  font-size: 18px;
+  color: #ffffff;
+}
+
+.sizeOptions {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+}
+
+.sizeOption {
+  flex: 1;
+
+  min-height: 85px;
+
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  padding: 14px 18px;
+
+  border: 1px solid rgba(90, 160, 255, 0.35);
+  border-radius: 14px;
+
+  background: rgba(10, 30, 70, 0.75);
+  color: #ffffff;
+
+  cursor: pointer;
+  text-align: left;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.sizeOption:hover {
+  border-color: #38bdf8;
+  transform: translateY(-2px);
+}
+
+.sizeOption.active {
+  border-color: #38bdf8;
+  background: rgba(20, 90, 170, 0.55);
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.18);
+}
+
+.sizeIcon {
+  width: 45px;
+  height: 45px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  background: rgba(255, 255, 255, 0.10);
+
+  color: #38bdf8;
+  font-weight: 800;
+  font-size: 18px;
+}
+
+.sizeOption span:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sizeOption b {
+  font-size: 16px;
+  color: #ffffff;
+}
+
+.sizeOption small {
+  font-size: 13px;
+  color: #9fb5d9;
+}
+
+
+/* =========================================
+   BUTTON
+   ========================================= */
+
+.convertButton {
+  display: block;
+
+  min-width: 220px;
+
+  margin: 25px auto 20px;
+  padding: 14px 28px;
+
+  border: 0;
+  border-radius: 12px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #00bfff,
+      #426eff,
+      #7c42ff
+    );
+
+  color: #ffffff;
+
+  font-size: 17px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 8px 25px rgba(0, 140, 255, 0.25);
+
+  transition: 0.2s ease;
+}
+
+.convertButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow:
+    0 12px 30px rgba(0, 140, 255, 0.35);
+}
+
+.convertButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+
+/* =========================================
+   DOWNLOAD BUTTON
+   ========================================= */
+
+.downloadButton {
+  display: block;
+
+  min-width: 220px;
+
+  margin: 15px auto 20px;
+  padding: 14px 28px;
+
+  border: 0;
+  border-radius: 12px;
+
+  background: linear-gradient(
+    135deg,
+    #22c55e,
+    #16a34a
+  );
+
+  color: #ffffff;
+
+  font-size: 17px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 8px 25px rgba(34, 197, 94, 0.25);
+}
+
+.downloadButton:hover {
+  transform: translateY(-2px);
+}
+
+
+/* =========================================
+   TOOL NOTE
+   ========================================= */
+
+.toolNote {
+  width: min(700px, 100%);
+  margin: 20px auto;
+
+  text-align: center;
+
+  color: #9fb5d9;
+  font-size: 14px;
+}
+
+
+/* =========================================
+   MOBILE
+   ========================================= */
+
+@media (max-width: 700px) {
+
+  .toolPage {
+    padding: 40px 15px;
+  }
+
+  .toolBox h1 {
+    font-size: 38px;
+  }
+
+  .toolBox > p {
+    font-size: 17px;
+  }
+
+  .sizeOptions {
+    flex-direction: column;
+  }
+
+  .sizeOption {
+    width: 100%;
+  }
+
+  .uploadBox {
+    min-height: 150px;
+  }
+}
+
+/* =========================================================
+   FIVE-STYLE THEME PICKER
+   ========================================================= */
+
+.themePicker {
+  position: relative;
+}
+
+.themeToggle {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(125, 211, 252, 0.32) !important;
+  border-radius: 12px !important;
+  background: rgba(15, 35, 75, 0.72) !important;
+  color: #ffffff !important;
+  font-size: 20px;
+}
+
+.themeMenu {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  z-index: 250;
+  min-width: 175px;
+  padding: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.30);
+  border-radius: 14px;
+  background: rgba(7, 15, 40, 0.96);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.42);
+  backdrop-filter: blur(18px);
+}
+
+.themeMenu > b {
+  display: block;
+  padding: 6px 8px 9px;
+  color: #dbeafe;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.themeChoice {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 10px !important;
+  border: 0 !important;
+  border-radius: 9px !important;
+  background: transparent !important;
+  color: #dbeafe !important;
+  text-align: left;
+}
+
+.themeChoice:hover,
+.themeChoice.active {
+  background: rgba(96, 165, 250, 0.18) !important;
+  color: #ffffff !important;
+}
+
+.themeChoice span {
+  width: 21px;
+  text-align: center;
+}
+
+body.theme-ocean {
+  background: radial-gradient(circle at 75% 15%, rgba(6, 182, 212, 0.34), transparent 30%), radial-gradient(circle at 15% 85%, rgba(14, 116, 144, 0.30), transparent 35%), linear-gradient(135deg, #021b32 0%, #063b5c 48%, #082f49 100%);
+}
+
+body.theme-sunset {
+  background: radial-gradient(circle at 78% 22%, rgba(251, 146, 60, 0.34), transparent 30%), radial-gradient(circle at 20% 75%, rgba(236, 72, 153, 0.24), transparent 34%), linear-gradient(135deg, #2a0d27 0%, #6b1d3e 48%, #3b1235 100%);
+}
+
+body.theme-midnight {
+  background: radial-gradient(circle at 76% 20%, rgba(129, 140, 248, 0.28), transparent 30%), radial-gradient(circle at 18% 78%, rgba(168, 85, 247, 0.20), transparent 35%), linear-gradient(135deg, #0a0618 0%, #1e1248 48%, #100a29 100%);
+}
+
+body.theme-light {
+  color: #15213b;
+  background: radial-gradient(circle at 85% 10%, rgba(125, 211, 252, 0.58), transparent 30%), radial-gradient(circle at 12% 82%, rgba(196, 181, 253, 0.42), transparent 34%), linear-gradient(135deg, #f8fbff 0%, #e7f3ff 50%, #f7f2ff 100%);
+}
+
+body.theme-ocean header,
+body.theme-ocean footer,
+body.theme-ocean .themeMenu { background: rgba(3, 37, 60, 0.88) !important; }
+body.theme-sunset header,
+body.theme-sunset footer,
+body.theme-sunset .themeMenu { background: rgba(54, 12, 43, 0.89) !important; }
+body.theme-midnight header,
+body.theme-midnight footer,
+body.theme-midnight .themeMenu { background: rgba(16, 9, 42, 0.90) !important; }
+body.theme-light header,
+body.theme-light footer,
+body.theme-light .themeMenu { background: rgba(255, 255, 255, 0.88) !important; }
+
+body.theme-ocean .primary,
+body.theme-ocean .heroSearch button { background: linear-gradient(135deg, #06b6d4, #0284c7, #2563eb) !important; }
+body.theme-sunset .primary,
+body.theme-sunset .heroSearch button { background: linear-gradient(135deg, #f97316, #ec4899, #9333ea) !important; }
+body.theme-midnight .primary,
+body.theme-midnight .heroSearch button { background: linear-gradient(135deg, #818cf8, #7c3aed, #c026d3) !important; }
+body.theme-light .primary,
+body.theme-light .heroSearch button { background: linear-gradient(135deg, #0284c7, #2563eb, #7c3aed) !important; }
+
+body.theme-light .brand,
+body.theme-light nav button,
+body.theme-light .sectionHead h2,
+body.theme-light .hero h1,
+body.theme-light .shortcut h3,
+body.theme-light .shortcut,
+body.theme-light .featureGrid article,
+body.theme-light .learnBox,
+body.theme-light .toolBox h1,
+body.theme-light .themeMenu,
+body.theme-light .themeMenu > b,
+body.theme-light .themeChoice { color: #15213b !important; }
+
+body.theme-light .hero p,
+body.theme-light .featureGrid p,
+body.theme-light .shortcut p,
+body.theme-light .app small,
+body.theme-light footer { color: #52627d !important; }
 
 body.theme-light .app,
 body.theme-light .shortcut,
 body.theme-light .featureGrid article,
 body.theme-light .learnBox,
 body.theme-light .profile,
+body.theme-light .toolBox,
 body.theme-light .uploadBox,
 body.theme-light .fileItem,
-body.theme-light .sizeOption,
-body.theme-light .toolBox {
+body.theme-light .sizeOption {
   background: rgba(255, 255, 255, 0.76) !important;
   border-color: rgba(37, 99, 235, 0.18) !important;
   box-shadow: 0 12px 32px rgba(30, 64, 175, 0.10) !important;
-  color: #15213b !important;
 }
 
 body.theme-light .heroSearch,
@@ -470,61 +1961,56 @@ body.theme-light .themeToggle {
 body.theme-light .heroSearch input { color: #15213b !important; }
 body.theme-light .app strong { color: #7c3aed !important; }
 body.theme-light kbd { color: #15213b !important; background: #eff6ff !important; }
+/* =========================================================
+ /* =========================================================
+   PROTECT PDF — DARK THEMES ONLY
+   Neon / Ocean / Sunset / Midnight
+   ========================================================= */
 
-/* Force light mode inputs */
-body.theme-light .toolBox input,
-body.theme-light .toolPage input,
-body.theme-light main input {
-  background: #ffffff !important;
-  color: #0f172a !important;
-  border: 1px solid #cbd5e1 !important;
-}
+/* Selected PDF box */
+html[data-theme="neon"] .protect-pdf-selected,
+html[data-theme="ocean"] .protect-pdf-selected,
+html[data-theme="sunset"] .protect-pdf-selected,
+html[data-theme="midnight"] .protect-pdf-selected,
 
-body.theme-light .toolBox *,
-body.theme-light .toolPage *,
-body.theme-light main * {
-  color: #15213b !important;
-}
+body[data-theme="neon"] .protect-pdf-selected,
+body[data-theme="ocean"] .protect-pdf-selected,
+body[data-theme="sunset"] .protect-pdf-selected,
+body[data-theme="midnight"] .protect-pdf-selected,
 
+body.theme-neon .protect-pdf-selected,
+body.theme-ocean .protect-pdf-selected,
+body.theme-sunset .protect-pdf-selected,
+body.theme-midnight .protect-pdf-selected,
 
-/* --- 2. DARK THEMES CONFIGURATION (Neon / Ocean / Sunset / Midnight) --- */
-
-/* Force clean dark container pages without white panels bleed */
-body:not(.theme-light) .toolPage,
-body:not(.theme-light) .toolBox,
-body:not(.theme-light) main,
-body:not(.theme-light) section,
-body:not(.theme-light) .toolBox > div,
-body:not(.theme-light) .toolPage > div {
-  background: transparent !important;
-  box-shadow: none !important;
-  border: none !important;
-}
-
-/* Force dark upload area look */
-body:not(.theme-light) .uploadBox {
-  background: linear-gradient(145deg, rgba(20, 50, 100, 0.65), rgba(7, 18, 50, 0.85)) !important;
-  border: 2px dashed rgba(80, 190, 255, 0.45) !important;
-}
-
-/* Force text labels to pure visible white over dark backgrounds */
-body:not(.theme-light) .toolBox h1,
-body:not(.theme-light) .toolBox p,
-body:not(.theme-light) .toolBox strong,
-body:not(.theme-light) .toolBox span,
-body:not(.theme-light) .toolBox div,
-body:not(.theme-light) .toolBox label,
-body:not(.theme-light) .toolPage label,
-body:not(.theme-light) main label,
-body:not(.theme-light) .fileItem {
+body.neon .protect-pdf-selected,
+body.ocean .protect-pdf-selected,
+body.sunset .protect-pdf-selected,
+body.midnight .protect-pdf-selected {
+  background: #111827 !important;
   color: #ffffff !important;
+  border: 1px solid rgba(255,255,255,0.18) !important;
 }
 
-/* Keep form inputs readable in dark mode */
-body:not(.theme-light) .toolBox input,
-body:not(.theme-light) .toolPage input,
-body:not(.theme-light) main input {
-  background: #ffffff !important;
-  color: #0f172a !important;
-  border: 1px solid #cbd5e1 !important;
+/* Filename + "Selected:" text */
+html[data-theme="neon"] .protect-pdf-selected *,
+html[data-theme="ocean"] .protect-pdf-selected *,
+html[data-theme="sunset"] .protect-pdf-selected *,
+html[data-theme="midnight"] .protect-pdf-selected *,
+
+body[data-theme="neon"] .protect-pdf-selected *,
+body[data-theme="ocean"] .protect-pdf-selected *,
+body[data-theme="sunset"] .protect-pdf-selected *,
+body[data-theme="midnight"] .protect-pdf-selected *,
+
+body.theme-neon .protect-pdf-selected *,
+body.theme-ocean .protect-pdf-selected *,
+body.theme-sunset .protect-pdf-selected *,
+body.theme-midnight .protect-pdf-selected *,
+
+body.neon .protect-pdf-selected *,
+body.ocean .protect-pdf-selected *,
+body.sunset .protect-pdf-selected *,
+body.midnight .protect-pdf-selected * {
+  color: #ffffff !important;
 }
