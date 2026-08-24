@@ -1185,16 +1185,7 @@ if (selectedTool === "sign-pdf") {
   description="Add your signature to PDF documents."
   onClick={() => setSelectedTool("sign-pdf")}
 />
-
-        
-
-          <ToolCard
-            icon="🗑️"
-            title="Delete PDF Pages"
-            description="Remove unwanted pages from a PDF."
-            comingSoon
-          />
-
+   
 
           <ToolCard
   icon="🗑️"
