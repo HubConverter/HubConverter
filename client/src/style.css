@@ -1963,48 +1963,31 @@ body.theme-light .app strong { color: #7c3aed !important; }
 body.theme-light kbd { color: #15213b !important; background: #eff6ff !important; }
 /* =========================================================
 /* =========================================================
-   PROTECT PDF — ALL DARK THEMES FIX 
+   PROTECT PDF — TEXT CONTRAST FOR ALL DARK THEMES
    Neon / Ocean / Sunset / Midnight
    ========================================================= */
 
-/* 1. Force the container background to dark using a stronger selector */
-body.theme-neon .fileItem,
-body.theme-ocean .fileItem,
-body.theme-sunset .fileItem,
-body.theme-midnight .fileItem {
-  background: #111827 !important; /* Dark Box */
-  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+/* 1. Force the dynamic 'Selected:' text container layout to look dark on dark modes */
+body.theme-neon .toolBox,
+body.theme-ocean .toolBox,
+body.theme-sunset .toolBox,
+body.theme-midnight .toolBox,
+body.theme-neon .toolPage,
+body.theme-ocean .toolPage,
+body.theme-sunset .toolPage,
+body.theme-midnight .toolPage {
+  color: #ffffff !important; /* White text for "Selected:" */
 }
 
-/* 2. Force all text elements inside the box to turn crisp white */
-body.theme-neon .fileItem,
-body.theme-ocean .fileItem,
-body.theme-sunset .fileItem,
-body.theme-midnight .fileItem,
-body.theme-neon .fileItem *,
-body.theme-ocean .fileItem *,
-body.theme-sunset .fileItem *,
-body.theme-midnight .fileItem * {
-  color: #ffffff !important; /* White Filename */
+/* 2. Target any plain unclassed text fragments, paragraph tags, or generic divs */
+body.theme-neon .toolBox *,
+body.theme-ocean .toolBox *,
+body.theme-sunset .toolBox *,
+body.theme-midnight .toolBox * {
+  color: inherit; 
 }
-/* =========================================================
-   FIX FOR "SELECTED: FILENAME" TEXT ON MAIN PAGE
-   Forces global text color to white across all dark theme states
-   ========================================================= */
 
-body,
-body.theme-neon,
-body.theme-ocean,
-body.theme-sunset,
-body.theme-midnight {
+/* 3. Ensure the direct plain-text element itself defaults to white if it uses an absolute selector */
+body:not(.theme-light) [class*="tool"] {
   color: #ffffff !important;
 }
-
-/* Fixes the text specifically if it's placed inside layout sections */
-body.theme-neon main, body.theme-neon section,
-body.theme-ocean main, body.theme-ocean section,
-body.theme-sunset main, body.theme-sunset section,
-body.theme-midnight main, body.theme-midnight section {
-  color: #ffffff !important;
-}
-
