@@ -6,15 +6,17 @@ export default function ExtractPdf() {
   const [pages, setPages] = useState("");
   const [message, setMessage] = useState("");
   const [downloadUrl, setDownloadUrl] = useState("");
+  const [loading, setLoading] = useState(false);
 
   function handleFileChange(event) {
     const selectedFile = event.target.files?.[0];
 
-    if (!selectedFile) {
-      setFile(null);
-      setMessage("");
-      return;
-    }
+  if (!selectedFile) {
+  setFile(null);
+  setMessage("");
+  setDownloadUrl("");
+  return;
+}
 
     if (selectedFile.type !== "application/pdf") {
       setMessage("Please select a PDF file.");
@@ -25,6 +27,7 @@ export default function ExtractPdf() {
     setFile(selectedFile);
     setMessage("");
     setPages("");
+    setDownloadUrl("");
   }
 
   async function handleExtractPdf() {
@@ -129,15 +132,13 @@ export default function ExtractPdf() {
 
       const url = URL.createObjectURL(blob);
 
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = "ShortcutHub-Extract-Pdf.pdf";
+setDownloadUrl(url);
 
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-
-      URL.revokeObjectURL(url);
+setMessage(
+  `Done! ${uniquePages.length} page${
+    uniquePages.length === 1 ? "" : "s"
+  } extracted successfully.`
+);
 
       setMessage(
         `Done! ${uniquePages.length} page${
