@@ -111,17 +111,18 @@ export default function ProtectPdf() {
         </label>
 
         {file && (
-          <div
-            style={{
-              padding: "12px 15px",
-              background: "#f5f7fb",
-              borderRadius: "10px",
-              marginBottom: "20px",
-            }}
-          >
-            Selected: <strong>{file.name}</strong>
-          </div>
-        )}
+  <div
+    className="protect-pdf-selected-file"
+    style={{
+      padding: "12px 15px",
+      background: "#f5f7fb",
+      borderRadius: "10px",
+      marginBottom: "20px",
+    }}
+  >
+    Selected: <strong>{file.name}</strong>
+  </div>
+)}
 
         <label
           style={{
