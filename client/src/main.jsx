@@ -902,27 +902,67 @@ if (selectedTool === "merge-pdf") {
       </div>
     );
   }
-    if (selectedTool === "protect-pdf") {
+ if (selectedTool === "protect-pdf") {
   return (
     <div>
-      <ProtectPdf />
-    </div>
-  );
-  if (selectedTool === "protect-pdf") { // <-- Broken: Started but never closed
-    return (
-      <div>
-        ...
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "20px 24px 0",
+        }}
+      >
+        <button
+          onClick={() => setSelectedTool(null)}
+          style={{
+            border: "none",
+            background: "transparent",
+            color: "inherit",
+            fontSize: "15px",
+            fontWeight: "600",
+            cursor: "pointer",
+            padding: "10px 0",
+          }}
+        >
+          ← Back to Tools
+        </button>
       </div>
-    );
-  }
 
-  if (selectedTool === "protect-pdf") { // <-- Broken: Started but never closed
-  return (
-    <div>
       <ProtectPdf />
     </div>
   );
-  if (selectedTool === "protect-pdf") { // <-- Broken: Started but never closed
+}
+
+if (selectedTool === "unlock-pdf") {
+  return (
+    <div>
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "20px 24px 0",
+        }}
+      >
+        <button
+          onClick={() => setSelectedTool(null)}
+          style={{
+            border: "none",
+            background: "transparent",
+            color: "inherit",
+            fontSize: "15px",
+            fontWeight: "600",
+            cursor: "pointer",
+            padding: "10px 0",
+          }}
+        >
+          ← Back to Tools
+        </button>
+      </div>
+
+      <UnlockPdf />
+    </div>
+  );
+}
 
   // =========================
   // TOOLS HOME
