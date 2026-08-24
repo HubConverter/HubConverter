@@ -57,13 +57,14 @@ export default function ProtectPdf() {
       </button>
 
       <div
-        style={{
-          background: "#fff",
-          borderRadius: "20px",
-          padding: "35px",
-          boxShadow: "0 10px 35px rgba(0,0,0,0.08)",
-        }}
-      >
+  className="protect-pdf-selected"
+  style={{
+    padding: "12px 15px",
+    background: "#f5f7fb",
+    borderRadius: "10px",
+    marginBottom: "20px",
+  }}
+>
         <div style={{ textAlign: "center", marginBottom: "30px" }}>
           <div style={{ fontSize: "48px" }}>🔐</div>
 
