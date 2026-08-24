@@ -281,6 +281,27 @@ export default function ExtractPdf() {
             {message}
           </div>
         )}
+{downloadUrl && (
+  <a
+    href={downloadUrl}
+    download="ShortcutHub-Extracted-PDF.pdf"
+    style={{
+      display: "inline-block",
+      marginTop: "18px",
+      padding: "14px 28px",
+      borderRadius: "10px",
+      background: "linear-gradient(90deg, #ff5b35, #a936e8)",
+      color: "#fff",
+      fontSize: "18px",
+      fontWeight: "700",
+      textDecoration: "none",
+      cursor: "pointer",
+      boxShadow: "0 8px 20px rgba(80, 50, 180, 0.25)",
+    }}
+  >
+    ⬇️ Download Extracted PDF
+  </a>
+)}
       </div>
     </section>
   );
