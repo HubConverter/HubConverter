@@ -158,22 +158,21 @@ function App() {
           <i>FINAL 3.0</i>
         </div>
 
-        <nav>
-          {[
-         
-            "tools",
-            
-          ].map((item) => (
-            <button
-              key={item}
-              className={view === "tools" ? "active" : ""}
-              onClick={() => setView(item)}
-            >
-              {item[0].toUpperCase() + item.slice(1)}
-            </button>
-          ))}
-          <
-        </nav>
+        <nav className="nav">
+  <button
+    className={view === "tools" ? "active" : ""}
+    onClick={() => setView("tools")}
+  >
+    🛠️ Tools
+  </button>
+
+  <button
+    className={view === "converter" ? "active" : ""}
+    onClick={() => setView("converter")}
+  >
+    🔄 Converter Tools
+  </button>
+</nav>
 
         <div className="actions">
           <div className="themePicker">
