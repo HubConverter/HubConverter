@@ -163,14 +163,14 @@ function App() {
     className={view === "tools" ? "active" : ""}
     onClick={() => setView("tools")}
   >
-    🛠️ Tools
+    🔄 PDF Converter Tools
   </button>
 
   <button
     className={view === "converter" ? "active" : ""}
     onClick={() => setView("converter")}
   >
-    🔄 Converter Tools
+    
   </button>
 </nav>
 
