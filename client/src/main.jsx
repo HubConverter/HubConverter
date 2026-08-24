@@ -873,12 +873,6 @@ if (selectedTool === "merge-pdf") {
   );
 }
   if (selectedTool === "protect-pdf") {
-  return (
-    <div>
-      <ProtectPdf />
-    </div>
-  );
-  if (selectedTool === "protect-pdf") {
     return (
       <div>
         <div
@@ -908,14 +902,6 @@ if (selectedTool === "merge-pdf") {
       </div>
     );
   }
-
-  if (selectedTool === "protect-pdf") {
-  return (
-    <div>
-      <ProtectPdf />
-    </div>
-  );
-  if (selectedTool === "protect-pdf") {
   // =========================
   // TOOLS HOME
   // =========================
