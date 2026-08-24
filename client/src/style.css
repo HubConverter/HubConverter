@@ -2054,3 +2054,45 @@ body.theme-sunset .protectPdfBox p,
 body.theme-midnight .protectPdfBox p {
   color: #e5e7eb !important;
 }
+/* =========================================================
+   PROTECT PDF — DARK THEMES TEXT FIX
+   Neon / Ocean / Sunset / Midnight ONLY
+   ========================================================= */
+
+.theme-neon .protect-pdf,
+.theme-ocean .protect-pdf,
+.theme-sunset .protect-pdf,
+.theme-midnight .protect-pdf {
+  color: #ffffff !important;
+}
+
+.theme-neon .protect-pdf *,
+.theme-ocean .protect-pdf *,
+.theme-sunset .protect-pdf *,
+.theme-midnight .protect-pdf * {
+  color: #ffffff !important;
+}
+
+/* Selected PDF filename */
+.theme-neon .protect-pdf .selected-file,
+.theme-ocean .protect-pdf .selected-file,
+.theme-sunset .protect-pdf .selected-file,
+.theme-midnight .protect-pdf .selected-file {
+  color: #ffffff !important;
+}
+
+/* Make the filename itself white */
+.theme-neon .protect-pdf .selected-file strong,
+.theme-ocean .protect-pdf .selected-file strong,
+.theme-sunset .protect-pdf .selected-file strong,
+.theme-midnight .protect-pdf .selected-file strong {
+  color: #ffffff !important;
+}
+
+/* Password labels */
+.theme-neon .protect-pdf label,
+.theme-ocean .protect-pdf label,
+.theme-sunset .protect-pdf label,
+.theme-midnight .protect-pdf label {
+  color: #ffffff !important;
+}
