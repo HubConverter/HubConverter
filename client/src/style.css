@@ -1961,3 +1961,71 @@ body.theme-light .themeToggle {
 body.theme-light .heroSearch input { color: #15213b !important; }
 body.theme-light .app strong { color: #7c3aed !important; }
 body.theme-light kbd { color: #15213b !important; background: #eff6ff !important; }
+/* =========================================================
+   PROTECT PDF - DARK THEMES ONLY
+   Neon / Ocean / Sunset / Midnight
+   ========================================================= */
+
+body.theme-neon .protect-pdf-card,
+body.theme-ocean .protect-pdf-card,
+body.theme-sunset .protect-pdf-card,
+body.theme-midnight .protect-pdf-card {
+  background: rgba(8, 15, 35, 0.72) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(120, 190, 255, 0.25);
+  box-shadow:
+    0 15px 45px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+/* Text inside Protect PDF */
+body.theme-neon .protect-pdf-card h1,
+body.theme-neon .protect-pdf-card p,
+body.theme-neon .protect-pdf-card label,
+body.theme-neon .protect-pdf-card strong,
+
+body.theme-ocean .protect-pdf-card h1,
+body.theme-ocean .protect-pdf-card p,
+body.theme-ocean .protect-pdf-card label,
+body.theme-ocean .protect-pdf-card strong,
+
+body.theme-sunset .protect-pdf-card h1,
+body.theme-sunset .protect-pdf-card p,
+body.theme-sunset .protect-pdf-card label,
+body.theme-sunset .protect-pdf-card strong,
+
+body.theme-midnight .protect-pdf-card h1,
+body.theme-midnight .protect-pdf-card p,
+body.theme-midnight .protect-pdf-card label,
+body.theme-midnight .protect-pdf-card strong {
+  color: #ffffff !important;
+}
+
+/* Selected PDF box */
+body.theme-neon .protect-pdf-selected,
+body.theme-ocean .protect-pdf-selected,
+body.theme-sunset .protect-pdf-selected,
+body.theme-midnight .protect-pdf-selected {
+  background: rgba(255, 255, 255, 0.09) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* Inputs */
+body.theme-neon .protect-pdf-card input,
+body.theme-ocean .protect-pdf-card input,
+body.theme-sunset .protect-pdf-card input,
+body.theme-midnight .protect-pdf-card input {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.20) !important;
+}
+
+body.theme-neon .protect-pdf-card input::placeholder,
+body.theme-ocean .protect-pdf-card input::placeholder,
+body.theme-sunset .protect-pdf-card input::placeholder,
+body.theme-midnight .protect-pdf-card input::placeholder {
+  color: rgba(255, 255, 255, 0.60) !important;
+}
