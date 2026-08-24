@@ -11,6 +11,7 @@ import PDFToPowerPoint from "./tools/PDFToPowerPoint.jsx";
 import RotatePdf from "./tools/RotatePdf.jsx";
 import WatermarkPdf from "./tools/WatermarkPdf.jsx";
 import ProtectPdf from "./tools/ProtectPdf.jsx";
+import UnlockPdf from "./tools/UnlockPdf.jsx";
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./style.css";
@@ -877,7 +878,36 @@ if (selectedTool === "merge-pdf") {
       <ProtectPdf />
     </div>
   );
-}
+if (selectedTool === "unlock-pdf") {
+  return (
+    <div>
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "20px 24px 0",
+        }}
+      >
+        <button
+          onClick={() => setSelectedTool(null)}
+          style={{
+            border: "none",
+            background: "transparent",
+            color: "inherit",
+            fontSize: "15px",
+            fontWeight: "600",
+            cursor: "pointer",
+            padding: "10px 0",
+          }}
+        >
+          ← Back to Tools
+        </button>
+      </div>
+
+      <UnlockPdf />
+    </div>
+  );
+}}
   // =========================
   // TOOLS HOME
   // =========================
@@ -1026,12 +1056,12 @@ if (selectedTool === "merge-pdf") {
 />
 
 
-          <ToolCard
-            icon="🔓"
-            title="Unlock PDF"
-            description="Remove password protection from a PDF."
-            comingSoon
-          />
+         <ToolCard
+  icon="🔓"
+  title="Unlock PDF"
+  description="Remove password protection from your PDF."
+  onClick={() => setSelectedTool("unlock-pdf")}
+/>
 
 
           <ToolCard
