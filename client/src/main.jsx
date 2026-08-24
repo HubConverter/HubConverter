@@ -907,7 +907,7 @@ if (selectedTool === "unlock-pdf") {
       <UnlockPdf />
     </div>
   );
-}}
+}
   // =========================
   // TOOLS HOME
   // =========================
