@@ -994,7 +994,7 @@ if (selectedTool === "unlock-pdf") {
     </div>
   );
 }
-if (selectedTool === "sign-pdf") {
+if (selectedTool === "delete-pdf-pages") {
   return (
     <div>
       <div
@@ -1020,7 +1020,7 @@ if (selectedTool === "sign-pdf") {
         </button>
       </div>
 
-      <SignPdf />
+      <DeletePdfPages />
     </div>
   );
 }
