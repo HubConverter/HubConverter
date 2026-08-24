@@ -1963,46 +1963,41 @@ body.theme-light .app strong { color: #7c3aed !important; }
 body.theme-light kbd { color: #15213b !important; background: #eff6ff !important; }
 /* =========================================================
   /* =========================================================
+  /* =========================================================
    PROTECT PDF — SPECIAL DARK STYLE
    ONLY FOR: NEON / OCEAN / SUNSET / MIDNIGHT
    ========================================================= */
 
-/* Protect PDF - Selected File Box */
+/* Selected file box */
 body.theme-neon .protect-pdf-selected,
 body.neon .protect-pdf-selected,
 body[data-theme="neon"] .protect-pdf-selected,
-
 body.theme-ocean .protect-pdf-selected,
 body.ocean .protect-pdf-selected,
 body[data-theme="ocean"] .protect-pdf-selected,
-
 body.theme-sunset .protect-pdf-selected,
 body.sunset .protect-pdf-selected,
 body[data-theme="sunset"] .protect-pdf-selected,
-
 body.theme-midnight .protect-pdf-selected,
 body.midnight .protect-pdf-selected,
 body[data-theme="midnight"] .protect-pdf-selected {
-    background: rgba(0, 0, 0, 0.35) !important;
-    color: #ffffff !important;
-    border: 1px solid rgba(255, 255, 255, 0.20) !important;
+  background: rgba(0, 0, 0, 0.45) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
 }
 
-/* Keep the selected filename WHITE */
+/* Selected filename must stay WHITE */
 body.theme-neon .protect-pdf-selected *,
 body.neon .protect-pdf-selected *,
 body[data-theme="neon"] .protect-pdf-selected *,
-
 body.theme-ocean .protect-pdf-selected *,
 body.ocean .protect-pdf-selected *,
 body[data-theme="ocean"] .protect-pdf-selected *,
-
 body.theme-sunset .protect-pdf-selected *,
 body.sunset .protect-pdf-selected *,
 body[data-theme="sunset"] .protect-pdf-selected *,
-
 body.theme-midnight .protect-pdf-selected *,
 body.midnight .protect-pdf-selected *,
 body[data-theme="midnight"] .protect-pdf-selected * {
-    color: #ffffff !important;
+  color: #ffffff !important;
 }
