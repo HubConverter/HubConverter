@@ -4,8 +4,8 @@ import { PDFDocument } from "pdf-lib";
 export default function ExtractPdf() {
   const [file, setFile] = useState(null);
   const [pages, setPages] = useState("");
-  const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [downloadUrl, setDownloadUrl] = useState("");
 
   function handleFileChange(event) {
     const selectedFile = event.target.files?.[0];
