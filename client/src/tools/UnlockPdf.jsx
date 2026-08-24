@@ -76,7 +76,7 @@ export default function UnlockPdf() {
 
       const originalName = file.name.replace(/\.pdf$/i, "");
 
-      link.download = `${originalName}-unlocked.pdf`;
+      link.download = originalName + "-unlocked.pdf";
 
       document.body.appendChild(link);
       link.click();
