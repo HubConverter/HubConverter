@@ -9,7 +9,7 @@ import CompressPdf from "./tools/CompressPdf.jsx";
 import PdfToWord from "./tools/PdfToWord.jsx";
 import PDFToPowerPoint from "./tools/PDFToPowerPoint.jsx";
 import RotatePdf from "./tools/RotatePdf.jsx";
-
+import WatermarkPdf from "./tools/WatermarkPdf";
 
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
@@ -841,6 +841,36 @@ if (selectedTool === "merge-pdf") {
     </div>
   );
 }
+  if (selectedTool === "watermark-pdf") {
+  return (
+    <div>
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "20px 24px 0",
+        }}
+      >
+        <button
+          onClick={() => setSelectedTool(null)}
+          style={{
+            border: "none",
+            background: "transparent",
+            color: "inherit",
+            fontSize: "15px",
+            fontWeight: "600",
+            cursor: "pointer",
+            padding: "10px 0",
+          }}
+        >
+          ← Back to Tools
+        </button>
+      </div>
+
+      <WatermarkPdf />
+    </div>
+  );
+}
   // =========================
   // TOOLS HOME
   // =========================
@@ -974,11 +1004,11 @@ if (selectedTool === "merge-pdf") {
 
 
           <ToolCard
-            icon="💧"
-            title="Watermark PDF"
-            description="Add a watermark to your PDF."
-            comingSoon
-          />
+  icon="💧"
+  title="Watermark PDF"
+  description="Add a watermark to your PDF."
+  onClick={() => setActiveTool("watermark-pdf")}
+/>
 
 
           <ToolCard
