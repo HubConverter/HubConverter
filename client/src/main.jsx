@@ -173,6 +173,14 @@ function App() {
               {item[0].toUpperCase() + item.slice(1)}
             </button>
           ))}
+          <nav className="nav">
+  <button
+    className={view === "tools" ? "active" : ""}
+    onClick={() => setView("tools")}
+  >
+    🛠️ Tools
+  </button>
+</nav>
         </nav>
 
         <div className="actions">
