@@ -1,4 +1,3 @@
-```jsx
 import React, { useState } from "react";
 
 export default function UnlockPdf() {
@@ -30,7 +29,10 @@ export default function UnlockPdf() {
       return;
     }
 
-    if (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf")) {
+    if (
+      file.type !== "application/pdf" &&
+      !file.name.toLowerCase().endsWith(".pdf")
+    ) {
       setError("Please select a valid PDF file.");
       return;
     }
@@ -53,7 +55,7 @@ export default function UnlockPdf() {
         try {
           const data = await response.json();
 
-          if (data?.error) {
+          if (data && data.error) {
             message = data.error;
           }
         } catch {
@@ -101,7 +103,6 @@ export default function UnlockPdf() {
     <div className="toolPage">
       <div className="toolBox">
 
-        {/* BACK BUTTON */}
         <button
           onClick={() => window.history.back()}
           style={{
@@ -118,9 +119,15 @@ export default function UnlockPdf() {
           ← Back
         </button>
 
-        {/* TITLE */}
-        <div style={{ textAlign: "center", marginBottom: "30px" }}>
-          <div style={{ fontSize: "48px" }}>🔓</div>
+        <div
+          style={{
+            textAlign: "center",
+            marginBottom: "30px",
+          }}
+        >
+          <div style={{ fontSize: "48px" }}>
+            🔓
+          </div>
 
           <h1>Unlock PDF</h1>
 
@@ -129,7 +136,6 @@ export default function UnlockPdf() {
           </p>
         </div>
 
-        {/* PDF UPLOAD */}
         <label
           className="uploadBox"
           style={{
@@ -145,10 +151,14 @@ export default function UnlockPdf() {
             onChange={handleFileChange}
           />
 
-          <div className="uploadIcon">📄</div>
+          <div className="uploadIcon">
+            📄
+          </div>
 
           <strong>
-            {file ? file.name : "Click to select a PDF"}
+            {file
+              ? file.name
+              : "Click to select a PDF"}
           </strong>
 
           <span>
@@ -156,7 +166,6 @@ export default function UnlockPdf() {
           </span>
         </label>
 
-        {/* SELECTED FILE */}
         {file && (
           <div
             className="protect-pdf-selected"
@@ -172,7 +181,9 @@ export default function UnlockPdf() {
               textAlign: "left",
             }}
           >
-            <span>Selected: </span>
+            <span>
+              Selected:{" "}
+            </span>
 
             <strong>
               {file.name}
@@ -180,7 +191,6 @@ export default function UnlockPdf() {
           </div>
         )}
 
-        {/* PASSWORD */}
         <div
           style={{
             width: "min(700px, 100%)",
@@ -213,8 +223,10 @@ export default function UnlockPdf() {
               boxSizing: "border-box",
               padding: "14px",
               borderRadius: "10px",
-              border: "1px solid rgba(100,180,255,0.28)",
-              background: "rgba(10,20,50,0.65)",
+              border:
+                "1px solid rgba(100,180,255,0.28)",
+              background:
+                "rgba(10,20,50,0.65)",
               color: "#ffffff",
               outline: "none",
               fontSize: "16px",
@@ -222,7 +234,6 @@ export default function UnlockPdf() {
           />
         </div>
 
-        {/* ERROR */}
         {error && (
           <div
             style={{
@@ -231,8 +242,10 @@ export default function UnlockPdf() {
               padding: "12px 15px",
               boxSizing: "border-box",
               borderRadius: "10px",
-              background: "rgba(127,29,29,0.18)",
-              border: "1px solid rgba(248,113,113,0.35)",
+              background:
+                "rgba(127,29,29,0.18)",
+              border:
+                "1px solid rgba(248,113,113,0.35)",
               color: "#ef4444",
               textAlign: "left",
             }}
@@ -241,7 +254,6 @@ export default function UnlockPdf() {
           </div>
         )}
 
-        {/* SUCCESS */}
         {success && (
           <div
             style={{
@@ -250,8 +262,10 @@ export default function UnlockPdf() {
               padding: "12px 15px",
               boxSizing: "border-box",
               borderRadius: "10px",
-              background: "rgba(22,163,74,0.15)",
-              border: "1px solid rgba(74,222,128,0.35)",
+              background:
+                "rgba(22,163,74,0.15)",
+              border:
+                "1px solid rgba(74,222,128,0.35)",
               color: "#22c55e",
               textAlign: "left",
             }}
@@ -260,23 +274,26 @@ export default function UnlockPdf() {
           </div>
         )}
 
-        {/* UNLOCK BUTTON */}
         <button
           className="convertButton"
           onClick={handleUnlock}
-          disabled={loading || !file || !password}
+          disabled={
+            loading ||
+            !file ||
+            !password
+          }
         >
-          {loading ? "🔓 Unlocking PDF..." : "🔓 Unlock PDF"}
+          {loading
+            ? "🔓 Unlocking PDF..."
+            : "🔓 Unlock PDF"}
         </button>
 
-        {/* NOTE */}
         <div className="toolNote">
-          Enter the correct password to remove password protection
-          from the PDF.
+          Enter the correct password to remove
+          password protection from the PDF.
         </div>
 
       </div>
     </div>
   );
 }
-```
