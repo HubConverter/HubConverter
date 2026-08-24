@@ -9,7 +9,7 @@ import CompressPdf from "./tools/CompressPdf.jsx";
 import PdfToWord from "./tools/PdfToWord.jsx";
 import PDFToPowerPoint from "./tools/PDFToPowerPoint.jsx";
 import RotatePdf from "./tools/RotatePdf.jsx";
-import WatermarkPdf from "./tools/WatermarkPdf";
+import WatermarkPdf from "./tools/WatermarkPdf.jsx";
 
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
