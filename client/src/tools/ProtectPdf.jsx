@@ -36,12 +36,13 @@ export default function ProtectPdf() {
 
   return (
     <div
-      style={{
-        maxWidth: "850px",
-        margin: "0 auto",
-        padding: "30px 20px",
-      }}
-    >
+  className="protect-pdf-page"
+  style={{
+    maxWidth: "850px",
+    margin: "0 auto",
+    padding: "30px 20px",
+  }}
+>
       <button
         onClick={() => window.history.back()}
         style={{
@@ -56,7 +57,7 @@ export default function ProtectPdf() {
         ← Back
       </button>
 
-      <div
+     <div
   className="protect-pdf-selected"
   style={{
     padding: "12px 15px",
