@@ -1967,50 +1967,20 @@ body.theme-light kbd { color: #15213b !important; background: #eff6ff !important
    Neon / Ocean / Sunset / Midnight
    ========================================================= */
 
-/* Selected PDF box */
-html[data-theme="neon"] .protect-pdf-selected,
-html[data-theme="ocean"] .protect-pdf-selected,
-html[data-theme="sunset"] .protect-pdf-selected,
-html[data-theme="midnight"] .protect-pdf-selected,
-
-body[data-theme="neon"] .protect-pdf-selected,
-body[data-theme="ocean"] .protect-pdf-selected,
-body[data-theme="sunset"] .protect-pdf-selected,
-body[data-theme="midnight"] .protect-pdf-selected,
-
-body.theme-neon .protect-pdf-selected,
-body.theme-ocean .protect-pdf-selected,
-body.theme-sunset .protect-pdf-selected,
-body.theme-midnight .protect-pdf-selected,
-
-body.neon .protect-pdf-selected,
-body.ocean .protect-pdf-selected,
-body.sunset .protect-pdf-selected,
-body.midnight .protect-pdf-selected {
+/* Fix: Targeted .fileItem instead of .protect-pdf-selected */
+body.theme-neon .fileItem,
+body.theme-ocean .fileItem,
+body.theme-sunset .fileItem,
+body.theme-midnight .fileItem {
   background: #111827 !important;
   color: #ffffff !important;
-  border: 1px solid rgba(255,255,255,0.18) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
 }
 
-/* Filename + "Selected:" text */
-html[data-theme="neon"] .protect-pdf-selected *,
-html[data-theme="ocean"] .protect-pdf-selected *,
-html[data-theme="sunset"] .protect-pdf-selected *,
-html[data-theme="midnight"] .protect-pdf-selected *,
-
-body[data-theme="neon"] .protect-pdf-selected *,
-body[data-theme="ocean"] .protect-pdf-selected *,
-body[data-theme="sunset"] .protect-pdf-selected *,
-body[data-theme="midnight"] .protect-pdf-selected *,
-
-body.theme-neon .protect-pdf-selected *,
-body.theme-ocean .protect-pdf-selected *,
-body.theme-sunset .protect-pdf-selected *,
-body.theme-midnight .protect-pdf-selected *,
-
-body.neon .protect-pdf-selected *,
-body.ocean .protect-pdf-selected *,
-body.sunset .protect-pdf-selected *,
-body.midnight .protect-pdf-selected * {
+/* Ensure all text inside the file container turns white */
+body.theme-neon .fileItem *,
+body.theme-ocean .fileItem *,
+body.theme-sunset .fileItem *,
+body.theme-midnight .fileItem * {
   color: #ffffff !important;
 }
