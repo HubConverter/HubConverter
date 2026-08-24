@@ -10,7 +10,7 @@ import PdfToWord from "./tools/PdfToWord.jsx";
 import PDFToPowerPoint from "./tools/PDFToPowerPoint.jsx";
 import RotatePdf from "./tools/RotatePdf.jsx";
 import WatermarkPdf from "./tools/WatermarkPdf.jsx";
-
+import ProtectPdf from "./tools/ProtectPdf.jsx";
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./style.css";
@@ -871,6 +871,13 @@ if (selectedTool === "merge-pdf") {
     </div>
   );
 }
+  if (selectedTool === "protect-pdf") {
+  return (
+    <div>
+      <ProtectPdf />
+    </div>
+  );
+}
   // =========================
   // TOOLS HOME
   // =========================
@@ -1011,12 +1018,12 @@ if (selectedTool === "merge-pdf") {
 />
 
 
-          <ToolCard
-            icon="🔐"
-            title="Protect PDF"
-            description="Password protect your PDF."
-            comingSoon
-          />
+       <ToolCard
+  icon="🔐"
+  title="Protect PDF"
+  description="Password protect your PDF."
+  onClick={() => setSelectedTool("protect-pdf")}
+/>
 
 
           <ToolCard
