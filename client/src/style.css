@@ -1943,7 +1943,40 @@ body.theme-light .shortcut,
 body.theme-light .featureGrid article,
 body.theme-light .learnBox,
 body.theme-light .profile,
-body.theme-light .toolBox,
+body.theme-light .uploadBox,
+body.theme-light .fileItem,
+body.theme-light .sizeOption {
+  background: rgba(255, 255, 255, 0.76) !important;
+  border-color: rgba(37, 99, 235, 0.18) !important;
+  box-shadow: 0 12px 32px rgba(30, 64, 175, 0.10) !important;
+}
+/* Custom handling for the main Tool Box Container */
+body.theme-light .toolBox {
+  background: rgba(255, 255, 255, 0.85) !important;
+  color: #15213b !important;
+}
+
+body:not(.theme-light) .toolBox {
+  background: transparent !important;
+}
+
+
+body.theme-light .heroSearch,
+body.theme-light .themeToggle {
+  background: rgba(255, 255, 255, 0.80) !important;
+  color: #15213b !important;
+}
+
+body.theme-light .heroSearch input { color: #15213b !important; }
+body.theme-light .app strong { color: #7c3aed !important; }
+body.theme-light kbd { color: #15213b !important; background: #eff6ff !important; }
+/* =========================================================
+/* =========================================================
+body.theme-light .app,
+body.theme-light .shortcut,
+body.theme-light .featureGrid article,
+body.theme-light .learnBox,
+body.theme-light .profile,
 body.theme-light .uploadBox,
 body.theme-light .fileItem,
 body.theme-light .sizeOption {
@@ -1961,44 +1994,52 @@ body.theme-light .themeToggle {
 body.theme-light .heroSearch input { color: #15213b !important; }
 body.theme-light .app strong { color: #7c3aed !important; }
 body.theme-light kbd { color: #15213b !important; background: #eff6ff !important; }
+
+
 /* =========================================================
-/* =========================================================
-   SHORTCUTHUB - CRITICAL CORE DARK THEME PATCH
-   Forces all main container cards and input labels 
-   to display correct dark background structures.
+   CORE TOOL AND FORM FIXES FOR ALL THEMES
    ========================================================= */
 
-/* 1. Force the tool container/inner cards to look dark in dark mode */
+/* 1. Ensure the core form page layout stays dark for all dark themes */
 body:not(.theme-light) .toolPage,
-body:not(.theme-light) .toolBox,
-body:not(.theme-light) .toolBox > div,
-body:not(.theme-light) [class*="tool"] {
-  background: #0b1532 !important; /* Dark theme card background */
-  color: #ffffff !important;
-  border-radius: 16px !important;
+body:not(.theme-light) .toolBox {
+  background: transparent !important;
 }
 
-/* 2. Fix the file upload box background inside dark themes */
+/* 2. Target typography inside the Protect PDF container */
+body:not(.theme-light) .toolBox h1,
+body:not(.theme-light) .toolBox p,
+body:not(.theme-light) .toolBox strong,
+body:not(.theme-light) .toolBox span,
+body:not(.theme-light) .toolBox div,
+body:not(.theme-light) .toolBox label {
+  color: #ffffff !important; /* Crisp visible white text */
+}
+
+/* 3. Maintain the upload area visibility on dark backgrounds */
 body:not(.theme-light) .uploadBox {
-  background: linear-gradient(145deg, rgba(20, 50, 100, 0.65), rgba(7, 18, 50, 0.85)) !important;
+  background: linear-gradient(145deg, rgba(20, 50, 100, 0.55), rgba(7, 18, 50, 0.75)) !important;
   border: 2px dashed rgba(80, 190, 255, 0.45) !important;
 }
 
-/* 3. Force all descriptive form labels, headings, and helper texts to white */
-body:not(.theme-light) .toolBox h1,
-body:not(.theme-light) .toolBox p,
-body:not(.theme-light) .toolBox label,
-body:not(.theme-light) .toolBox strong,
-body:not(.theme-light) .toolBox span,
-body:not(.theme-light) .toolBox div {
-  color: #ffffff !important;
-}
-
-/* 4. Keep the text input entry areas white with dark typed text */
-body:not(.theme-light) .toolBox input[type="password"],
-body:not(.theme-light) .toolBox input[type="text"] {
+/* 4. Keep form input entries bright white with dark text inputs */
+body .toolBox input {
   background: #ffffff !important;
-  color: #111827 !important;
+  color: #0f172a !important;
   border: 1px solid #cbd5e1 !important;
 }
 
+/* 5. Clean up light mode label text visibility rules */
+body.theme-light .toolBox h1,
+body.theme-light .toolBox p,
+body.theme-light .toolBox strong,
+body.theme-light .toolBox span,
+body.theme-light .toolBox div,
+body.theme-light .toolBox label {
+  color: #15213b !important; /* Deep dark blue text for light theme */
+}
+
+body.theme-light .uploadBox {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border: 2px dashed rgba(37, 99, 235, 0.3) !important;
+}
