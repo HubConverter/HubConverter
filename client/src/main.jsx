@@ -166,7 +166,7 @@ function App() {
           ].map((item) => (
             <button
               key={item}
-              className={view === item ? "sel" : ""}
+              className={view === "tools" ? "active" : ""}
               onClick={() => setView(item)}
             >
               {item[0].toUpperCase() + item.slice(1)}
