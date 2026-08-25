@@ -348,11 +348,11 @@ export default function TranslatePdf() {
 
         pdf.setFontSize(10);
 
-        pdf.text(
-          `Translated Page ${i + 1}`,
-          15,
-          15
-        );
+       pdf.text(
+  "Translated Page " + (i + 1),
+  15,
+  15
+);
 
         pdf.setFontSize(11);
 
