@@ -1195,7 +1195,7 @@ if (selectedTool === "delete-pdf-pages") {
   icon="🗑️"
   title="Delete PDF Pages"
   description="Remove unwanted pages from a PDF instantly."
-  onClick={() => setActiveTool("delete-pdf-pages")}
+  onClick={() => setSelectedTool("delete-pdf-pages")}
 />
         </div>
       </div>
