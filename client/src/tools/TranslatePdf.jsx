@@ -90,7 +90,7 @@ async function translateText(text, sourceLanguage, targetLanguage) {
       "https://api.mymemory.translated.net/get?q=" +
       encodeURIComponent(chunk) +
       "&langpair=" +
-      encodeURIComponent(`${source}|${targetLanguage}`);
+    encodeURIComponent(source + "|" + targetLanguage);
 
     const response = await fetch(url);
 
