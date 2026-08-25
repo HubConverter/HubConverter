@@ -190,34 +190,58 @@ export default function TranslatePdf() {
   };
 
   const extractPdfText = async (selectedFile) => {
-    const arrayBuffer = await selectedFile.arrayBuffer();
+  const arrayBuffer = await selectedFile.arrayBuffer();
 
-    const pdf = await pdfjsLib.getDocument({
-      data: arrayBuffer,
-    }).promise;
+  const pdf = await pdfjsLib.getDocument({
+    data: new Uint8Array(arrayBuffer),
+  }).promise;
 
-    const pages = [];
+  const pages = [];
 
-    for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
-      const page = await pdf.getPage(pageNumber);
+  for (
+    let pageNumber = 1;
+    pageNumber <= pdf.numPages;
+    pageNumber++
+  ) {
+    const page = await pdf.getPage(pageNumber);
 
-      const textContent = await page.getTextContent();
+    const textContent = await page.getTextContent({
+      includeMarkedContent: true,
+      disableNormalization: false,
+    });
 
-      const pageText = textContent.items
-        .map((item) => item.str || "")
-        .join(" ")
-        .replace(/\s+/g, " ")
-        .trim();
+    const textParts = [];
 
-      pages.push(pageText);
+    for (const item of textContent.items) {
+      if (
+        item &&
+        typeof item.str === "string" &&
+        item.str.trim()
+      ) {
+        textParts.push(item.str.trim());
+      }
     }
 
-    return {
-      pdf,
-      pages,
-    };
-  };
+    const pageText = textParts
+      .join(" ")
+      .replace(/\s+/g, " ")
+      .trim();
 
+    console.log(
+      "PDF page",
+      pageNumber,
+      "extracted text:",
+      pageText
+    );
+
+    pages.push(pageText);
+  }
+
+  return {
+    pdf,
+    pages,
+  };
+};
   const createTranslatedPdf = async (
     translatedPages
   ) => {
@@ -248,20 +272,11 @@ export default function TranslatePdf() {
         .split(/\n+/)
         .filter((paragraph) => paragraph.trim());
 
-      if (paragraphs.length === 0) {
-        page.drawText(
-          "No readable text was found on this page.",
-          {
-            x: margin,
-            y,
-            size: fontSize,
-            font,
-            color: rgb(0.35, 0.35, 0.35),
-          }
-        );
+     if (paragraphs.length === 0) {
+  return;
+}
 
-        return;
-      }
+paragraphs.forEach((paragraph) => {
 
       paragraphs.forEach((paragraph) => {
         const words = paragraph.split(/\s+/);
@@ -371,93 +386,124 @@ export default function TranslatePdf() {
     return await translatedPdf.save();
   };
 
-  const translatePdf = async () => {
-    if (!file) {
-      setMessage("Please select a PDF first.");
+const translatePdf = async () => {
+  if (!file) {
+    setMessage("Please select a PDF first.");
+    return;
+  }
+
+  if (targetLanguage === "auto") {
+    setMessage("Please select a target language.");
+    return;
+  }
+
+  try {
+    setLoading(true);
+    setMessage("");
+    setDownloadUrl("");
+
+    const { pages } = await extractPdfText(file);
+
+    console.log("Extracted PDF pages:", pages);
+
+    const readablePages = pages.filter(
+      (pageText) =>
+        typeof pageText === "string" &&
+        pageText.trim().length > 0
+    );
+
+    if (readablePages.length === 0) {
+      setMessage(
+        "No selectable text was found in this PDF. This PDF may be scanned or image-based and requires OCR."
+      );
       return;
     }
 
-    if (targetLanguage === "auto") {
-      setMessage("Please select a target language.");
-      return;
-    }
+    const translatedPages = [];
 
-    try {
-      setLoading(true);
-      setMessage("");
-      setDownloadUrl("");
+    for (let i = 0; i < pages.length; i++) {
+      const pageText = pages[i];
 
-      const { pages } = await extractPdfText(file);
+      if (
+        !pageText ||
+        !pageText.trim()
+      ) {
+        translatedPages.push("");
+        continue;
+      }
 
-      const hasText = pages.some(
-        (pageText) => pageText && pageText.trim()
+      setMessage(
+        "Translating page " +
+          (i + 1) +
+          " of " +
+          pages.length +
+          "..."
       );
 
-      if (!hasText) {
-        setMessage(
-          "No selectable text was found in this PDF. Scanned PDFs require OCR and are not supported yet."
+      const translated = await translateLongText(
+        pageText,
+        sourceLanguage,
+        targetLanguage
+      );
+
+      if (
+        !translated ||
+        !translated.trim()
+      ) {
+        throw new Error(
+          "The translation service returned empty text for page " +
+            (i + 1)
         );
-        return;
       }
 
-      const translatedPages = [];
+      translatedPages.push(
+        translated.trim()
+      );
+    }
 
-      for (let i = 0; i < pages.length; i++) {
-        const pageText = pages[i];
+    setMessage(
+      "Creating translated PDF..."
+    );
 
-      if (!pageText.trim()) {
-  translatedPages.push("");
-  continue;
-}
-
-setMessage(
-  "Translating page " +
-    (i + 1) +
-    " of " +
-    pages.length +
-    "..."
-);
-
-const translated = await translateLongText(
-  pageText,
-  sourceLanguage,
-  targetLanguage
-);
-
-        translatedPages.push(translated);
-      }
-
-      setMessage("Creating translated PDF...");
-
-      const pdfBytes = await createTranslatedPdf(
+    const pdfBytes =
+      await createTranslatedPdf(
         translatedPages
       );
 
-      const blob = new Blob([pdfBytes], {
+    const blob = new Blob(
+      [pdfBytes],
+      {
         type: "application/pdf",
-      });
-
-      if (downloadUrl) {
-        URL.revokeObjectURL(downloadUrl);
       }
+    );
 
-      const url = URL.createObjectURL(blob);
-
-      setDownloadUrl(url);
-
-      setMessage(
-        "PDF translated successfully. Your translated PDF is ready to download."
-      );
-    } catch (error) {
-      console.error(error);
-
-      setMessage(
-        "Translation failed. Please try again with a text-based PDF."
-      );
-    } finally {
-      setLoading(false);
+    if (downloadUrl) {
+      URL.revokeObjectURL(downloadUrl);
     }
-  };
+
+    const url =
+      URL.createObjectURL(blob);
+
+    setDownloadUrl(url);
+
+    setMessage(
+      "PDF translated successfully. Your translated PDF is ready to download."
+    );
+  } catch (error) {
+    console.error(
+      "PDF translation error:",
+      error
+    );
+
+    setMessage(
+      "Translation failed: " +
+        (error?.message ||
+          "Unable to translate this PDF.")
+    );
+  } finally {
+    setLoading(false);
+  }
+};
 
   const downloadPdf = () => {
     if (!downloadUrl) {
