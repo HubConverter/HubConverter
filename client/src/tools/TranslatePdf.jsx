@@ -476,7 +476,6 @@ export default function TranslatePdf() {
         .replace(/[^a-zA-Z0-9-_ ]/g, "")
         .replace(/\s+/g, "-");
 
-      // FIXED: Using standard clean ES6 template literal notation to remove esbuild token confusion
       const outputName = `${originalName}-Translated-${safeTargetName}.pdf`;
 
       pdf.save(outputName);
@@ -495,3 +494,9 @@ export default function TranslatePdf() {
       );
 
       setMessage("");
+    } finally {
+      setIsTranslating(false);
+    }
+  };
+
+  const resetTool = () => {
