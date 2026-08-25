@@ -300,9 +300,13 @@ export default function TranslatePdf() {
       for (let i = 0; i < workingPages.length; i++) {
         const page = workingPages[i];
 
-        setMessage(
-          `Translating page ${i + 1} of ${workingPages.length}...`
-        );
+       setMessage(
+  "Translating page " +
+    (i + 1) +
+    " of " +
+    workingPages.length +
+    "..."
+);
 
         setProgress(
           Math.round(((i + 1) / workingPages.length) * 100)
