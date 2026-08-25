@@ -383,7 +383,7 @@ paragraphs.forEach((paragraph) => {
       });
     });
 
-    return await translatedPdf.save();
+    return translatedPdf.save();
   };
 
 const translatePdf = async () => {
