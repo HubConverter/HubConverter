@@ -200,7 +200,7 @@ export default function EditPdf() {
 
    const context = canvas.getContext("2d");
 
-context.font = `bold ${fontSize}px Arial`;
+context.font = "bold " + fontSize + "px Arial";
 context.fillStyle = "#111827";
 context.fillText(text, textX, textY);
 
