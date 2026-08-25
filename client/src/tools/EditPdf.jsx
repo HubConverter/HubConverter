@@ -25,6 +25,8 @@ export default function EditPdf() {
 
   const [downloadUrl, setDownloadUrl] = useState("");
 
+  const [pageEdits, setPageEdits] = useState({});
+
   useEffect(() => {
     pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
       "pdfjs-dist/build/pdf.worker.mjs",
@@ -54,7 +56,7 @@ export default function EditPdf() {
       setPdfDocument(loadedPdf);
       setTotalPages(loadedPdf.numPages);
       setPageNumber(1);
-
+      setPageEdits({});
       setFile(selectedFile);
     } catch (error) {
       console.error(error);
@@ -104,17 +106,59 @@ export default function EditPdf() {
       canvas.width = viewport.width;
       canvas.height = viewport.height;
 
-      context.clearRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-      );
+      context.clearRect(0, 0, canvas.width, canvas.height);
 
       await page.render({
         canvasContext: context,
-        viewport,
+        viewport: viewport,
       }).promise;
+
+      const edits = pageEdits[pageNumber];
+
+      if (edits && edits.length > 0) {
+        edits.forEach((edit) => {
+          if (edit.type === "text") {
+            context.font =
+              "bold " + edit.fontSize + "px Arial";
+
+            context.fillStyle = "#111827";
+
+            context.fillText(
+              edit.text,
+              edit.x,
+              edit.y
+            );
+          }
+
+          if (edit.type === "draw") {
+            if (!edit.points || edit.points.length < 2) {
+              return;
+            }
+
+            context.beginPath();
+
+            context.strokeStyle = edit.color;
+            context.lineWidth = edit.size;
+            context.lineCap = "round";
+            context.lineJoin = "round";
+
+            context.moveTo(
+              edit.points[0].x,
+              edit.points[0].y
+            );
+
+            for (let i = 1; i < edit.points.length; i++) {
+              context.lineTo(
+                edit.points[i].x,
+                edit.points[i].y
+              );
+            }
+
+            context.stroke();
+            context.closePath();
+          }
+        });
+      }
     } catch (error) {
       console.error(error);
       setMessage("Unable to display this PDF page.");
@@ -123,7 +167,7 @@ export default function EditPdf() {
 
   useEffect(() => {
     renderPage();
-  }, [pdfDocument, pageNumber]);
+  }, [pdfDocument, pageNumber, pageEdits]);
 
   const previousPage = () => {
     if (pageNumber > 1) {
@@ -139,6 +183,14 @@ export default function EditPdf() {
 
   const getMousePosition = (event) => {
     const canvas = canvasRef.current;
+
+    if (!canvas) {
+      return {
+        x: 0,
+        y: 0,
+      };
+    }
+
     const rect = canvas.getBoundingClientRect();
 
     const scaleX = canvas.width / rect.width;
@@ -153,39 +205,60 @@ export default function EditPdf() {
   const startDrawing = (event) => {
     if (editMode !== "draw") return;
 
-    const canvas = canvasRef.current;
-    const context = canvas.getContext("2d");
     const position = getMousePosition(event);
 
-    context.beginPath();
-    context.moveTo(position.x, position.y);
-
-    context.strokeStyle = drawColor;
-    context.lineWidth = drawSize;
-    context.lineCap = "round";
-    context.lineJoin = "round";
-
     setIsDrawing(true);
+
+    const newEdit = {
+      type: "draw",
+      color: drawColor,
+      size: drawSize,
+      points: [position],
+    };
+
+    setPageEdits((previous) => ({
+      ...previous,
+      [pageNumber]: [
+        ...(previous[pageNumber] || []),
+        newEdit,
+      ],
+    }));
   };
 
   const draw = (event) => {
     if (!isDrawing || editMode !== "draw") return;
 
-    const canvas = canvasRef.current;
-    const context = canvas.getContext("2d");
     const position = getMousePosition(event);
 
-    context.lineTo(position.x, position.y);
-    context.stroke();
+    setPageEdits((previous) => {
+      const currentEdits = [
+        ...(previous[pageNumber] || []),
+      ];
+
+      if (currentEdits.length === 0) {
+        return previous;
+      }
+
+      const lastEdit =
+        currentEdits[currentEdits.length - 1];
+
+      if (lastEdit.type !== "draw") {
+        return previous;
+      }
+
+      lastEdit.points = [
+        ...lastEdit.points,
+        position,
+      ];
+
+      return {
+        ...previous,
+        [pageNumber]: currentEdits,
+      };
+    });
   };
 
   const stopDrawing = () => {
-    if (!isDrawing) return;
-
-    const canvas = canvasRef.current;
-    const context = canvas.getContext("2d");
-
-    context.closePath();
     setIsDrawing(false);
   };
 
@@ -195,29 +268,50 @@ export default function EditPdf() {
       return;
     }
 
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    const newEdit = {
+      type: "text",
+      text: text,
+      x: textX,
+      y: textY,
+      fontSize: fontSize,
+    };
 
-   const context = canvas.getContext("2d");
-
-context.font = "bold " + fontSize + "px Arial";
-context.fillStyle = "#111827";
-context.fillText(text, textX, textY);
+    setPageEdits((previous) => ({
+      ...previous,
+      [pageNumber]: [
+        ...(previous[pageNumber] || []),
+        newEdit,
+      ],
+    }));
 
     setMessage("Text added to the page.");
   };
 
-  const clearCanvasEdits = async () => {
-    await renderPage();
+  const clearCanvasEdits = () => {
+    setPageEdits((previous) => {
+      const updated = {
+        ...previous,
+      };
+
+      delete updated[pageNumber];
+
+      return updated;
+    });
+
     setMessage("Added edits cleared from the current page.");
   };
 
   const hexToRgb = (hex) => {
     const cleanHex = hex.replace("#", "");
 
-    const r = parseInt(cleanHex.substring(0, 2), 16) / 255;
-    const g = parseInt(cleanHex.substring(2, 4), 16) / 255;
-    const b = parseInt(cleanHex.substring(4, 6), 16) / 255;
+    const r =
+      parseInt(cleanHex.substring(0, 2), 16) / 255;
+
+    const g =
+      parseInt(cleanHex.substring(2, 4), 16) / 255;
+
+    const b =
+      parseInt(cleanHex.substring(4, 6), 16) / 255;
 
     return rgb(r, g, b);
   };
@@ -234,7 +328,9 @@ context.fillText(text, textX, textY);
 
       const originalBytes = await file.arrayBuffer();
 
-      const sourcePdf = await PDFDocument.load(originalBytes);
+      const sourcePdf = await PDFDocument.load(
+        originalBytes
+      );
 
       const font = await sourcePdf.embedFont(
         StandardFonts.Helvetica
@@ -242,17 +338,86 @@ context.fillText(text, textX, textY);
 
       const pages = sourcePdf.getPages();
 
-      const currentPage = pages[pageNumber - 1];
+      Object.keys(pageEdits).forEach((pageKey) => {
+        const pageIndex = Number(pageKey) - 1;
 
-      if (text.trim()) {
-        currentPage.drawText(text, {
-          x: textX,
-          y: currentPage.getHeight() - textY,
-          size: fontSize,
-          font,
-          color: rgb(0.067, 0.09, 0.14),
+        const currentPage = pages[pageIndex];
+
+        if (!currentPage) return;
+
+        const pageWidth = currentPage.getWidth();
+        const pageHeight = currentPage.getHeight();
+
+        const canvas = canvasRef.current;
+
+        const canvasWidth = canvas
+          ? canvas.width
+          : pageWidth * 1.5;
+
+        const canvasHeight = canvas
+          ? canvas.height
+          : pageHeight * 1.5;
+
+        const scaleX = pageWidth / canvasWidth;
+        const scaleY = pageHeight / canvasHeight;
+
+        const edits = pageEdits[pageKey];
+
+        edits.forEach((edit) => {
+          if (edit.type === "text") {
+            currentPage.drawText(edit.text, {
+              x: edit.x * scaleX,
+              y:
+                pageHeight -
+                edit.y * scaleY -
+                edit.fontSize * scaleY,
+              size: edit.fontSize * scaleX,
+              font: font,
+              color: rgb(
+                0.067,
+                0.09,
+                0.14
+              ),
+            });
+          }
+
+          if (
+            edit.type === "draw" &&
+            edit.points &&
+            edit.points.length > 1
+          ) {
+            for (
+              let i = 1;
+              i < edit.points.length;
+              i++
+            ) {
+              const previousPoint =
+                edit.points[i - 1];
+
+              const currentPoint =
+                edit.points[i];
+
+              currentPage.drawLine({
+                start: {
+                  x: previousPoint.x * scaleX,
+                  y:
+                    pageHeight -
+                    previousPoint.y * scaleY,
+                },
+                end: {
+                  x: currentPoint.x * scaleX,
+                  y:
+                    pageHeight -
+                    currentPoint.y * scaleY,
+                },
+                thickness:
+                  edit.size * scaleX,
+                color: hexToRgb(edit.color),
+              });
+            }
+          }
         });
-      }
+      });
 
       const pdfBytes = await sourcePdf.save();
 
@@ -273,6 +438,7 @@ context.fillText(text, textX, textY);
       );
     } catch (error) {
       console.error(error);
+
       setMessage(
         "Something went wrong while saving the edited PDF."
       );
@@ -287,10 +453,14 @@ context.fillText(text, textX, textY);
     const link = document.createElement("a");
 
     link.href = downloadUrl;
-    link.download = "ShortcutHub-Edited-PDF.pdf";
+
+    link.download =
+      "ShortcutHub-Edited-PDF.pdf";
 
     document.body.appendChild(link);
+
     link.click();
+
     document.body.removeChild(link);
   };
 
@@ -305,7 +475,9 @@ context.fillText(text, textX, textY);
     setTotalPages(0);
     setMessage("");
     setText("");
+    setPageEdits({});
     setDownloadUrl("");
+    setEditMode("text");
   };
 
   return (
@@ -323,7 +495,8 @@ context.fillText(text, textX, textY);
           background: "#ffffff",
           borderRadius: "20px",
           padding: "30px",
-          boxShadow: "0 10px 35px rgba(0,0,0,0.08)",
+          boxShadow:
+            "0 10px 35px rgba(0,0,0,0.08)",
           border: "1px solid #e5e7eb",
         }}
       >
@@ -843,7 +1016,9 @@ context.fillText(text, textX, textY);
                   <button
                     type="button"
                     onClick={nextPage}
-                    disabled={pageNumber === totalPages}
+                    disabled={
+                      pageNumber === totalPages
+                    }
                     style={{
                       border: "1px solid #d1d5db",
                       background: "#ffffff",
