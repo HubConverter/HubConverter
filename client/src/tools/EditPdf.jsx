@@ -198,11 +198,11 @@ export default function EditPdf() {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const context = canvas.getContext("2d");
+   const context = canvas.getContext("2d");
 
-  context.font = `bold ${fontSize}px Arial`;
-    context.fillStyle = "#111827";
-    context.fillText(text, textX, textY);
+context.font = `bold ${fontSize}px Arial`;
+context.fillStyle = "#111827";
+context.fillText(text, textX, textY);
 
     setMessage("Text added to the page.");
   };
