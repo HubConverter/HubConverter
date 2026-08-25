@@ -96,8 +96,8 @@ async function translateText(text, sourceLanguage, targetLanguage) {
 
     if (!response.ok) {
       throw new Error(
-        `Translation service returned ${response.status}`
-      );
+  "Translation service returned " + response.status
+);
     }
 
     const data = await response.json();
