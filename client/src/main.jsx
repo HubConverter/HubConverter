@@ -15,7 +15,7 @@ import UnlockPdf from "./tools/UnlockPdf.jsx";
 import SignPdf from "./tools/SignPdf.jsx";
 import DeletePdfPages from "./tools/DeletePdfPages.jsx";
 import EditPdf from "./tools/EditPdf.jsx";
-
+import TranslatePdf from "./tools/TranslatePdf.jsx";
 
 
 import React, { useEffect, useState } from "react";
@@ -1060,7 +1060,36 @@ if (selectedTool === "edit-pdf") {
     </div>
   );
 }
+if (selectedTool === "translate-pdf") {
+  return (
+    <div>
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "20px 24px 0",
+        }}
+      >
+        <button
+          onClick={() => setSelectedTool(null)}
+          style={{
+            border: "none",
+            background: "transparent",
+            color: "inherit",
+            fontSize: "15px",
+            fontWeight: "600",
+            cursor: "pointer",
+            padding: "10px 0",
+          }}
+        >
+          ← Back to Tools
+        </button>
+      </div>
 
+      <TranslatePdf />
+    </div>
+  );
+}
 
   
   // =========================
@@ -1238,6 +1267,21 @@ if (selectedTool === "edit-pdf") {
   description="Edit and customize your PDF easily."
   onClick={() => setSelectedTool("edit-pdf")}
 />
+<ToolCard
+  icon="🔄"
+  title="Rotate PDF"
+  description="Rotate PDF pages."
+  onClick={() => setSelectedTool("rotate-pdf")}
+/>
+
+<ToolCard
+  icon="🌐"
+  title="Translate PDF"
+  description="Translate PDF into another language."
+  onClick={() => setSelectedTool("translate-pdf")}
+/>
+
+          
         </div>
       </div>
 
