@@ -1,4 +1,3 @@
-```jsx
 import React, { useState } from "react";
 import { jsPDF } from "jspdf";
 import * as pdfjsLib from "pdfjs-dist";
@@ -32,6 +31,10 @@ const LANGUAGES = [
   { code: "ko", name: "Korean" },
   { code: "zh-CN", name: "Chinese" },
 ];
+
+/* ---------------------------------------------------------
+   SPLIT TEXT
+--------------------------------------------------------- */
 
 function splitText(text, maxLength = 450) {
   const clean = text.replace(/\s+/g, " ").trim();
@@ -102,24 +105,10 @@ async function translateText(
         ? "autodetect"
         : sourceLanguage;
 
-    const langPair =
-      source + "|" + targetLanguage;
+    const langPair = source + "|" + targetLanguage;
 
     let translated = false;
     let lastError = null;
-
-    /*
-      Retry up to 5 times.
-
-      429 = Too Many Requests.
-
-      Wait times:
-      attempt 1 -> 2 seconds
-      attempt 2 -> 4 seconds
-      attempt 3 -> 7 seconds
-      attempt 4 -> 10 seconds
-      attempt 5 -> 15 seconds
-    */
 
     for (let attempt = 1; attempt <= 5; attempt++) {
       try {
@@ -140,8 +129,7 @@ async function translateText(
             15000,
           ];
 
-          const waitTime =
-            retryTimes[attempt - 1];
+          const waitTime = retryTimes[attempt - 1];
 
           lastError = new Error(
             "Translation service is busy (429)."
@@ -186,10 +174,6 @@ async function translateText(
 
         translated = true;
 
-        /*
-          Small delay between chunks to reduce
-          the chance of another 429 response.
-        */
         await new Promise((resolve) =>
           setTimeout(resolve, 1000)
         );
@@ -200,9 +184,7 @@ async function translateText(
 
         if (
           attempt >= 5 ||
-          !String(err?.message || "").includes(
-            "busy"
-          )
+          !String(err?.message || "").includes("busy")
         ) {
           throw err;
         }
@@ -212,9 +194,7 @@ async function translateText(
     if (!translated) {
       throw (
         lastError ||
-        new Error(
-          "Translation failed."
-        )
+        new Error("Translation failed.")
       );
     }
   }
@@ -303,9 +283,7 @@ async function loadHindiFont(pdf) {
       )
     );
 
-    binary += String.fromCharCode(
-      ...chunk
-    );
+    binary += String.fromCharCode(...chunk);
   }
 
   const base64 = btoa(binary);
@@ -347,14 +325,11 @@ function addWrappedText(
 
       currentY = 20;
 
-      /*
-        Re-select font after creating
-        a new page.
-      */
       pdf.setFont(
         "NotoDevanagari",
         "normal"
       );
+
       pdf.setFontSize(11);
     }
 
@@ -372,6 +347,7 @@ function addWrappedText(
 
 /* ---------------------------------------------------------
    MAIN COMPONENT
+   IMPORTANT: DEFAULT EXPORT
 --------------------------------------------------------- */
 
 export default function TranslatePdf() {
@@ -403,10 +379,6 @@ export default function TranslatePdf() {
   const [progress, setProgress] =
     useState(0);
 
-  /*
-    Store the converted PDF Blob so the
-    user can download it again.
-  */
   const [translatedPdfBlob, setTranslatedPdfBlob] =
     useState(null);
 
@@ -471,10 +443,7 @@ export default function TranslatePdf() {
     }
 
     setError("");
-    setMessage(
-      "Reading PDF..."
-    );
-
+    setMessage("Reading PDF...");
     setIsExtracting(true);
     setProgress(0);
 
@@ -482,9 +451,7 @@ export default function TranslatePdf() {
       const extractedPages =
         await extractPdfPages(file);
 
-      setPages(
-        extractedPages
-      );
+      setPages(extractedPages);
 
       const readablePages =
         extractedPages.filter(
@@ -494,8 +461,7 @@ export default function TranslatePdf() {
         );
 
       if (
-        readablePages.length ===
-        0
+        readablePages.length === 0
       ) {
         setError(
           "No readable text was found on this PDF. This tool currently works with text-based PDFs, not scanned/image-only PDFs."
@@ -551,22 +517,13 @@ export default function TranslatePdf() {
     try {
       let workingPages = pages;
 
-      if (
-        workingPages.length ===
-        0
-      ) {
-        setMessage(
-          "Reading PDF..."
-        );
+      if (workingPages.length === 0) {
+        setMessage("Reading PDF...");
 
         workingPages =
-          await extractPdfPages(
-            file
-          );
+          await extractPdfPages(file);
 
-        setPages(
-          workingPages
-        );
+        setPages(workingPages);
       }
 
       const readablePages =
@@ -577,8 +534,7 @@ export default function TranslatePdf() {
         );
 
       if (
-        readablePages.length ===
-        0
+        readablePages.length === 0
       ) {
         throw new Error(
           "No readable text was found on this PDF. Scanned PDFs are not supported yet."
@@ -616,7 +572,6 @@ export default function TranslatePdf() {
           !page.text.trim()
         ) {
           results.push("");
-
           continue;
         }
 
@@ -627,14 +582,10 @@ export default function TranslatePdf() {
             targetLanguage
           );
 
-        results.push(
-          translated
-        );
+        results.push(translated);
       }
 
-      setTranslatedPages(
-        results
-      );
+      setTranslatedPages(results);
 
       setMessage(
         "Translation completed. Creating your PDF..."
@@ -644,25 +595,14 @@ export default function TranslatePdf() {
          CREATE PDF
       --------------------------------------------------- */
 
-      const pdf =
-        new jsPDF({
-          orientation: "p",
-          unit: "mm",
-          format: "a4",
-        });
+      const pdf = new jsPDF({
+        orientation: "p",
+        unit: "mm",
+        format: "a4",
+      });
 
-      /*
-        Load Unicode Hindi font.
-      */
-      await loadHindiFont(
-        pdf
-      );
+      await loadHindiFont(pdf);
 
-      /*
-        IMPORTANT:
-        Always use the Unicode font
-        for translated text.
-      */
       pdf.setFont(
         "NotoDevanagari",
         "normal"
@@ -698,12 +638,8 @@ export default function TranslatePdf() {
 
         pdf.setFontSize(11);
 
-        if (
-          !translatedText
-        ) {
-          pdf.setTextColor(
-            100
-          );
+        if (!translatedText) {
+          pdf.setTextColor(100);
 
           pdf.text(
             "No readable text found on this page.",
@@ -711,9 +647,7 @@ export default function TranslatePdf() {
             30
           );
 
-          pdf.setTextColor(
-            0
-          );
+          pdf.setTextColor(0);
 
           continue;
         }
@@ -759,16 +693,9 @@ export default function TranslatePdf() {
         safeTargetName +
         ".pdf";
 
-      /*
-        Get PDF as Blob.
-      */
       const pdfBlob =
         pdf.output("blob");
 
-      /*
-        Store the Blob so the user can
-        download it using the button.
-      */
       setTranslatedPdfBlob(
         pdfBlob
       );
@@ -780,9 +707,8 @@ export default function TranslatePdf() {
       /*
         Automatically download once.
       */
-      pdf.save(
-        outputName
-      );
+
+      pdf.save(outputName);
 
       setMessage(
         "Translation completed successfully. Your translated PDF has been downloaded."
@@ -799,9 +725,7 @@ export default function TranslatePdf() {
 
       setMessage("");
     } finally {
-      setIsTranslating(
-        false
-      );
+      setIsTranslating(false);
     }
   };
 
@@ -809,44 +733,33 @@ export default function TranslatePdf() {
      DOWNLOAD AGAIN
   ------------------------------------------------------- */
 
-  const downloadTranslatedPdf =
-    () => {
-      if (
-        !translatedPdfBlob
-      ) {
-        return;
-      }
+  const downloadTranslatedPdf = () => {
+    if (!translatedPdfBlob) {
+      return;
+    }
 
-      const url =
-        URL.createObjectURL(
-          translatedPdfBlob
-        );
-
-      const link =
-        document.createElement(
-          "a"
-        );
-
-      link.href = url;
-
-      link.download =
-        translatedPdfName ||
-        "Translated-PDF.pdf";
-
-      document.body.appendChild(
-        link
+    const url =
+      URL.createObjectURL(
+        translatedPdfBlob
       );
 
-      link.click();
+    const link =
+      document.createElement("a");
 
-      document.body.removeChild(
-        link
-      );
+    link.href = url;
 
-      URL.revokeObjectURL(
-        url
-      );
-    };
+    link.download =
+      translatedPdfName ||
+      "Translated-PDF.pdf";
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
+  };
 
   /* -------------------------------------------------------
      RESET
@@ -887,8 +800,7 @@ export default function TranslatePdf() {
       style={{
         maxWidth: "1000px",
         margin: "0 auto",
-        padding:
-          "30px 20px 60px",
+        padding: "30px 20px 60px",
       }}
     >
       <div
@@ -918,8 +830,7 @@ export default function TranslatePdf() {
 
           <h1
             style={{
-              margin:
-                "0 0 8px",
+              margin: "0 0 8px",
               fontSize: "30px",
               fontWeight: "800",
               color: "#111827",
@@ -950,10 +861,8 @@ export default function TranslatePdf() {
             borderRadius: "16px",
             padding: "30px",
             textAlign: "center",
-            background:
-              "#f8fafc",
-            marginBottom:
-              "22px",
+            background: "#f8fafc",
+            marginBottom: "22px",
           }}
         >
           <div
@@ -967,8 +876,7 @@ export default function TranslatePdf() {
 
           <h3
             style={{
-              margin:
-                "0 0 8px",
+              margin: "0 0 8px",
               color: "#1f2937",
             }}
           >
@@ -978,8 +886,7 @@ export default function TranslatePdf() {
           <p
             style={{
               color: "#6b7280",
-              margin:
-                "0 0 18px",
+              margin: "0 0 18px",
               fontSize: "14px",
             }}
           >
@@ -990,19 +897,13 @@ export default function TranslatePdf() {
 
           <label
             style={{
-              display:
-                "inline-block",
-              background:
-                "#2563eb",
+              display: "inline-block",
+              background: "#2563eb",
               color: "#fff",
-              padding:
-                "12px 22px",
-              borderRadius:
-                "10px",
-              cursor:
-                "pointer",
-              fontWeight:
-                "700",
+              padding: "12px 22px",
+              borderRadius: "10px",
+              cursor: "pointer",
+              fontWeight: "700",
             }}
           >
             Choose PDF
@@ -1010,9 +911,7 @@ export default function TranslatePdf() {
             <input
               type="file"
               accept="application/pdf,.pdf"
-              onChange={
-                handleFileChange
-              }
+              onChange={handleFileChange}
               style={{
                 display: "none",
               }}
@@ -1022,18 +921,13 @@ export default function TranslatePdf() {
           {file && (
             <div
               style={{
-                marginTop:
-                  "18px",
-                fontWeight:
-                  "600",
-                color:
-                  "#374151",
-                wordBreak:
-                  "break-word",
+                marginTop: "18px",
+                fontWeight: "600",
+                color: "#374151",
+                wordBreak: "break-word",
               }}
             >
-              📎{" "}
-              {file.name}
+              📎 {file.name}
             </div>
           )}
         </div>
@@ -1042,71 +936,50 @@ export default function TranslatePdf() {
 
         <div
           style={{
-            display:
-              "grid",
+            display: "grid",
             gridTemplateColumns:
               "repeat(auto-fit, minmax(220px, 1fr))",
             gap: "18px",
-            marginBottom:
-              "22px",
+            marginBottom: "22px",
           }}
         >
           <div>
             <label
               style={{
-                display:
-                  "block",
-                fontWeight:
-                  "700",
-                color:
-                  "#374151",
-                marginBottom:
-                  "8px",
+                display: "block",
+                fontWeight: "700",
+                color: "#374151",
+                marginBottom: "8px",
               }}
             >
               Source Language
             </label>
 
             <select
-              value={
-                sourceLanguage
-              }
+              value={sourceLanguage}
               onChange={(e) =>
                 setSourceLanguage(
                   e.target.value
                 )
               }
-              disabled={
-                isTranslating
-              }
+              disabled={isTranslating}
               style={{
-                width:
-                  "100%",
-                padding:
-                  "12px",
-                borderRadius:
-                  "10px",
+                width: "100%",
+                padding: "12px",
+                borderRadius: "10px",
                 border:
                   "1px solid #d1d5db",
-                background:
-                  "#fff",
-                fontSize:
-                  "15px",
+                background: "#fff",
+                fontSize: "15px",
               }}
             >
               {LANGUAGES.map(
                 (language) => (
                   <option
-                    key={
-                      language.code
-                    }
-                    value={
-                      language.code
-                    }
+                    key={language.code}
+                    value={language.code}
                   >
-                    {
-                      language.name
-                    }
+                    {language.name}
                   </option>
                 )
               )}
@@ -1116,63 +989,43 @@ export default function TranslatePdf() {
           <div>
             <label
               style={{
-                display:
-                  "block",
-                fontWeight:
-                  "700",
-                color:
-                  "#374151",
-                marginBottom:
-                  "8px",
+                display: "block",
+                fontWeight: "700",
+                color: "#374151",
+                marginBottom: "8px",
               }}
             >
               Translate To
             </label>
 
             <select
-              value={
-                targetLanguage
-              }
+              value={targetLanguage}
               onChange={(e) =>
                 setTargetLanguage(
                   e.target.value
                 )
               }
-              disabled={
-                isTranslating
-              }
+              disabled={isTranslating}
               style={{
-                width:
-                  "100%",
-                padding:
-                  "12px",
-                borderRadius:
-                  "10px",
+                width: "100%",
+                padding: "12px",
+                borderRadius: "10px",
                 border:
                   "1px solid #d1d5db",
-                background:
-                  "#fff",
-                fontSize:
-                  "15px",
+                background: "#fff",
+                fontSize: "15px",
               }}
             >
               {LANGUAGES.filter(
                 (language) =>
-                  language.code !==
-                  "auto"
+                  language.code !== "auto"
               ).map(
                 (language) => (
                   <option
-                    key={
-                      language.code
-                    }
-                    value={
-                      language.code
-                    }
+                    key={language.code}
+                    value={language.code}
                   >
-                    {
-                      language.name
-                    }
+                    {language.name}
                   </option>
                 )
               )}
@@ -1184,21 +1037,15 @@ export default function TranslatePdf() {
 
         <div
           style={{
-            display:
-              "flex",
-            flexWrap:
-              "wrap",
+            display: "flex",
+            flexWrap: "wrap",
             gap: "12px",
-            justifyContent:
-              "center",
-            marginBottom:
-              "20px",
+            justifyContent: "center",
+            marginBottom: "20px",
           }}
         >
           <button
-            onClick={
-              extractText
-            }
+            onClick={extractText}
             disabled={
               !file ||
               isExtracting ||
@@ -1213,12 +1060,9 @@ export default function TranslatePdf() {
                   ? "#cbd5e1"
                   : "#475569",
               color: "#fff",
-              padding:
-                "12px 22px",
-              borderRadius:
-                "10px",
-              fontWeight:
-                "700",
+              padding: "12px 22px",
+              borderRadius: "10px",
+              fontWeight: "700",
               cursor:
                 !file ||
                 isExtracting ||
@@ -1233,9 +1077,7 @@ export default function TranslatePdf() {
           </button>
 
           <button
-            onClick={
-              translatePdf
-            }
+            onClick={translatePdf}
             disabled={
               !file ||
               isTranslating
@@ -1248,12 +1090,9 @@ export default function TranslatePdf() {
                   ? "#93c5fd"
                   : "#2563eb",
               color: "#fff",
-              padding:
-                "12px 26px",
-              borderRadius:
-                "10px",
-              fontWeight:
-                "800",
+              padding: "12px 26px",
+              borderRadius: "10px",
+              fontWeight: "800",
               cursor:
                 !file ||
                 isTranslating
@@ -1269,29 +1108,19 @@ export default function TranslatePdf() {
           </button>
 
           <button
-            onClick={
-              resetTool
-            }
-            disabled={
-              isTranslating
-            }
+            onClick={resetTool}
+            disabled={isTranslating}
             style={{
               border:
                 "1px solid #d1d5db",
-              background:
-                "#fff",
-              color:
-                "#374151",
-              padding:
-                "12px 22px",
-              borderRadius:
-                "10px",
-              fontWeight:
-                "700",
-              cursor:
-                isTranslating
-                  ? "not-allowed"
-                  : "pointer",
+              background: "#fff",
+              color: "#374151",
+              padding: "12px 22px",
+              borderRadius: "10px",
+              fontWeight: "700",
+              cursor: isTranslating
+                ? "not-allowed"
+                : "pointer",
             }}
           >
             Clear
@@ -1303,33 +1132,23 @@ export default function TranslatePdf() {
         {isTranslating && (
           <div
             style={{
-              marginBottom:
-                "20px",
+              marginBottom: "20px",
             }}
           >
             <div
               style={{
-                height:
-                  "10px",
-                width:
-                  "100%",
-                background:
-                  "#e5e7eb",
-                borderRadius:
-                  "999px",
-                overflow:
-                  "hidden",
+                height: "10px",
+                width: "100%",
+                background: "#e5e7eb",
+                borderRadius: "999px",
+                overflow: "hidden",
               }}
             >
               <div
                 style={{
-                  height:
-                    "100%",
-                  width:
-                    progress +
-                    "%",
-                  background:
-                    "#2563eb",
+                  height: "100%",
+                  width: progress + "%",
+                  background: "#2563eb",
                   transition:
                     "width 0.3s ease",
                 }}
@@ -1338,22 +1157,14 @@ export default function TranslatePdf() {
 
             <div
               style={{
-                textAlign:
-                  "center",
-                marginTop:
-                  "8px",
-                color:
-                  "#475569",
-                fontSize:
-                  "14px",
-                fontWeight:
-                  "600",
+                textAlign: "center",
+                marginTop: "8px",
+                color: "#475569",
+                fontSize: "14px",
+                fontWeight: "600",
               }}
             >
-              {
-                progress
-              }
-              % completed
+              {progress}% completed
             </div>
           </div>
         )}
@@ -1363,20 +1174,14 @@ export default function TranslatePdf() {
         {message && (
           <div
             style={{
-              background:
-                "#eff6ff",
-              color:
-                "#1d4ed8",
+              background: "#eff6ff",
+              color: "#1d4ed8",
               border:
                 "1px solid #bfdbfe",
-              borderRadius:
-                "10px",
-              padding:
-                "13px 15px",
-              marginBottom:
-                "15px",
-              fontWeight:
-                "600",
+              borderRadius: "10px",
+              padding: "13px 15px",
+              marginBottom: "15px",
+              fontWeight: "600",
             }}
           >
             {message}
@@ -1388,22 +1193,15 @@ export default function TranslatePdf() {
         {error && (
           <div
             style={{
-              background:
-                "#fef2f2",
-              color:
-                "#b91c1c",
+              background: "#fef2f2",
+              color: "#b91c1c",
               border:
                 "1px solid #fecaca",
-              borderRadius:
-                "10px",
-              padding:
-                "13px 15px",
-              marginBottom:
-                "15px",
-              fontWeight:
-                "600",
-              lineHeight:
-                "1.5",
+              borderRadius: "10px",
+              padding: "13px 15px",
+              marginBottom: "15px",
+              fontWeight: "600",
+              lineHeight: "1.5",
             }}
           >
             {error}
@@ -1416,26 +1214,19 @@ export default function TranslatePdf() {
           !isTranslating && (
             <div
               style={{
-                marginTop:
-                  "20px",
-                padding:
-                  "22px",
-                borderRadius:
-                  "14px",
-                background:
-                  "#ecfdf5",
+                marginTop: "20px",
+                padding: "22px",
+                borderRadius: "14px",
+                background: "#ecfdf5",
                 border:
                   "1px solid #a7f3d0",
-                textAlign:
-                  "center",
+                textAlign: "center",
               }}
             >
               <div
                 style={{
-                  fontSize:
-                    "32px",
-                  marginBottom:
-                    "8px",
+                  fontSize: "32px",
+                  marginBottom: "8px",
                 }}
               >
                 ✅
@@ -1443,14 +1234,10 @@ export default function TranslatePdf() {
 
               <div
                 style={{
-                  color:
-                    "#166534",
-                  fontSize:
-                    "18px",
-                  fontWeight:
-                    "800",
-                  marginBottom:
-                    "8px",
+                  color: "#166534",
+                  fontSize: "18px",
+                  fontWeight: "800",
+                  marginBottom: "8px",
                 }}
               >
                 Translation completed
@@ -1458,19 +1245,14 @@ export default function TranslatePdf() {
 
               <div
                 style={{
-                  color:
-                    "#166534",
-                  fontSize:
-                    "14px",
-                  marginBottom:
-                    "15px",
+                  color: "#166534",
+                  fontSize: "14px",
+                  marginBottom: "15px",
                   wordBreak:
                     "break-word",
                 }}
               >
-                {
-                  translatedPdfName
-                }
+                {translatedPdfName}
               </div>
 
               <button
@@ -1478,22 +1260,14 @@ export default function TranslatePdf() {
                   downloadTranslatedPdf
                 }
                 style={{
-                  border:
-                    "none",
-                  background:
-                    "#16a34a",
-                  color:
-                    "#fff",
-                  padding:
-                    "13px 26px",
-                  borderRadius:
-                    "10px",
-                  fontWeight:
-                    "800",
-                  fontSize:
-                    "15px",
-                  cursor:
-                    "pointer",
+                  border: "none",
+                  background: "#16a34a",
+                  color: "#fff",
+                  padding: "13px 26px",
+                  borderRadius: "10px",
+                  fontWeight: "800",
+                  fontSize: "15px",
+                  cursor: "pointer",
                   boxShadow:
                     "0 5px 15px rgba(22,163,74,0.25)",
                 }}
@@ -1505,74 +1279,57 @@ export default function TranslatePdf() {
 
         {/* PDF INFORMATION */}
 
-        {pages.length >
-          0 && (
-            <div
+        {pages.length > 0 && (
+          <div
+            style={{
+              marginTop: "22px",
+              padding: "18px",
+              borderRadius: "14px",
+              background: "#f8fafc",
+              border:
+                "1px solid #e2e8f0",
+            }}
+          >
+            <h3
               style={{
-                marginTop:
-                  "22px",
-                padding:
-                  "18px",
-                borderRadius:
-                  "14px",
-                background:
-                  "#f8fafc",
-                border:
-                  "1px solid #e2e8f0",
+                margin: "0 0 10px",
+                color: "#1f2937",
               }}
             >
-              <h3
-                style={{
-                  margin:
-                    "0 0 10px",
-                  color:
-                    "#1f2937",
-                }}
-              >
-                PDF Information
-              </h3>
+              PDF Information
+            </h3>
 
-              <div
-                style={{
-                  color:
-                    "#475569",
-                  fontSize:
-                    "14px",
-                  lineHeight:
-                    "1.7",
-                }}
-              >
-                <div>
-                  Total pages:{" "}
-                  <strong>
-                    {
-                      pages.length
-                    }
-                  </strong>
-                </div>
+            <div
+              style={{
+                color: "#475569",
+                fontSize: "14px",
+                lineHeight: "1.7",
+              }}
+            >
+              <div>
+                Total pages:{" "}
+                <strong>
+                  {pages.length}
+                </strong>
+              </div>
 
-                <div>
-                  Readable pages:{" "}
-                  <strong>
-                    {
-                      readablePageCount
-                    }
-                  </strong>
-                </div>
+              <div>
+                Readable pages:{" "}
+                <strong>
+                  {readablePageCount}
+                </strong>
+              </div>
 
-                <div>
-                  Target language:{" "}
-                  <strong>
-                    {
-                      selectedTargetLanguage
-                    }
-                  </strong>
-                </div>
+              <div>
+                Target language:{" "}
+                <strong>
+                  {selectedTargetLanguage}
+                </strong>
               </div>
             </div>
-          )}
+          </div>
+        )}
       </div>
     </div>
   );
 }
-```
