@@ -168,22 +168,100 @@ const [view, setView] = useState("tools-all");
   🔄 HubConverter
 </div>
 
-       <nav className="nav">
+<nav
+  style={{
+    display: "flex",
+    alignItems: "center",
+    gap: "28px",
+  }}
+>
+  {/* LOGO */}
+  <div
+    onClick={() => {
+      setCategory("all");
+      setSelectedTool(null);
+    }}
+    style={{
+      cursor: "pointer",
+      fontWeight: "800",
+      fontSize: "28px",
+    }}
+  >
+    🔄 HubConverter
+  </div>
+
+  {/* ALL TOOLS */}
   <button
-    className={view === "tools-pdf" ? "active" : ""}
-    onClick={() => setView("tools-pdf")}
+    onClick={() => {
+      setCategory("all");
+      setSelectedTool(null);
+    }}
+    style={{
+      background: "transparent",
+      border: "none",
+      color: "#fff",
+      cursor: "pointer",
+      fontSize: "18px",
+    }}
+  >
+    🧰 All Tools
+  </button>
+
+  {/* PDF TOOLS */}
+  <button
+    onClick={() => {
+      setCategory("pdf");
+      setSelectedTool(null);
+    }}
+    style={{
+      background: "transparent",
+      border: "none",
+      color: "#fff",
+      cursor: "pointer",
+      fontSize: "18px",
+    }}
   >
     🔄 PDF Converter Tools
   </button>
 
+  {/* JPG TOOLS */}
   <button
-    className={view === "tools-jpg" ? "active" : ""}
-    onClick={() => setView("tools-jpg")}
+    onClick={() => {
+      setCategory("jpg");
+      setSelectedTool(null);
+    }}
+    style={{
+      background: "transparent",
+      border: "none",
+      color: "#fff",
+      cursor: "pointer",
+      fontSize: "18px",
+    }}
   >
     🖼️ JPG Tools
   </button>
-</nav>
 
+  {/* HOME - RIGHT SIDE */}
+  <button
+    onClick={() => {
+      setCategory("all");
+      setSelectedTool(null);
+    }}
+    style={{
+      marginLeft: "auto",
+      background: "transparent",
+      border: "1px solid rgba(255,255,255,0.25)",
+      color: "#fff",
+      padding: "10px 18px",
+      borderRadius: "10px",
+      cursor: "pointer",
+      fontSize: "16px",
+      fontWeight: "600",
+    }}
+  >
+    🏠 Home
+  </button>
+</nav>
         <div className="actions">
           <div className="themePicker">
             <button
