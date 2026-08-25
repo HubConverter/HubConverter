@@ -156,145 +156,107 @@ const [view, setView] = useState("tools-all");
 
   return (
     <>
-      <header>
-       <div
-  className="brand"
-  onClick={() => {
-    setCategory("all");
-    setSelectedTool(null);
-  }}
-  style={{ cursor: "pointer" }}
->
-  🔄 HubConverter
-</div>
-
-<nav
-  style={{
-    display: "flex",
-    alignItems: "center",
-    gap: "28px",
-  }}
->
-  {/* LOGO */}
+    <header>
+  {/* HUBCONVERTER — HOME */}
   <div
+    className="brand"
     onClick={() => {
-      setCategory("all");
+      setView("tools-all");
       setSelectedTool(null);
     }}
     style={{
       cursor: "pointer",
-      fontWeight: "800",
-      fontSize: "28px",
     }}
   >
     🔄 HubConverter
   </div>
 
-  {/* ALL TOOLS */}
-  <button
-    onClick={() => {
-      setCategory("all");
-      setSelectedTool(null);
-    }}
+  <nav
     style={{
-      background: "transparent",
-      border: "none",
-      color: "#fff",
-      cursor: "pointer",
-      fontSize: "18px",
+      display: "flex",
+      alignItems: "center",
+      gap: "28px",
     }}
   >
-    🧰 All Tools
-  </button>
 
-  {/* PDF TOOLS */}
-  <button
-    onClick={() => {
-      setCategory("pdf");
-      setSelectedTool(null);
-    }}
-    style={{
-      background: "transparent",
-      border: "none",
-      color: "#fff",
-      cursor: "pointer",
-      fontSize: "18px",
-    }}
-  >
-    🔄 PDF Converter Tools
-  </button>
+    {/* PDF CONVERTER TOOLS */}
+    <button
+      onClick={() => {
+        setView("tools-pdf");
+        setSelectedTool(null);
+      }}
+      style={{
+        background: "transparent",
+        border: "none",
+        color: "#fff",
+        cursor: "pointer",
+        fontSize: "18px",
+      }}
+    >
+      🔄 PDF Converter Tools
+    </button>
 
-  {/* JPG TOOLS */}
-  <button
-    onClick={() => {
-      setCategory("jpg");
-      setSelectedTool(null);
-    }}
-    style={{
-      background: "transparent",
-      border: "none",
-      color: "#fff",
-      cursor: "pointer",
-      fontSize: "18px",
-    }}
-  >
-    🖼️ JPG Tools
-  </button>
+    {/* JPG TOOLS */}
+    <button
+      onClick={() => {
+        setView("tools-jpg");
+        setSelectedTool(null);
+      }}
+      style={{
+        background: "transparent",
+        border: "none",
+        color: "#fff",
+        cursor: "pointer",
+        fontSize: "18px",
+      }}
+    >
+      🖼️ JPG Tools
+    </button>
 
-  {/* HOME - RIGHT SIDE */}
-  <button
-    onClick={() => {
-      setCategory("all");
-      setSelectedTool(null);
-    }}
-    style={{
-      marginLeft: "auto",
-      background: "transparent",
-      border: "1px solid rgba(255,255,255,0.25)",
-      color: "#fff",
-      padding: "10px 18px",
-      borderRadius: "10px",
-      cursor: "pointer",
-      fontSize: "16px",
-      fontWeight: "600",
-    }}
-  >
-    🏠 Home
-  </button>
-</nav>
-        <div className="actions">
-          <div className="themePicker">
+  </nav>
+
+  <div className="actions">
+    <div className="themePicker">
+      <button
+        className="themeToggle"
+        onClick={() => setShowThemes((current) => !current)}
+        aria-label="Choose a color theme"
+        aria-expanded={showThemes}
+        title="Choose a color theme"
+      >
+        ◐
+      </button>
+
+      {showThemes && (
+        <div
+          className="themeMenu"
+          role="menu"
+          aria-label="Color themes"
+        >
+          <b>Choose a theme</b>
+
+          {themes.map((item) => (
             <button
-              className="themeToggle"
-              onClick={() => setShowThemes((current) => !current)}
-              aria-label="Choose a color theme"
-              aria-expanded={showThemes}
-              title="Choose a color theme"
+              key={item.id}
+              className={
+                theme === item.id
+                  ? "themeChoice active"
+                  : "themeChoice"
+              }
+              onClick={() => {
+                setTheme(item.id);
+                setShowThemes(false);
+              }}
+              role="menuitem"
             >
-              ◐
+              <span>{item.icon}</span> {item.label}
             </button>
-
-            {showThemes && (
-              <div className="themeMenu" role="menu" aria-label="Color themes">
-                <b>Choose a theme</b>
-                {themes.map((item) => (
-                  <button
-                    key={item.id}
-                    className={theme === item.id ? "themeChoice active" : "themeChoice"}
-                    onClick={() => {
-                      setTheme(item.id);
-                      setShowThemes(false);
-                    }}
-                    role="menuitem"
-                  >
-                    <span>{item.icon}</span> {item.label}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+          ))}
         </div>
-      </header>
+      )}
+    </div>
+  </div>
+</header>
 
       
 
