@@ -7,6 +7,7 @@ export default function DeletePdf() {
   const [selectedPages, setSelectedPages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [downloadUrl, setDownloadUrl] = useState("");
 
   const handleFileChange = async (event) => {
     const selectedFile = event.target.files?.[0];
@@ -59,84 +60,92 @@ export default function DeletePdf() {
   };
 
   const deletePages = async () => {
-    if (!file) {
-      setMessage("Please select a PDF first.");
-      return;
-    }
+  if (!file) {
+    setMessage("Please select a PDF first.");
+    return;
+  }
 
-    if (selectedPages.length === 0) {
-      setMessage("Please select at least one page to delete.");
-      return;
-    }
+  if (selectedPages.length === 0) {
+    setMessage("Please select at least one page to delete.");
+    return;
+  }
 
-    if (selectedPages.length >= pageCount) {
-      setMessage("You cannot delete all pages. Keep at least one page.");
-      return;
-    }
+  if (selectedPages.length >= pageCount) {
+    setMessage("You cannot delete all pages. Keep at least one page.");
+    return;
+  }
 
-    try {
-      setLoading(true);
-      setMessage("");
+  try {
+    setLoading(true);
+    setMessage("");
+    setDownloadUrl("");
 
-      const arrayBuffer = await file.arrayBuffer();
+    const arrayBuffer = await file.arrayBuffer();
 
-      const sourcePdf = await PDFDocument.load(arrayBuffer);
-      const outputPdf = await PDFDocument.create();
+    const sourcePdf = await PDFDocument.load(arrayBuffer);
+    const outputPdf = await PDFDocument.create();
 
-      const pagesToDelete = new Set(
-        selectedPages.map((pageNumber) => pageNumber - 1)
-      );
+    const pagesToDelete = new Set(
+      selectedPages.map((pageNumber) => pageNumber - 1)
+    );
 
-      const pagesToKeep = [];
+    const pagesToKeep = [];
 
-      for (let i = 0; i < pageCount; i++) {
-        if (!pagesToDelete.has(i)) {
-          pagesToKeep.push(i);
-        }
+    for (let i = 0; i < pageCount; i++) {
+      if (!pagesToDelete.has(i)) {
+        pagesToKeep.push(i);
       }
-
-      const copiedPages = await outputPdf.copyPages(
-        sourcePdf,
-        pagesToKeep
-      );
-
-      copiedPages.forEach((page) => {
-        outputPdf.addPage(page);
-      });
-
-      const pdfBytes = await outputPdf.save();
-
-      const blob = new Blob([pdfBytes], {
-        type: "application/pdf",
-      });
-
-      const url = URL.createObjectURL(blob);
-
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `ShortcutHub-Delete-PDF-Pages.pdf`;
-
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-      URL.revokeObjectURL(url);
-
-      setMessage(
-        `${selectedPages.length} page${
-          selectedPages.length > 1 ? "s" : ""
-        } deleted successfully.`
-      );
-
-      setSelectedPages([]);
-    } catch (error) {
-      console.error(error);
-      setMessage("Something went wrong while deleting the pages.");
-    } finally {
-      setLoading(false);
     }
-  };
 
+    const copiedPages = await outputPdf.copyPages(
+      sourcePdf,
+      pagesToKeep
+    );
+
+    copiedPages.forEach((page) => {
+      outputPdf.addPage(page);
+    });
+
+    const pdfBytes = await outputPdf.save();
+
+    const blob = new Blob([pdfBytes], {
+      type: "application/pdf",
+    });
+
+    const url = URL.createObjectURL(blob);
+
+    setDownloadUrl(url);
+
+    setMessage(
+      `${selectedPages.length} page${
+        selectedPages.length > 1 ? "s" : ""
+      } deleted successfully.`
+    );
+
+    setSelectedPages([]);
+  } catch (error) {
+    console.error(error);
+    setMessage("Something went wrong while deleting the pages.");
+    setDownloadUrl("");
+  } finally {
+    setLoading(false);
+  }
+};
+};
+
+const downloadPdf = () => {
+  if (!downloadUrl) return;
+
+  const link = document.createElement("a");
+  link.href = downloadUrl;
+  link.download = "ShortcutHub-Delete-PDF-Pages.pdf";
+
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
+const resetTool = () => {
   const resetTool = () => {
     setFile(null);
     setPageCount(0);
@@ -462,44 +471,56 @@ export default function DeletePdf() {
                 borderTop: "1px solid #e5e7eb",
               }}
             >
-              <button
-                type="button"
-                onClick={deletePages}
-                disabled={
-                  loading ||
-                  selectedPages.length === 0 ||
-                  selectedPages.length >= pageCount
-                }
-                style={{
-                  width: "100%",
-                  border: "none",
-                  background:
-                    loading ||
-                    selectedPages.length === 0 ||
-                    selectedPages.length >= pageCount
-                      ? "#9ca3af"
-                      : "#dc2626",
-                  color: "#ffffff",
-                  padding: "14px 20px",
-                  borderRadius: "11px",
-                  cursor:
-                    loading ||
-                    selectedPages.length === 0 ||
-                    selectedPages.length >= pageCount
-                      ? "not-allowed"
-                      : "pointer",
-                  fontSize: "16px",
-                  fontWeight: "700",
-                }}
-              >
-                {loading
-                  ? "Processing PDF..."
-                  : `Delete ${
-                      selectedPages.length
-                    } Page${
-                      selectedPages.length === 1 ? "" : "s"
-                    } & Download`}
-              </button>
+              {!downloadUrl && (
+  <button
+    type="button"
+    onClick={deletePages}
+    disabled={loading || selectedPages.length === 0}
+    style={{
+      width: "100%",
+      border: "none",
+      background:
+        loading || selectedPages.length === 0
+          ? "#9ca3af"
+          : "#dc2626",
+      color: "#ffffff",
+      padding: "14px 20px",
+      borderRadius: "11px",
+      cursor:
+        loading || selectedPages.length === 0
+          ? "not-allowed"
+          : "pointer",
+      fontSize: "16px",
+      fontWeight: "700",
+    }}
+  >
+    {loading
+      ? "Deleting Pages..."
+      : `Delete ${selectedPages.length} Page${
+          selectedPages.length === 1 ? "" : "s"
+        }`}
+  </button>
+)}
+{downloadUrl && (
+  <button
+    type="button"
+    onClick={downloadPdf}
+    style={{
+      width: "100%",
+      border: "none",
+      background: "#16a34a",
+      color: "#ffffff",
+      padding: "14px 20px",
+      borderRadius: "11px",
+      cursor: "pointer",
+      fontSize: "16px",
+      fontWeight: "700",
+      marginTop: "12px",
+    }}
+  >
+    Download PDF
+  </button>
+)}
             </div>
           </>
         )}
