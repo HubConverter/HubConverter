@@ -74,71 +74,65 @@ export default function TranslatePdf() {
     setMessage("");
   };
 
- const translateText = async (text, fromLanguage, toLanguage) => {
-  if (!text || !text.trim()) {
-    return "";
-  }
+  const translateText = async (
+    text,
+    fromLanguage,
+    toLanguage
+  ) => {
+    if (!text || !text.trim()) {
+      return "";
+    }
 
-  const cleanText = text.trim();
+    const cleanText = text.trim();
 
-  const source =
-    fromLanguage === "auto"
-      ? "en"
-      : fromLanguage;
+    const actualSourceLanguage =
+      fromLanguage === "auto"
+        ? "en"
+        : fromLanguage;
 
-  const url =
-    "https://api.mymemory.translated.net/get?q=" +
-    encodeURIComponent(cleanText) +
-    "&langpair=" +
-    encodeURIComponent(source) +
-    "%7C" +
-    encodeURIComponent(toLanguage);
+    const url =
+      "https://api.mymemory.translated.net/get?q=" +
+      encodeURIComponent(cleanText) +
+      "&langpair=" +
+      encodeURIComponent(actualSourceLanguage) +
+      "%7C" +
+      encodeURIComponent(toLanguage);
 
-  try {
     const response = await fetch(url);
 
     if (!response.ok) {
       throw new Error(
-        "Translation service returned HTTP " +
-          response.status
+        "Translation service unavailable."
       );
     }
 
     const data = await response.json();
 
-    console.log("Translation API response:", data);
-
     if (
-      data &&
-      data.responseData &&
-      typeof data.responseData.translatedText === "string"
+      !data ||
+      !data.responseData ||
+      typeof data.responseData.translatedText !==
+        "string"
     ) {
-      return data.responseData.translatedText;
+      throw new Error("Translation failed.");
     }
 
-    if (
-      data &&
-      typeof data.responseDetails === "string" &&
-      data.responseDetails.trim()
-    ) {
-      throw new Error(data.responseDetails);
+    const translatedText =
+      data.responseData.translatedText.trim();
+
+    if (!translatedText) {
+      throw new Error("Translation returned empty text.");
     }
 
-    throw new Error(
-      "Translation service did not return translated text."
-    );
- } catch (error) {
-  console.error("PDF translation error:", error);
+    return translatedText;
+  };
 
-  setMessage(
-    "Translation failed: " +
-      (error?.message || "Translation service unavailable.")
-  );
-}
-};
-
-  const splitIntoChunks = (text, maxLength = 450) => {
+  const splitIntoChunks = (
+    text,
+    maxLength = 450
+  ) => {
     const words = text.split(/\s+/);
+
     const chunks = [];
 
     let current = "";
@@ -190,146 +184,229 @@ export default function TranslatePdf() {
   };
 
   const extractPdfText = async (selectedFile) => {
-  const arrayBuffer = await selectedFile.arrayBuffer();
+    const arrayBuffer =
+      await selectedFile.arrayBuffer();
 
-  const pdf = await pdfjsLib.getDocument({
-    data: new Uint8Array(arrayBuffer),
-  }).promise;
+    const pdf = await pdfjsLib.getDocument({
+      data: arrayBuffer,
+    }).promise;
 
-  const pages = [];
+    const pages = [];
 
-  for (
-    let pageNumber = 1;
-    pageNumber <= pdf.numPages;
-    pageNumber++
-  ) {
-    const page = await pdf.getPage(pageNumber);
+    for (
+      let pageNumber = 1;
+      pageNumber <= pdf.numPages;
+      pageNumber++
+    ) {
+      const page = await pdf.getPage(
+        pageNumber
+      );
 
-    const textContent = await page.getTextContent({
-      includeMarkedContent: true,
-      disableNormalization: false,
-    });
+      const textContent =
+        await page.getTextContent();
 
-    const textParts = [];
+      const pageText = textContent.items
+        .map((item) => item.str || "")
+        .join(" ")
+        .replace(/\s+/g, " ")
+        .trim();
 
-    for (const item of textContent.items) {
-      if (
-        item &&
-        typeof item.str === "string" &&
-        item.str.trim()
-      ) {
-        textParts.push(item.str.trim());
+      pages.push(pageText);
+    }
+
+    return pages;
+  };
+
+  const drawWrappedText = (
+    page,
+    text,
+    font,
+    fontSize,
+    margin,
+    maxWidth,
+    startY
+  ) => {
+    const lineHeight = fontSize + 6;
+
+    let y = startY;
+
+    const words = text.split(/\s+/);
+
+    let line = "";
+
+    for (const word of words) {
+      const testLine =
+        line.length === 0
+          ? word
+          : line + " " + word;
+
+      const testWidth =
+        font.widthOfTextAtSize(
+          testLine,
+          fontSize
+        );
+
+      if (testWidth > maxWidth) {
+        if (line) {
+          page.drawText(line, {
+            x: margin,
+            y,
+            size: fontSize,
+            font,
+            color: rgb(
+              0.067,
+              0.09,
+              0.14
+            ),
+          });
+
+          y -= lineHeight;
+        }
+
+        line = word;
+      } else {
+        line = testLine;
       }
     }
 
-    const pageText = textParts
-      .join(" ")
-      .replace(/\s+/g, " ")
-      .trim();
+    if (line) {
+      page.drawText(line, {
+        x: margin,
+        y,
+        size: fontSize,
+        font,
+        color: rgb(
+          0.067,
+          0.09,
+          0.14
+        ),
+      });
 
-    console.log(
-      "PDF page",
-      pageNumber,
-      "extracted text:",
-      pageText
-    );
+      y -= lineHeight;
+    }
 
-    pages.push(pageText);
-  }
-
-  return {
-    pdf,
-    pages,
+    return y;
   };
-};
+
   const createTranslatedPdf = async (
     translatedPages
   ) => {
-    const translatedPdf = await PDFDocument.create();
+    const translatedPdf =
+      await PDFDocument.create();
 
-    const font = await translatedPdf.embedFont(
-      StandardFonts.Helvetica
-    );
+    const font =
+      await translatedPdf.embedFont(
+        StandardFonts.Helvetica
+      );
 
-    translatedPages.forEach((pageText) => {
-      const page = translatedPdf.addPage([
-        595.28,
-        841.89,
-      ]);
+    const pageWidth = 595.28;
+    const pageHeight = 841.89;
 
-      const pageWidth = page.getWidth();
-      const pageHeight = page.getHeight();
+    const margin = 45;
 
-      const margin = 45;
-      const maxWidth = pageWidth - margin * 2;
+    const fontSize = 12;
 
-      const fontSize = 12;
-      const lineHeight = 18;
+    const lineHeight = 18;
 
-      let y = pageHeight - margin;
+    const maxWidth =
+      pageWidth - margin * 2;
+
+    for (
+      let pageIndex = 0;
+      pageIndex < translatedPages.length;
+      pageIndex++
+    ) {
+      const pageText =
+        translatedPages[pageIndex];
+
+      let page =
+        translatedPdf.addPage([
+          pageWidth,
+          pageHeight,
+        ]);
+
+      let y =
+        pageHeight - margin;
+
+      if (
+        !pageText ||
+        !pageText.trim()
+      ) {
+        page.drawText(
+          "No readable text was found on this page.",
+          {
+            x: margin,
+            y,
+            size: fontSize,
+            font,
+            color: rgb(
+              0.35,
+              0.35,
+              0.35
+            ),
+          }
+        );
+
+        continue;
+      }
 
       const paragraphs = pageText
         .split(/\n+/)
-        .filter((paragraph) => paragraph.trim());
+        .map((paragraph) =>
+          paragraph.trim()
+        )
+        .filter(Boolean);
 
-     if (paragraphs.length === 0) {
-  return;
-}
-
-paragraphs.forEach((paragraph) => {
-
-      paragraphs.forEach((paragraph) => {
-        const words = paragraph.split(/\s+/);
+      for (const paragraph of paragraphs) {
+        const words =
+          paragraph.split(/\s+/);
 
         let line = "";
 
-        words.forEach((word) => {
+        for (const word of words) {
           const testLine =
             line.length === 0
               ? word
               : line + " " + word;
 
-          const testWidth = font.widthOfTextAtSize(
-            testLine,
-            fontSize
-          );
+          const testWidth =
+            font.widthOfTextAtSize(
+              testLine,
+              fontSize
+            );
 
-          if (testWidth > maxWidth) {
+          if (
+            testWidth > maxWidth
+          ) {
             if (line) {
-              if (y < margin + lineHeight) {
-                const newPage = translatedPdf.addPage([
-                  595.28,
-                  841.89,
-                ]);
+              if (
+                y <
+                margin + lineHeight
+              ) {
+                page =
+                  translatedPdf.addPage(
+                    [
+                      pageWidth,
+                      pageHeight,
+                    ]
+                  );
 
                 y =
-                  newPage.getHeight() -
+                  pageHeight -
                   margin;
-
-                newPage.drawText(line, {
-                  x: margin,
-                  y,
-                  size: fontSize,
-                  font,
-                  color: rgb(
-                    0.067,
-                    0.09,
-                    0.14
-                  ),
-                });
-              } else {
-                page.drawText(line, {
-                  x: margin,
-                  y,
-                  size: fontSize,
-                  font,
-                  color: rgb(
-                    0.067,
-                    0.09,
-                    0.14
-                  ),
-                });
               }
+
+              page.drawText(line, {
+                x: margin,
+                y,
+                size: fontSize,
+                font,
+                color: rgb(
+                  0.067,
+                  0.09,
+                  0.14
+                ),
+              });
 
               y -= lineHeight;
             }
@@ -338,179 +415,188 @@ paragraphs.forEach((paragraph) => {
           } else {
             line = testLine;
           }
-        });
+        }
 
         if (line) {
-          if (y < margin + lineHeight) {
-            const newPage = translatedPdf.addPage([
-              595.28,
-              841.89,
-            ]);
+          if (
+            y <
+            margin + lineHeight
+          ) {
+            page =
+              translatedPdf.addPage([
+                pageWidth,
+                pageHeight,
+              ]);
 
             y =
-              newPage.getHeight() -
+              pageHeight -
               margin;
-
-            newPage.drawText(line, {
-              x: margin,
-              y,
-              size: fontSize,
-              font,
-              color: rgb(
-                0.067,
-                0.09,
-                0.14
-              ),
-            });
-          } else {
-            page.drawText(line, {
-              x: margin,
-              y,
-              size: fontSize,
-              font,
-              color: rgb(
-                0.067,
-                0.09,
-                0.14
-              ),
-            });
           }
+
+          page.drawText(line, {
+            x: margin,
+            y,
+            size: fontSize,
+            font,
+            color: rgb(
+              0.067,
+              0.09,
+              0.14
+            ),
+          });
 
           y -= lineHeight;
         }
 
         y -= 8;
-      });
-    });
+
+        if (y < margin) {
+          page =
+            translatedPdf.addPage([
+              pageWidth,
+              pageHeight,
+            ]);
+
+          y =
+            pageHeight - margin;
+        }
+      }
+    }
 
     return translatedPdf.save();
   };
 
-const translatePdf = async () => {
-  if (!file) {
-    setMessage("Please select a PDF first.");
-    return;
-  }
-
-  if (targetLanguage === "auto") {
-    setMessage("Please select a target language.");
-    return;
-  }
-
-  try {
-    setLoading(true);
-    setMessage("");
-    setDownloadUrl("");
-
-    const { pages } = await extractPdfText(file);
-
-    console.log("Extracted PDF pages:", pages);
-
-    const readablePages = pages.filter(
-      (pageText) =>
-        typeof pageText === "string" &&
-        pageText.trim().length > 0
-    );
-
-    if (readablePages.length === 0) {
+  const translatePdf = async () => {
+    if (!file) {
       setMessage(
-        "No selectable text was found in this PDF. This PDF may be scanned or image-based and requires OCR."
+        "Please select a PDF first."
       );
       return;
     }
 
-    const translatedPages = [];
+    if (targetLanguage === "auto") {
+      setMessage(
+        "Please select a target language."
+      );
+      return;
+    }
 
-    for (let i = 0; i < pages.length; i++) {
-      const pageText = pages[i];
+    try {
+      setLoading(true);
+      setMessage("");
 
-      if (
-        !pageText ||
-        !pageText.trim()
-      ) {
-        translatedPages.push("");
-        continue;
+      if (downloadUrl) {
+        URL.revokeObjectURL(
+          downloadUrl
+        );
+
+        setDownloadUrl("");
       }
 
       setMessage(
-        "Translating page " +
-          (i + 1) +
-          " of " +
-          pages.length +
-          "..."
+        "Reading PDF text..."
       );
 
-      const translated = await translateLongText(
-        pageText,
-        sourceLanguage,
-        targetLanguage
+      const pages =
+        await extractPdfText(file);
+
+      const hasText = pages.some(
+        (pageText) =>
+          pageText &&
+          pageText.trim()
       );
 
-      if (
-        !translated ||
-        !translated.trim()
+      if (!hasText) {
+        setMessage(
+          "No selectable text was found in this PDF. Scanned PDFs require OCR and are not supported yet."
+        );
+
+        return;
+      }
+
+      const translatedPages = [];
+
+      for (
+        let i = 0;
+        i < pages.length;
+        i++
       ) {
-        throw new Error(
-          "The translation service returned empty text for page " +
-            (i + 1)
+        const pageText = pages[i];
+
+        if (
+          !pageText ||
+          !pageText.trim()
+        ) {
+          translatedPages.push("");
+
+          continue;
+        }
+
+        setMessage(
+          "Translating page " +
+            (i + 1) +
+            " of " +
+            pages.length +
+            "..."
+        );
+
+        const translated =
+          await translateLongText(
+            pageText,
+            sourceLanguage,
+            targetLanguage
+          );
+
+        translatedPages.push(
+          translated
         );
       }
 
-      translatedPages.push(
-        translated.trim()
-      );
-    }
-
-    setMessage(
-      "Creating translated PDF..."
-    );
-
-    const pdfBytes =
-      await createTranslatedPdf(
-        translatedPages
+      setMessage(
+        "Creating translated PDF..."
       );
 
-    const blob = new Blob(
-      [pdfBytes],
-      {
-        type: "application/pdf",
-      }
-    );
+      const pdfBytes =
+        await createTranslatedPdf(
+          translatedPages
+        );
 
-    if (downloadUrl) {
-      URL.revokeObjectURL(downloadUrl);
+      const blob = new Blob(
+        [pdfBytes],
+        {
+          type: "application/pdf",
+        }
+      );
+
+      const url =
+        URL.createObjectURL(blob);
+
+      setDownloadUrl(url);
+
+      setMessage(
+        "PDF translated successfully. Your translated PDF is ready to download."
+      );
+    } catch (error) {
+      console.error(
+        "Translate PDF error:",
+        error
+      );
+
+      setMessage(
+        "Translation failed. Please try again with a text-based PDF."
+      );
+    } finally {
+      setLoading(false);
     }
-
-    const url =
-      URL.createObjectURL(blob);
-
-    setDownloadUrl(url);
-
-    setMessage(
-      "PDF translated successfully. Your translated PDF is ready to download."
-    );
-  } catch (error) {
-    console.error(
-      "PDF translation error:",
-      error
-    );
-
-    setMessage(
-      "Translation failed: " +
-        (error?.message ||
-          "Unable to translate this PDF.")
-    );
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   const downloadPdf = () => {
     if (!downloadUrl) {
       return;
     }
 
-    const link = document.createElement("a");
+    const link =
+      document.createElement("a");
 
     link.href = downloadUrl;
 
@@ -526,7 +612,9 @@ const translatePdf = async () => {
 
   const resetTool = () => {
     if (downloadUrl) {
-      URL.revokeObjectURL(downloadUrl);
+      URL.revokeObjectURL(
+        downloadUrl
+      );
     }
 
     setFile(null);
@@ -554,7 +642,8 @@ const translatePdf = async () => {
           padding: "30px",
           boxShadow:
             "0 10px 35px rgba(0,0,0,0.08)",
-          border: "1px solid #e5e7eb",
+          border:
+            "1px solid #e5e7eb",
         }}
       >
         <div
@@ -580,387 +669,3 @@ const translatePdf = async () => {
           </div>
 
           <h2
-            style={{
-              margin: "0 0 8px",
-              fontSize: "28px",
-              color: "#111827",
-            }}
-          >
-            Translate PDF
-          </h2>
-
-          <p
-            style={{
-              margin: 0,
-              color: "#6b7280",
-              fontSize: "15px",
-            }}
-          >
-            Translate text-based PDF files into another language.
-          </p>
-        </div>
-
-        {!file && (
-          <div
-            style={{
-              border: "2px dashed #cbd5e1",
-              borderRadius: "18px",
-              padding: "50px 20px",
-              textAlign: "center",
-              background: "#f8fafc",
-            }}
-          >
-            <div
-              style={{
-                fontSize: "45px",
-                marginBottom: "15px",
-              }}
-            >
-              📄
-            </div>
-
-            <h3
-              style={{
-                margin: "0 0 8px",
-                color: "#1f2937",
-              }}
-            >
-              Select a PDF file
-            </h3>
-
-            <p
-              style={{
-                color: "#6b7280",
-                marginBottom: "20px",
-              }}
-            >
-              Choose the PDF you want to translate.
-            </p>
-
-            <label
-              style={{
-                display: "inline-block",
-                background: "#2563eb",
-                color: "#ffffff",
-                padding: "12px 24px",
-                borderRadius: "10px",
-                cursor: "pointer",
-                fontWeight: "600",
-              }}
-            >
-              Choose PDF
-
-              <input
-                type="file"
-                accept="application/pdf,.pdf"
-                onChange={handleFileChange}
-                style={{
-                  display: "none",
-                }}
-              />
-            </label>
-          </div>
-        )}
-
-        {file && (
-          <>
-            <div
-              style={{
-                background: "#f8fafc",
-                borderRadius: "14px",
-                padding: "16px",
-                marginBottom: "22px",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                gap: "15px",
-                flexWrap: "wrap",
-              }}
-            >
-              <div>
-                <div
-                  style={{
-                    fontWeight: "700",
-                    color: "#111827",
-                    wordBreak: "break-word",
-                  }}
-                >
-                  📄 {file.name}
-                </div>
-
-                <div
-                  style={{
-                    color: "#6b7280",
-                    fontSize: "14px",
-                    marginTop: "5px",
-                  }}
-                >
-                  {(file.size / 1024 / 1024).toFixed(2)} MB
-                </div>
-              </div>
-
-              <button
-                type="button"
-                onClick={resetTool}
-                style={{
-                  border: "1px solid #d1d5db",
-                  background: "#ffffff",
-                  padding: "9px 15px",
-                  borderRadius: "9px",
-                  cursor: "pointer",
-                  fontWeight: "600",
-                }}
-              >
-                Change PDF
-              </button>
-            </div>
-
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns:
-                  "1fr 1fr",
-                gap: "18px",
-                marginBottom: "22px",
-              }}
-            >
-              <div>
-                <label
-                  style={{
-                    display: "block",
-                    fontWeight: "700",
-                    color: "#374151",
-                    marginBottom: "7px",
-                  }}
-                >
-                  Source Language
-                </label>
-
-                <select
-                  value={sourceLanguage}
-                  onChange={(event) =>
-                    setSourceLanguage(
-                      event.target.value
-                    )
-                  }
-                  style={{
-                    width: "100%",
-                    padding: "12px",
-                    borderRadius: "9px",
-                    border:
-                      "1px solid #d1d5db",
-                    background: "#ffffff",
-                    fontSize: "15px",
-                    boxSizing: "border-box",
-                  }}
-                >
-                  {languages.map((language) => (
-                    <option
-                      key={language.code}
-                      value={language.code}
-                    >
-                      {language.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label
-                  style={{
-                    display: "block",
-                    fontWeight: "700",
-                    color: "#374151",
-                    marginBottom: "7px",
-                  }}
-                >
-                  Target Language
-                </label>
-
-                <select
-                  value={targetLanguage}
-                  onChange={(event) =>
-                    setTargetLanguage(
-                      event.target.value
-                    )
-                  }
-                  style={{
-                    width: "100%",
-                    padding: "12px",
-                    borderRadius: "9px",
-                    border:
-                      "1px solid #d1d5db",
-                    background: "#ffffff",
-                    fontSize: "15px",
-                    boxSizing: "border-box",
-                  }}
-                >
-                  {languages
-                    .filter(
-                      (language) =>
-                        language.code !== "auto"
-                    )
-                    .map((language) => (
-                      <option
-                        key={language.code}
-                        value={language.code}
-                      >
-                        {language.name}
-                      </option>
-                    ))}
-                </select>
-              </div>
-            </div>
-
-            <div
-              style={{
-                background: "#eff6ff",
-                border: "1px solid #bfdbfe",
-                borderRadius: "12px",
-                padding: "14px 16px",
-                marginBottom: "20px",
-                color: "#1e40af",
-                fontSize: "14px",
-                lineHeight: "1.5",
-              }}
-            >
-              <strong>Note:</strong> This version works with
-              selectable text in PDFs. Scanned/image-only PDFs
-              require OCR and are not supported yet.
-            </div>
-
-            {!downloadUrl && (
-              <button
-                type="button"
-                onClick={translatePdf}
-                disabled={loading}
-                style={{
-                  width: "100%",
-                  border: "none",
-                  background: loading
-                    ? "#9ca3af"
-                    : "#7c3aed",
-                  color: "#ffffff",
-                  padding: "14px 20px",
-                  borderRadius: "11px",
-                  cursor: loading
-                    ? "not-allowed"
-                    : "pointer",
-                  fontSize: "16px",
-                  fontWeight: "700",
-                }}
-              >
-                {loading
-                  ? "Translating PDF..."
-                  : "🌐 Translate PDF"}
-              </button>
-            )}
-
-            {downloadUrl && (
-              <div
-                style={{
-                  background: "#ecfdf5",
-                  border:
-                    "1px solid #a7f3d0",
-                  borderRadius: "14px",
-                  padding: "22px",
-                  textAlign: "center",
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: "30px",
-                    marginBottom: "8px",
-                  }}
-                >
-                  ✅
-                </div>
-
-                <h3
-                  style={{
-                    margin: "0 0 8px",
-                    color: "#047857",
-                  }}
-                >
-                  PDF translated successfully
-                </h3>
-
-                <p
-                  style={{
-                    margin: "0 0 16px",
-                    color: "#065f46",
-                  }}
-                >
-                  Your translated PDF is ready.
-                </p>
-
-                <button
-                  type="button"
-                  onClick={downloadPdf}
-                  style={{
-                    border: "none",
-                    background: "#059669",
-                    color: "#ffffff",
-                    padding: "13px 28px",
-                    borderRadius: "10px",
-                    cursor: "pointer",
-                    fontSize: "16px",
-                    fontWeight: "700",
-                  }}
-                >
-                  ⬇️ Download Translated PDF
-                </button>
-
-                <button
-                  type="button"
-                  onClick={resetTool}
-                  style={{
-                    display: "block",
-                    margin:
-                      "12px auto 0",
-                    border:
-                      "1px solid #d1d5db",
-                    background: "#ffffff",
-                    color: "#374151",
-                    padding: "10px 20px",
-                    borderRadius: "9px",
-                    cursor: "pointer",
-                    fontWeight: "600",
-                  }}
-                >
-                  Translate Another PDF
-                </button>
-              </div>
-            )}
-
-            {message && (
-              <div
-                style={{
-                  marginTop: "18px",
-                  padding: "13px 15px",
-                  borderRadius: "10px",
-                  background:
-                    message.includes(
-                      "successfully"
-                    )
-                      ? "#ecfdf5"
-                      : "#fef2f2",
-                  color:
-                    message.includes(
-                      "successfully"
-                    )
-                      ? "#047857"
-                      : "#b91c1c",
-                  fontSize: "14px",
-                  fontWeight: "600",
-                }}
-              >
-                {message}
-              </div>
-            )}
-          </>
-        )}
-      </div>
-    </div>
-  );
-}
