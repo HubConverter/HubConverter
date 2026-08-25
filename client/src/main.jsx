@@ -65,7 +65,7 @@ const themes = [
 ];
 
 function App() {
-  const [view, setView] = useState("home");
+const [view, setView] = useState("tools");
   const [selectedSoftware, setSelectedSoftware] = useState("");
   const [items, setItems] = useState([]);
   const [allItems, setAllItems] = useState([]);
@@ -159,7 +159,7 @@ function App() {
       <header>
         <div
           className="brand"
-          onClick={() => setView("home")}
+          onClick={() => setView("tools")}
         >
          🔄 <b>Hub<span>Converter</span></b>
 <i>TOOLS</i>
@@ -220,17 +220,7 @@ function App() {
         </div>
       </header>
 
-      {view === "home" && (
-        <Home
-          setView={setView}
-          q={q}
-          setQ={setQ}
-          search={search}
-          soft={soft}
-          openSoftware={openSoftware}
-          setFilter={setFilter}
-        />
-      )}
+      
 
       {view === "tools" && <Tools />}
 
