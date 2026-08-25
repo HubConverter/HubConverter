@@ -72,19 +72,12 @@ function splitText(text, maxLength = 450) {
   return chunks;
 }
 
-async function translateText(
-  text,
-  sourceLanguage,
-  targetLanguage
-) {
+async function translateText(text, sourceLanguage, targetLanguage) {
   if (!text || !text.trim()) {
     return "";
   }
 
-  if (
-    sourceLanguage === targetLanguage &&
-    sourceLanguage !== "auto"
-  ) {
+  if (sourceLanguage === targetLanguage && sourceLanguage !== "auto") {
     return text;
   }
 
@@ -92,13 +85,8 @@ async function translateText(
   const translatedChunks = [];
 
   for (const chunk of chunks) {
-    const source =
-      sourceLanguage === "auto"
-        ? "autodetect"
-        : sourceLanguage;
-
-    const langPair =
-      source + "|" + targetLanguage;
+    const source = sourceLanguage === "auto" ? "autodetect" : sourceLanguage;
+    const langPair = source + "|" + targetLanguage;
 
     const url =
       "https://translated.net" +
@@ -109,32 +97,18 @@ async function translateText(
     const response = await fetch(url);
 
     if (!response.ok) {
-      throw new Error(
-        "Translation service returned " +
-          response.status
-      );
+      throw new Error("Translation service returned " + response.status);
     }
 
     const data = await response.json();
 
-    if (
-      !data ||
-      !data.responseData ||
-      typeof data.responseData.translatedText !==
-        "string"
-    ) {
-      throw new Error(
-        "Translation service returned an invalid response."
-      );
+    if (!data || !data.responseData || typeof data.responseData.translatedText !== "string") {
+      throw new Error("Translation service returned an invalid response.");
     }
 
-    translatedChunks.push(
-      data.responseData.translatedText
-    );
+    translatedChunks.push(data.responseData.translatedText);
 
-    await new Promise((resolve) =>
-      setTimeout(resolve, 150)
-    );
+    await new Promise((resolve) => setTimeout(resolve, 150));
   }
 
   return translatedChunks.join(" ");
@@ -152,7 +126,6 @@ async function extractPdfPages(file) {
   for (let i = 1; i <= pdf.numPages; i++) {
     const page = await pdf.getPage(i);
     const textContent = await page.getTextContent();
-
     const items = textContent.items || [];
 
     const text = items
@@ -160,7 +133,6 @@ async function extractPdfPages(file) {
         if (typeof item.str === "string") {
           return item.str;
         }
-
         return "";
       })
       .join(" ")
@@ -176,19 +148,8 @@ async function extractPdfPages(file) {
   return pages;
 }
 
-function addWrappedText(
-  pdf,
-  text,
-  x,
-  y,
-  maxWidth,
-  lineHeight
-) {
-  const lines = pdf.splitTextToSize(
-    text || "",
-    maxWidth
-  );
-
+function addWrappedText(pdf, text, x, y, maxWidth, lineHeight) {
+  const lines = pdf.splitTextToSize(text || "", maxWidth);
   let currentY = y;
 
   for (const line of lines) {
@@ -206,26 +167,14 @@ function addWrappedText(
 
 export default function TranslatePdf() {
   const [file, setFile] = useState(null);
-
-  const [sourceLanguage, setSourceLanguage] =
-    useState("auto");
-
-  const [targetLanguage, setTargetLanguage] =
-    useState("hi");
-
+  const [sourceLanguage, setSourceLanguage] = useState("auto");
+  const [targetLanguage, setTargetLanguage] = useState("hi");
   const [pages, setPages] = useState([]);
-  const [translatedPages, setTranslatedPages] =
-    useState([]);
-
+  const [translatedPages, setTranslatedPages] = useState([]);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-
-  const [isExtracting, setIsExtracting] =
-    useState(false);
-
-  const [isTranslating, setIsTranslating] =
-    useState(false);
-
+  const [isExtracting, setIsExtracting] = useState(false);
+  const [isTranslating, setIsTranslating] = useState(false);
   const [progress, setProgress] = useState(0);
 
   const handleFileChange = (event) => {
@@ -242,28 +191,19 @@ export default function TranslatePdf() {
       return;
     }
 
-    if (
-      selectedFile.type !== "application/pdf" &&
-      !selectedFile.name
-        .toLowerCase()
-        .endsWith(".pdf")
-    ) {
+    if (selectedFile.type !== "application/pdf" && !selectedFile.name.toLowerCase().endsWith(".pdf")) {
       setError("Please select a PDF file.");
       setFile(null);
       return;
     }
 
     setFile(selectedFile);
-    setMessage(
-      "Selected: " + selectedFile.name
-    );
+    setMessage("Selected: " + selectedFile.name);
   };
 
   const extractText = async () => {
     if (!file) {
-      setError(
-        "Please select a PDF file first."
-      );
+      setError("Please select a PDF file first.");
       return;
     }
 
@@ -273,42 +213,21 @@ export default function TranslatePdf() {
     setProgress(0);
 
     try {
-      const extractedPages =
-        await extractPdfPages(file);
-
+      const extractedPages = await extractPdfPages(file);
       setPages(extractedPages);
 
-      const readablePages =
-        extractedPages.filter(
-          (page) =>
-            page.text &&
-            page.text.trim()
-        );
+      const readablePages = extractedPages.filter((page) => page.text && page.text.trim());
 
       if (readablePages.length === 0) {
-        setError(
-          "No readable text was found on this PDF. This tool currently works with text-based PDFs, not scanned/image-only PDFs."
-        );
-
+        setError("No readable text was found on this PDF. This tool currently works with text-based PDFs, not scanned/image-only PDFs.");
         setMessage("");
         return;
       }
 
-      setMessage(
-        "PDF ready. Found readable text on " +
-          readablePages.length +
-          " of " +
-          extractedPages.length +
-          " page(s)."
-      );
+      setMessage("PDF ready. Found readable text on " + readablePages.length + " of " + extractedPages.length + " page(s).");
     } catch (err) {
       console.error(err);
-
-      setError(
-        err?.message ||
-          "Could not read this PDF. Please try another PDF file."
-      );
-
+      setError(err?.message || "Could not read this PDF. Please try another PDF file.");
       setMessage("");
     } finally {
       setIsExtracting(false);
@@ -317,9 +236,7 @@ export default function TranslatePdf() {
 
   const translatePdf = async () => {
     if (!file) {
-      setError(
-        "Please select a PDF file first."
-      );
+      setError("Please select a PDF file first.");
       return;
     }
 
@@ -334,74 +251,34 @@ export default function TranslatePdf() {
 
       if (workingPages.length === 0) {
         setMessage("Reading PDF...");
-
-        workingPages =
-          await extractPdfPages(file);
-
+        workingPages = await extractPdfPages(file);
         setPages(workingPages);
       }
 
-      const readablePages =
-        workingPages.filter(
-          (page) =>
-            page.text &&
-            page.text.trim()
-        );
+      const readablePages = workingPages.filter((page) => page.text && page.text.trim());
 
       if (readablePages.length === 0) {
-        throw new Error(
-          "No readable text was found on this page/document. Scanned PDFs are not supported yet."
-        );
+        throw new Error("No readable text was found on this page/document. Scanned PDFs are not supported yet.");
       }
 
       const results = [];
 
-      for (
-        let i = 0;
-        i < workingPages.length;
-        i++
-      ) {
+      for (let i = 0; i < workingPages.length; i++) {
         const page = workingPages[i];
+        setMessage("Translating page " + (i + 1) + " of " + workingPages.length + "...");
+        setProgress(Math.round(((i + 1) / workingPages.length) * 100));
 
-        setMessage(
-          "Translating page " +
-            (i + 1) +
-            " of " +
-            workingPages.length +
-            "..."
-        );
-
-        setProgress(
-          Math.round(
-            ((i + 1) /
-              workingPages.length) *
-              100
-          )
-        );
-
-        if (
-          !page.text ||
-          !page.text.trim()
-        ) {
+        if (!page.text || !page.text.trim()) {
           results.push("");
           continue;
         }
 
-        const translated =
-          await translateText(
-            page.text,
-            sourceLanguage,
-            targetLanguage
-          );
-
+        const translated = await translateText(page.text, sourceLanguage, targetLanguage);
         results.push(translated);
       }
 
       setTranslatedPages(results);
-
-      setMessage(
-        "Translation completed. Creating your PDF..."
-      );
+      setMessage("Translation completed. Creating your PDF...");
 
       const pdf = new jsPDF({
         orientation: "p",
@@ -409,66 +286,31 @@ export default function TranslatePdf() {
         format: "a4",
       });
 
-      pdf.setFont(
-        "helvetica",
-        "normal"
-      );
-
+      pdf.setFont("helvetica", "normal");
       pdf.setFontSize(11);
 
-      for (
-        let i = 0;
-        i < results.length;
-        i++
-      ) {
+      for (let i = 0; i < results.length; i++) {
         if (i > 0) {
           pdf.addPage();
         }
 
-        const translatedText =
-          results[i];
-
+        const translatedText = results[i];
         pdf.setFontSize(10);
-
-        pdf.text(
-          "Translated Page " +
-            (i + 1),
-          15,
-          15
-        );
-
+        pdf.text("Translated Page " + (i + 1), 15, 15);
         pdf.setFontSize(11);
 
         if (!translatedText) {
           pdf.setTextColor(100);
-
-          pdf.text(
-            "No readable text found on this page.",
-            15,
-            30
-          );
-
+          pdf.text("No readable text found on this page.", 15, 30);
           pdf.setTextColor(0);
-
           continue;
         }
 
-        addWrappedText(
-          pdf,
-          translatedText,
-          15,
-          28,
-          180,
-          6
-        );
+        addWrappedText(pdf, translatedText, 15, 28, 180, 6);
       }
 
       const originalName = file.name.replace(/\.pdf$/i, "");
-
-      const matchedLang = LANGUAGES.find(
-        (language) => language.code === targetLanguage
-      );
-      
+      const matchedLang = LANGUAGES.find((language) => language.code === targetLanguage);
       const targetName = matchedLang ? matchedLang.name : targetLanguage;
 
       const safeTargetName = targetName
@@ -476,22 +318,13 @@ export default function TranslatePdf() {
         .replace(/\s+/g, "-");
 
       const outputName = `${originalName}-Translated-${safeTargetName}.pdf`;
-
       pdf.save(outputName);
 
-      setMessage(
-        "Translation completed successfully. Your translated PDF has been downloaded."
-      );
-
+      setMessage("Translation completed successfully. Your translated PDF has been downloaded.");
       setProgress(100);
     } catch (err) {
       console.error(err);
-
-      setError(
-        err?.message ||
-          "Translation failed. Please try again."
-      );
-
+      setError(err?.message || "Translation failed. Please try again.");
       setMessage("");
     } finally {
       setIsTranslating(false);
@@ -500,3 +333,24 @@ export default function TranslatePdf() {
 
   const resetTool = () => {
     setFile(null);
+    setPages([]);
+    setTranslatedPages([]);
+    setMessage("");
+    setError("");
+    setProgress(0);
+  };
+
+  const readablePageCount = pages.filter((page) => page.text && page.text.trim()).length;
+
+  const selectedTargetLanguage = LANGUAGES.find((language) => language.code === targetLanguage)?.name || targetLanguage;
+
+  return (
+    <div style={{ maxWidth: "1000px", margin: "0 auto", padding: "30px 20px 60px" }}>
+      <div style={{ background: "rgba(255,255,255,0.96)", borderRadius: "20px", padding: "30px", boxShadow: "0 12px 35px rgba(0,0,0,0.10)" }}>
+        
+        <div style={{ textAlign: "center", marginBottom: "28px" }}>
+          <div style={{ fontSize: "48px", marginBottom: "10px" }}>🌐</div>
+          <h1 style={{ margin: "0 0 8px", fontSize: "30px", fontWeight: "800", color: "#111827" }}>Translate PDF</h1>
+          <p style={{ margin: 0, color: "#6b7280", fontSize: "15px" }}>Translate text-based PDF documents into another language.</p>
+        </div>
+
