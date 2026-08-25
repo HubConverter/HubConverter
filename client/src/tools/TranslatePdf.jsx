@@ -1,4 +1,3 @@
-```jsx
 import React, { useState } from "react";
 import { jsPDF } from "jspdf";
 import * as pdfjsLib from "pdfjs-dist";
@@ -1077,5 +1076,5 @@ function TranslatePdf() {
     </div>
   );
 }
+
 export default TranslatePdf;
-```
