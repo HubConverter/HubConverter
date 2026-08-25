@@ -1029,7 +1029,7 @@ if (selectedTool === "delete-pdf-pages") {
     </div>
   );
 }
-  ```jsx
+
 if (selectedTool === "edit-pdf") {
   return (
     <div>
@@ -1060,7 +1060,7 @@ if (selectedTool === "edit-pdf") {
     </div>
   );
 }
-```
+
 
   
   // =========================
