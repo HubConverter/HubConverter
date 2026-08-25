@@ -1267,12 +1267,7 @@ if (selectedTool === "translate-pdf") {
   description="Edit and customize your PDF easily."
   onClick={() => setSelectedTool("edit-pdf")}
 />
-<ToolCard
-  icon="🔄"
-  title="Rotate PDF"
-  description="Rotate PDF pages."
-  onClick={() => setSelectedTool("rotate-pdf")}
-/>
+
 
 <ToolCard
   icon="🌐"
