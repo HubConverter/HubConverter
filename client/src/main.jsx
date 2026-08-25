@@ -65,7 +65,7 @@ const themes = [
 ];
 
 function App() {
-const [view, setView] = useState("tools");
+const [view, setView] = useState("tools-all");
   const [selectedSoftware, setSelectedSoftware] = useState("");
   const [items, setItems] = useState([]);
   const [allItems, setAllItems] = useState([]);
@@ -165,24 +165,19 @@ const [view, setView] = useState("tools");
 <i>TOOLS</i>
         </div>
 
-        <nav className="nav">
+       <nav className="nav">
   <button
-    className={view === "tools" ? "active" : ""}
-    onClick={() => setView("tools")}
+    className={view === "tools-pdf" ? "active" : ""}
+    onClick={() => setView("tools-pdf")}
   >
     🔄 PDF Converter Tools
   </button>
-<button
-  className={view === "jpg-tools" ? "active" : ""}
-  onClick={() => setView("jpg-tools")}
->
-  🖼️ JPG Tools
-</button>
+
   <button
-    className={view === "converter" ? "active" : ""}
-    onClick={() => setView("converter")}
+    className={view === "tools-jpg" ? "active" : ""}
+    onClick={() => setView("tools-jpg")}
   >
-    
+    🖼️ JPG Tools
   </button>
 </nav>
 
@@ -222,7 +217,11 @@ const [view, setView] = useState("tools");
 
       
 
-      {view === "tools" && <Tools />}
+   {view === "tools-all" && <Tools category="all" />}
+
+{view === "tools-pdf" && <Tools category="pdf" />}
+
+{view === "tools-jpg" && <Tools category="jpg" />}
 
       {view === "software" && (
         <SoftwarePage
@@ -498,7 +497,7 @@ function Home({
    TOOLS
 ========================= */
 
-function Tools() {
+function Tools({ category = "all" }) {
   const [selectedTool, setSelectedTool] = useState(null);
 
   // =========================
@@ -1082,36 +1081,240 @@ if (selectedTool === "translate-pdf") {
 }
 
   
-  // =========================
-  // TOOLS HOME
-  // =========================
+ // =========================
+// TOOLS HOME
+// =========================
 
-  return (
-    <section className="wrap">
+const pdfTools = [
+  {
+    icon: "🖼️",
+    title: "JPG to PDF",
+    description: "Convert JPG images into a PDF document.",
+    id: "jpg-to-pdf",
+  },
+  {
+    icon: "📊",
+    title: "PDF to Excel",
+    description: "Convert PDF tables into an Excel spreadsheet.",
+    id: "pdf-to-excel",
+  },
+  {
+    icon: "📊",
+    title: "Excel to PDF",
+    description: "Convert Excel spreadsheets into PDF documents.",
+    id: "excel-to-pdf",
+  },
+  {
+    icon: "📝",
+    title: "Word to PDF",
+    description: "Convert Word documents into PDF files.",
+    id: "word-to-pdf",
+  },
+  {
+    icon: "🧾➡️🖼️",
+    title: "PDF to JPG",
+    description: "Convert PDF pages into JPG images.",
+    id: "pdf-to-jpg",
+  },
+  {
+    icon: "📑",
+    title: "Merge PDF",
+    description: "Combine multiple PDF files into one.",
+    id: "merge-pdf",
+  },
+  {
+    icon: "✂️",
+    title: "Extract PDF",
+    description: "Extract selected pages from a PDF.",
+    id: "extract-pdf",
+  },
+  {
+    icon: "🗜️",
+    title: "Compress PDF",
+    description: "Reduce PDF file size.",
+    id: "compress-pdf",
+  },
+  {
+    icon: "📄",
+    title: "PDF to Word",
+    description: "Convert PDF files to editable Word documents.",
+    id: "pdf-to-word",
+  },
+  {
+    icon: "📊",
+    title: "PDF to PowerPoint",
+    description: "Convert PDF files to PowerPoint.",
+    id: "pdf-to-powerpoint",
+  },
+  {
+    icon: "🔄",
+    title: "Rotate PDF",
+    description: "Rotate PDF pages.",
+    id: "rotate-pdf",
+  },
+  {
+    icon: "💧",
+    title: "Watermark PDF",
+    description: "Add a watermark to your PDF.",
+    id: "watermark-pdf",
+  },
+  {
+    icon: "🔐",
+    title: "Protect PDF",
+    description: "Password protect your PDF.",
+    id: "protect-pdf",
+  },
+  {
+    icon: "🔓",
+    title: "Unlock PDF",
+    description: "Remove password protection from your PDF.",
+    id: "unlock-pdf",
+  },
+  {
+    icon: "✍️",
+    title: "Sign PDF",
+    description: "Add your signature to PDF documents.",
+    id: "sign-pdf",
+  },
+  {
+    icon: "🗑️",
+    title: "Delete PDF Pages",
+    description: "Remove unwanted pages from a PDF instantly.",
+    id: "delete-pdf-pages",
+  },
+  {
+    icon: "✏️",
+    title: "Edit PDF",
+    description: "Edit and customize your PDF easily.",
+    id: "edit-pdf",
+  },
+  {
+    icon: "🌐",
+    title: "Translate PDF",
+    description: "Translate PDF into another language.",
+    id: "translate-pdf",
+  },
+];
 
-      {/* HEADER */}
+const jpgTools = [
+  {
+    icon: "🔄",
+    title: "JPG to PNG",
+    description: "Convert JPG images to PNG.",
+  },
+  {
+    icon: "🖼️",
+    title: "PNG to JPG",
+    description: "Convert PNG images to JPG.",
+  },
+  {
+    icon: "🗜️",
+    title: "Image Compressor",
+    description: "Reduce image file size.",
+  },
+  {
+    icon: "📐",
+    title: "Image Resizer",
+    description: "Resize images to any dimensions.",
+  },
+  {
+    icon: "✂️",
+    title: "Image Cropper",
+    description: "Crop images quickly.",
+  },
+  {
+    icon: "🔃",
+    title: "Image Rotator",
+    description: "Rotate your images.",
+  },
+  {
+    icon: "📄",
+    title: "Image to PDF",
+    description: "Convert images into PDF documents.",
+  },
+];
 
-      <div className="sectionHead">
-        <div>
-          <small>HUBCONVERTER TOOLS</small>
+const textTools = [
+  {
+    icon: "🔢",
+    title: "Word Counter",
+    description: "Count words and characters in text.",
+  },
+  {
+    icon: "🔠",
+    title: "Case Converter",
+    description: "Convert text to uppercase or lowercase.",
+  },
+  {
+    icon: "🧹",
+    title: "Text Cleaner",
+    description: "Clean and format your text.",
+  },
+  {
+    icon: "📊",
+    title: "Text Sorter",
+    description: "Sort lines and text instantly.",
+  },
+];
 
-          <h2>
-            All Tools
-          </h2>
-        </div>
+const allTools = [
+  ...pdfTools,
+  ...jpgTools.map((tool) => ({
+    ...tool,
+    comingSoon: true,
+  })),
+  ...textTools.map((tool) => ({
+    ...tool,
+    comingSoon: true,
+  })),
+];
 
-        <span>
-          PDF & File Tools
-        </span>
+const toolsToShow =
+  category === "pdf"
+    ? pdfTools
+    : category === "jpg"
+      ? jpgTools
+      : allTools;
+
+return (
+  <section className="wrap">
+
+    {/* =========================
+        ALL TOOLS HOME
+    ========================= */}
+
+    {category === "all" && (
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns:
+            "repeat(auto-fit, minmax(210px, 1fr))",
+          gap: "18px",
+        }}
+      >
+        {toolsToShow.map((tool) => (
+          <ToolCard
+            key={tool.title}
+            icon={tool.icon}
+            title={tool.title}
+            description={tool.description}
+            comingSoon={tool.comingSoon}
+            onClick={
+              tool.id
+                ? () => setSelectedTool(tool.id)
+                : undefined
+            }
+          />
+        ))}
       </div>
+    )}
 
+    {/* =========================
+        PDF CONVERTER TOOLS
+    ========================= */}
 
-      {/* =========================
-          PDF TOOLS
-      ========================= */}
-
-      <div style={{ marginTop: "30px" }}>
-
+    {category === "pdf" && (
+      <>
         <div style={{ marginBottom: "18px" }}>
           <small>PDF TOOLS</small>
 
@@ -1120,7 +1323,6 @@ if (selectedTool === "translate-pdf") {
           </h2>
         </div>
 
-
         <div
           style={{
             display: "grid",
@@ -1129,154 +1331,25 @@ if (selectedTool === "translate-pdf") {
             gap: "18px",
           }}
         >
-
-          <ToolCard
-            icon="🖼️"
-            title="JPG to PDF"
-            description="Convert JPG images into a PDF document."
-            onClick={() => setSelectedTool("jpg-to-pdf")}
-          />
-<ToolCard
-  icon="📊"
-  title="PDF to Excel"
-  description="Convert PDF tables into an Excel spreadsheet."
-  onClick={() => setSelectedTool("pdf-to-excel")}
-/>
-
-          <ToolCard
-            icon="📊"
-            title="Excel to PDF"
-            description="Convert Excel spreadsheets into PDF documents."
-            onClick={() => setSelectedTool("excel-to-pdf")}
-          />
-
-
-          <ToolCard
-            icon="📝"
-            title="Word to PDF"
-            description="Convert Word documents into PDF files."
-            onClick={() => setSelectedTool("word-to-pdf")}
-          />
-
-
-   <ToolCard
-            icon="🧾➡️🖼️"
-            title="PDF to JPG"
-            description="Convert PDF pages into JPG images."
-            onClick={() => setSelectedTool("pdf-to-jpg")}
-          />
-          <ToolCard
-  icon="📑"
-  title="Merge PDF"
-  description="Combine multiple PDF files into one."
-  onClick={() => setSelectedTool("merge-pdf")}
-/>
-
-
-        <ToolCard
-  icon="✂️"
-  title="Extract PDF"
-  description="Extract selected pages from a PDF."
-  onClick={() => setSelectedTool("extract-pdf")}
-/>
-
-
- <ToolCard
-  icon="🗜️"
-  title="Compress PDF"
-  description="Reduce PDF file size."
-  onClick={() => setSelectedTool("compress-pdf")}
-/>
-
-
-
-        <ToolCard
-  icon="📄"
-  title="PDF to Word"
-  description="Convert PDF files to editable Word documents."
-  onClick={() => setSelectedTool("pdf-to-word")}
-/>
-
-
-         <ToolCard
-  icon="📊"
-  title="PDF to PowerPoint"
-  description="Convert PDF files to PowerPoint."
-  onClick={() => setSelectedTool("pdf-to-powerpoint")}
-/>
-
-
-         <ToolCard
-  icon="🔄"
-  title="Rotate PDF"
-  description="Rotate PDF pages."
-  onClick={() => setSelectedTool("rotate-pdf")}
-/>
-
-
-          <ToolCard
-  icon="💧"
-  title="Watermark PDF"
-  description="Add a watermark to your PDF."
-  onClick={() => setSelectedTool("watermark-pdf")}
-/>
-
-
-       <ToolCard
-  icon="🔐"
-  title="Protect PDF"
-  description="Password protect your PDF."
-  onClick={() => setSelectedTool("protect-pdf")}
-/>
-
-
-         <ToolCard
-  icon="🔓"
-  title="Unlock PDF"
-  description="Remove password protection from your PDF."
-  onClick={() => setSelectedTool("unlock-pdf")}
-/>
-
-<ToolCard
-  icon="✍️"
-  title="Sign PDF"
-  description="Add your signature to PDF documents."
-  onClick={() => setSelectedTool("sign-pdf")}
-/>
-   
-
-          <ToolCard
-  icon="🗑️"
-  title="Delete PDF Pages"
-  description="Remove unwanted pages from a PDF instantly."
-  onClick={() => setSelectedTool("delete-pdf-pages")}
-/>
-          <ToolCard
-  icon="✏️"
-  title="Edit PDF"
-  description="Edit and customize your PDF easily."
-  onClick={() => setSelectedTool("edit-pdf")}
-/>
-
-
-<ToolCard
-  icon="🌐"
-  title="Translate PDF"
-  description="Translate PDF into another language."
-  onClick={() => setSelectedTool("translate-pdf")}
-/>
-
-          
+          {pdfTools.map((tool) => (
+            <ToolCard
+              key={tool.title}
+              icon={tool.icon}
+              title={tool.title}
+              description={tool.description}
+              onClick={() => setSelectedTool(tool.id)}
+            />
+          ))}
         </div>
-      </div>
+      </>
+    )}
 
+    {/* =========================
+        JPG / IMAGE TOOLS
+    ========================= */}
 
-      {/* =========================
-          IMAGE TOOLS
-      ========================= */}
-
-      <div style={{ marginTop: "55px" }}>
-
+    {category === "jpg" && (
+      <>
         <div style={{ marginBottom: "18px" }}>
           <small>IMAGE TOOLS</small>
 
@@ -1285,7 +1358,6 @@ if (selectedTool === "translate-pdf") {
           </h2>
         </div>
 
-
         <div
           style={{
             display: "grid",
@@ -1294,107 +1366,22 @@ if (selectedTool === "translate-pdf") {
             gap: "18px",
           }}
         >
-
-          
-
-          <ToolCard
-            icon="🗜️"
-            title="Image Compressor"
-            description="Reduce image file size."
-            comingSoon
-          />
-
-          <ToolCard
-            icon="📐"
-            title="Image Resizer"
-            description="Resize images to any dimensions."
-            comingSoon
-          />
-
-          <ToolCard
-            icon="✂️"
-            title="Image Cropper"
-            description="Crop images quickly."
-            comingSoon
-          />
-
-          <ToolCard
-            icon="🔃"
-            title="Image Rotator"
-            description="Rotate your images."
-            comingSoon
-          />
-
-          <ToolCard
-            icon="📄"
-            title="Image to PDF"
-            description="Convert images into PDF documents."
-            comingSoon
-          />
-
+          {jpgTools.map((tool) => (
+            <ToolCard
+              key={tool.title}
+              icon={tool.icon}
+              title={tool.title}
+              description={tool.description}
+              comingSoon
+            />
+          ))}
         </div>
-      </div>
+      </>
+    )}
 
-
-      {/* =========================
-          TEXT TOOLS
-      ========================= */}
-
-      <div style={{ marginTop: "55px" }}>
-
-        <div style={{ marginBottom: "18px" }}>
-          <small>TEXT TOOLS</small>
-
-          <h2 style={{ marginTop: "5px" }}>
-            Text Tools
-          </h2>
-        </div>
-
-
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns:
-              "repeat(auto-fit, minmax(210px, 1fr))",
-            gap: "18px",
-          }}
-        >
-
-          <ToolCard
-            icon="🔢"
-            title="Word Counter"
-            description="Count words and characters in text."
-            comingSoon
-          />
-
-          <ToolCard
-            icon="🔠"
-            title="Case Converter"
-            description="Convert text to uppercase or lowercase."
-            comingSoon
-          />
-
-          <ToolCard
-            icon="🧹"
-            title="Text Cleaner"
-            description="Clean and format your text."
-            comingSoon
-          />
-
-          <ToolCard
-            icon="📊"
-            title="Text Sorter"
-            description="Sort lines and text instantly."
-            comingSoon
-          />
-
-        </div>
-      </div>
-
-    </section>
-  );
+  </section>
+);
 }
-
 
 /* =========================
    TOOL CARD
