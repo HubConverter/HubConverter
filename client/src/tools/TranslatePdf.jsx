@@ -229,7 +229,6 @@ export default function TranslatePdf() {
   const [progress, setProgress] = useState(0);
 
   const handleFileChange = (event) => {
-    // FIXED: restored array index accessor syntax mapping context
     const selectedFile = event.target.files?.[0];
 
     setError("");
@@ -495,3 +494,9 @@ export default function TranslatePdf() {
 
       setMessage("");
     } finally {
+      setIsTranslating(false);
+    }
+  };
+
+  const resetTool = () => {
+    setFile(null);
