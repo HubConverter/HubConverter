@@ -74,43 +74,68 @@ export default function TranslatePdf() {
     setMessage("");
   };
 
-  const translateText = async (text, fromLanguage, toLanguage) => {
-    if (!text || !text.trim()) {
-      return "";
-    }
+ const translateText = async (text, fromLanguage, toLanguage) => {
+  if (!text || !text.trim()) {
+    return "";
+  }
 
-    const cleanText = text.trim();
+  const cleanText = text.trim();
 
-    const url =
-      "https://api.mymemory.translated.net/get?q=" +
-      encodeURIComponent(cleanText) +
-      "&langpair=" +
-      encodeURIComponent(
-        fromLanguage === "auto"
-          ? "en"
-          : fromLanguage
-      ) +
-      "%7C" +
-      encodeURIComponent(toLanguage);
+  const source =
+    fromLanguage === "auto"
+      ? "en"
+      : fromLanguage;
 
+  const url =
+    "https://api.mymemory.translated.net/get?q=" +
+    encodeURIComponent(cleanText) +
+    "&langpair=" +
+    encodeURIComponent(source) +
+    "%7C" +
+    encodeURIComponent(toLanguage);
+
+  try {
     const response = await fetch(url);
 
     if (!response.ok) {
-      throw new Error("Translation service unavailable.");
+      throw new Error(
+        "Translation service returned HTTP " +
+          response.status
+      );
     }
 
     const data = await response.json();
 
+    console.log("Translation API response:", data);
+
     if (
-      !data ||
-      !data.responseData ||
-      typeof data.responseData.translatedText !== "string"
+      data &&
+      data.responseData &&
+      typeof data.responseData.translatedText === "string"
     ) {
-      throw new Error("Translation failed.");
+      return data.responseData.translatedText;
     }
 
-    return data.responseData.translatedText;
-  };
+    if (
+      data &&
+      typeof data.responseDetails === "string" &&
+      data.responseDetails.trim()
+    ) {
+      throw new Error(data.responseDetails);
+    }
+
+    throw new Error(
+      "Translation service did not return translated text."
+    );
+ } catch (error) {
+  console.error("PDF translation error:", error);
+
+  setMessage(
+    "Translation failed: " +
+      (error?.message || "Translation service unavailable.")
+  );
+}
+};
 
   const splitIntoChunks = (text, maxLength = 450) => {
     const words = text.split(/\s+/);
