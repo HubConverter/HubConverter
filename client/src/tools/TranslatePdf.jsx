@@ -205,7 +205,7 @@ function addWrappedText(
   return currentY;
 }
 
-function TranslatePdf() {
+export default function TranslatePdf() {
   const [file, setFile] = useState(null);
 
   const [sourceLanguage, setSourceLanguage] =
