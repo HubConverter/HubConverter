@@ -240,9 +240,13 @@ export default function TranslatePdf() {
         return;
       }
 
-      setMessage(
-        `PDF ready. Found readable text on ${readablePages.length} of ${extractedPages.length} page(s).`
-      );
+     setMessage(
+  "PDF ready. Found readable text on " +
+  readablePages.length +
+  " of " +
+  extractedPages.length +
+  " page(s)."
+);
     } catch (err) {
       console.error(err);
 
