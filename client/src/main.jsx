@@ -157,13 +157,16 @@ const [view, setView] = useState("tools-all");
   return (
     <>
       <header>
-        <div
-          className="brand"
-          onClick={() => setView("tools")}
-        >
-         🔄 <b>Hub<span>Converter</span></b>
-<i>TOOLS</i>
-        </div>
+       <div
+  className="brand"
+  onClick={() => {
+    setCategory("all");
+    setSelectedTool(null);
+  }}
+  style={{ cursor: "pointer" }}
+>
+  🔄 HubConverter
+</div>
 
        <nav className="nav">
   <button
