@@ -382,17 +382,19 @@ export default function TranslatePdf() {
         const pageText = pages[i];
 
         if (!pageText.trim()) {
-          translatedPages.push("");
-          continue;
-        }
+             translatedPages.push("");
+      continue;
+    }
 
-        setMessage(
-          `Translating page ${i + 1} of ${pages.length}...`
-        );
+    setMessage(
+      `Translating page ${i + 1} of ${pages.length}...`
+    );
 
-        const translated = await translateLongText(
-          pageText,
-          sourceLanguage,
+    const translated = await translateLongText(
+      pageText,
+      sourceLanguage,
+      targetLanguage
+    );
           targetLanguage
         );
 
