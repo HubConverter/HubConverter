@@ -1,4 +1,3 @@
-```jsx
 import React, { useEffect, useRef, useState } from "react";
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import * as pdfjsLib from "pdfjs-dist";
@@ -14,6 +13,7 @@ export default function EditPdf() {
   const [message, setMessage] = useState("");
 
   const [editMode, setEditMode] = useState("text");
+
   const [text, setText] = useState("");
   const [textX, setTextX] = useState(100);
   const [textY, setTextY] = useState(100);
@@ -60,10 +60,12 @@ export default function EditPdf() {
       setFile(selectedFile);
     } catch (error) {
       console.error(error);
+
       setMessage("Unable to open this PDF.");
       setFile(null);
       setPdfDocument(null);
       setTotalPages(0);
+      setPageEdits({});
     } finally {
       setLoading(false);
     }
@@ -72,7 +74,9 @@ export default function EditPdf() {
   const handleFileChange = async (event) => {
     const selectedFile = event.target.files?.[0];
 
-    if (!selectedFile) return;
+    if (!selectedFile) {
+      return;
+    }
 
     if (
       selectedFile.type !== "application/pdf" &&
@@ -91,7 +95,9 @@ export default function EditPdf() {
   };
 
   const renderPage = async () => {
-    if (!pdfDocument || !canvasRef.current) return;
+    if (!pdfDocument || !canvasRef.current) {
+      return;
+    }
 
     try {
       const page = await pdfDocument.getPage(pageNumber);
@@ -106,7 +112,12 @@ export default function EditPdf() {
       canvas.width = viewport.width;
       canvas.height = viewport.height;
 
-      context.clearRect(0, 0, canvas.width, canvas.height);
+      context.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+      );
 
       await page.render({
         canvasContext: context,
@@ -115,53 +126,65 @@ export default function EditPdf() {
 
       const edits = pageEdits[pageNumber];
 
-      if (edits && edits.length > 0) {
-        edits.forEach((edit) => {
-          if (edit.type === "text") {
-            context.font =
-              "bold " + edit.fontSize + "px Arial";
-
-            context.fillStyle = "#111827";
-
-            context.fillText(
-              edit.text,
-              edit.x,
-              edit.y
-            );
-          }
-
-          if (edit.type === "draw") {
-            if (!edit.points || edit.points.length < 2) {
-              return;
-            }
-
-            context.beginPath();
-
-            context.strokeStyle = edit.color;
-            context.lineWidth = edit.size;
-            context.lineCap = "round";
-            context.lineJoin = "round";
-
-            context.moveTo(
-              edit.points[0].x,
-              edit.points[0].y
-            );
-
-            for (let i = 1; i < edit.points.length; i++) {
-              context.lineTo(
-                edit.points[i].x,
-                edit.points[i].y
-              );
-            }
-
-            context.stroke();
-            context.closePath();
-          }
-        });
+      if (!edits || edits.length === 0) {
+        return;
       }
+
+      edits.forEach((edit) => {
+        if (edit.type === "text") {
+          context.font =
+            "bold " + edit.fontSize + "px Arial";
+
+          context.fillStyle = "#111827";
+
+          context.fillText(
+            edit.text,
+            edit.x,
+            edit.y
+          );
+        }
+
+        if (edit.type === "draw") {
+          if (
+            !edit.points ||
+            edit.points.length < 2
+          ) {
+            return;
+          }
+
+          context.beginPath();
+
+          context.strokeStyle = edit.color;
+          context.lineWidth = edit.size;
+          context.lineCap = "round";
+          context.lineJoin = "round";
+
+          context.moveTo(
+            edit.points[0].x,
+            edit.points[0].y
+          );
+
+          for (
+            let i = 1;
+            i < edit.points.length;
+            i++
+          ) {
+            context.lineTo(
+              edit.points[i].x,
+              edit.points[i].y
+            );
+          }
+
+          context.stroke();
+          context.closePath();
+        }
+      });
     } catch (error) {
       console.error(error);
-      setMessage("Unable to display this PDF page.");
+
+      setMessage(
+        "Unable to display this PDF page."
+      );
     }
   };
 
@@ -171,13 +194,17 @@ export default function EditPdf() {
 
   const previousPage = () => {
     if (pageNumber > 1) {
-      setPageNumber((current) => current - 1);
+      setPageNumber(
+        (current) => current - 1
+      );
     }
   };
 
   const nextPage = () => {
     if (pageNumber < totalPages) {
-      setPageNumber((current) => current + 1);
+      setPageNumber(
+        (current) => current + 1
+      );
     }
   };
 
@@ -191,21 +218,33 @@ export default function EditPdf() {
       };
     }
 
-    const rect = canvas.getBoundingClientRect();
+    const rect =
+      canvas.getBoundingClientRect();
 
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
+    const scaleX =
+      canvas.width / rect.width;
+
+    const scaleY =
+      canvas.height / rect.height;
 
     return {
-      x: (event.clientX - rect.left) * scaleX,
-      y: (event.clientY - rect.top) * scaleY,
+      x:
+        (event.clientX - rect.left) *
+        scaleX,
+
+      y:
+        (event.clientY - rect.top) *
+        scaleY,
     };
   };
 
   const startDrawing = (event) => {
-    if (editMode !== "draw") return;
+    if (editMode !== "draw") {
+      return;
+    }
 
-    const position = getMousePosition(event);
+    const position =
+      getMousePosition(event);
 
     setIsDrawing(true);
 
@@ -218,6 +257,7 @@ export default function EditPdf() {
 
     setPageEdits((previous) => ({
       ...previous,
+
       [pageNumber]: [
         ...(previous[pageNumber] || []),
         newEdit,
@@ -226,9 +266,15 @@ export default function EditPdf() {
   };
 
   const draw = (event) => {
-    if (!isDrawing || editMode !== "draw") return;
+    if (
+      !isDrawing ||
+      editMode !== "draw"
+    ) {
+      return;
+    }
 
-    const position = getMousePosition(event);
+    const position =
+      getMousePosition(event);
 
     setPageEdits((previous) => {
       const currentEdits = [
@@ -240,16 +286,25 @@ export default function EditPdf() {
       }
 
       const lastEdit =
-        currentEdits[currentEdits.length - 1];
+        currentEdits[
+          currentEdits.length - 1
+        ];
 
       if (lastEdit.type !== "draw") {
         return previous;
       }
 
-      lastEdit.points = [
-        ...lastEdit.points,
-        position,
-      ];
+      const updatedEdit = {
+        ...lastEdit,
+        points: [
+          ...lastEdit.points,
+          position,
+        ],
+      };
+
+      currentEdits[
+        currentEdits.length - 1
+      ] = updatedEdit;
 
       return {
         ...previous,
@@ -278,6 +333,7 @@ export default function EditPdf() {
 
     setPageEdits((previous) => ({
       ...previous,
+
       [pageNumber]: [
         ...(previous[pageNumber] || []),
         newEdit,
@@ -298,27 +354,41 @@ export default function EditPdf() {
       return updated;
     });
 
-    setMessage("Added edits cleared from the current page.");
+    setMessage(
+      "Added edits cleared from the current page."
+    );
   };
 
   const hexToRgb = (hex) => {
-    const cleanHex = hex.replace("#", "");
+    const cleanHex =
+      hex.replace("#", "");
 
     const r =
-      parseInt(cleanHex.substring(0, 2), 16) / 255;
+      parseInt(
+        cleanHex.substring(0, 2),
+        16
+      ) / 255;
 
     const g =
-      parseInt(cleanHex.substring(2, 4), 16) / 255;
+      parseInt(
+        cleanHex.substring(2, 4),
+        16
+      ) / 255;
 
     const b =
-      parseInt(cleanHex.substring(4, 6), 16) / 255;
+      parseInt(
+        cleanHex.substring(4, 6),
+        16
+      ) / 255;
 
     return rgb(r, g, b);
   };
 
   const savePdf = async () => {
     if (!file) {
-      setMessage("Please select a PDF first.");
+      setMessage(
+        "Please select a PDF first."
+      );
       return;
     }
 
@@ -326,110 +396,160 @@ export default function EditPdf() {
       setLoading(true);
       setMessage("");
 
-      const originalBytes = await file.arrayBuffer();
+      const originalBytes =
+        await file.arrayBuffer();
 
-      const sourcePdf = await PDFDocument.load(
-        originalBytes
-      );
+      const sourcePdf =
+        await PDFDocument.load(
+          originalBytes
+        );
 
-      const font = await sourcePdf.embedFont(
-        StandardFonts.Helvetica
-      );
+      const font =
+        await sourcePdf.embedFont(
+          StandardFonts.Helvetica
+        );
 
-      const pages = sourcePdf.getPages();
+      const pages =
+        sourcePdf.getPages();
 
-      Object.keys(pageEdits).forEach((pageKey) => {
-        const pageIndex = Number(pageKey) - 1;
+      Object.keys(pageEdits).forEach(
+        (pageKey) => {
+          const pageIndex =
+            Number(pageKey) - 1;
 
-        const currentPage = pages[pageIndex];
+          const currentPage =
+            pages[pageIndex];
 
-        if (!currentPage) return;
-
-        const pageWidth = currentPage.getWidth();
-        const pageHeight = currentPage.getHeight();
-
-        const canvas = canvasRef.current;
-
-        const canvasWidth = canvas
-          ? canvas.width
-          : pageWidth * 1.5;
-
-        const canvasHeight = canvas
-          ? canvas.height
-          : pageHeight * 1.5;
-
-        const scaleX = pageWidth / canvasWidth;
-        const scaleY = pageHeight / canvasHeight;
-
-        const edits = pageEdits[pageKey];
-
-        edits.forEach((edit) => {
-          if (edit.type === "text") {
-            currentPage.drawText(edit.text, {
-              x: edit.x * scaleX,
-              y:
-                pageHeight -
-                edit.y * scaleY -
-                edit.fontSize * scaleY,
-              size: edit.fontSize * scaleX,
-              font: font,
-              color: rgb(
-                0.067,
-                0.09,
-                0.14
-              ),
-            });
+          if (!currentPage) {
+            return;
           }
 
-          if (
-            edit.type === "draw" &&
-            edit.points &&
-            edit.points.length > 1
-          ) {
-            for (
-              let i = 1;
-              i < edit.points.length;
-              i++
-            ) {
-              const previousPoint =
-                edit.points[i - 1];
+          const pageWidth =
+            currentPage.getWidth();
 
-              const currentPoint =
-                edit.points[i];
+          const pageHeight =
+            currentPage.getHeight();
 
-              currentPage.drawLine({
-                start: {
-                  x: previousPoint.x * scaleX,
+          const canvas =
+            canvasRef.current;
+
+          const canvasWidth = canvas
+            ? canvas.width
+            : pageWidth * 1.5;
+
+          const canvasHeight = canvas
+            ? canvas.height
+            : pageHeight * 1.5;
+
+          const scaleX =
+            pageWidth / canvasWidth;
+
+          const scaleY =
+            pageHeight / canvasHeight;
+
+          const edits =
+            pageEdits[pageKey];
+
+          edits.forEach((edit) => {
+            if (edit.type === "text") {
+              currentPage.drawText(
+                edit.text,
+                {
+                  x: edit.x * scaleX,
+
                   y:
                     pageHeight -
-                    previousPoint.y * scaleY,
-                },
-                end: {
-                  x: currentPoint.x * scaleX,
-                  y:
-                    pageHeight -
-                    currentPoint.y * scaleY,
-                },
-                thickness:
-                  edit.size * scaleX,
-                color: hexToRgb(edit.color),
-              });
+                    edit.y * scaleY -
+                    edit.fontSize *
+                      scaleY,
+
+                  size:
+                    edit.fontSize *
+                    scaleX,
+
+                  font: font,
+
+                  color: rgb(
+                    0.067,
+                    0.09,
+                    0.14
+                  ),
+                }
+              );
             }
-          }
-        });
-      });
 
-      const pdfBytes = await sourcePdf.save();
+            if (
+              edit.type === "draw" &&
+              edit.points &&
+              edit.points.length > 1
+            ) {
+              for (
+                let i = 1;
+                i < edit.points.length;
+                i++
+              ) {
+                const previousPoint =
+                  edit.points[i - 1];
 
-      const blob = new Blob([pdfBytes], {
-        type: "application/pdf",
-      });
+                const currentPoint =
+                  edit.points[i];
+
+                currentPage.drawLine({
+                  start: {
+                    x:
+                      previousPoint.x *
+                      scaleX,
+
+                    y:
+                      pageHeight -
+                      previousPoint.y *
+                        scaleY,
+                  },
+
+                  end: {
+                    x:
+                      currentPoint.x *
+                      scaleX,
+
+                    y:
+                      pageHeight -
+                      currentPoint.y *
+                        scaleY,
+                  },
+
+                  thickness:
+                    edit.size *
+                    scaleX,
+
+                  color:
+                    hexToRgb(
+                      edit.color
+                    ),
+                });
+              }
+            }
+          });
+        }
+      );
+
+      const pdfBytes =
+        await sourcePdf.save();
+
+      const blob = new Blob(
+        [pdfBytes],
+        {
+          type: "application/pdf",
+        }
+      );
 
       if (downloadUrl) {
-        URL.revokeObjectURL(downloadUrl);
+        URL.revokeObjectURL(
+          downloadUrl
+        );
       }
 
-      const url = URL.createObjectURL(blob);
+      const url =
+        URL.createObjectURL(blob);
 
       setDownloadUrl(url);
 
@@ -448,9 +568,12 @@ export default function EditPdf() {
   };
 
   const downloadPdf = () => {
-    if (!downloadUrl) return;
+    if (!downloadUrl) {
+      return;
+    }
 
-    const link = document.createElement("a");
+    const link =
+      document.createElement("a");
 
     link.href = downloadUrl;
 
@@ -466,7 +589,9 @@ export default function EditPdf() {
 
   const resetTool = () => {
     if (downloadUrl) {
-      URL.revokeObjectURL(downloadUrl);
+      URL.revokeObjectURL(
+        downloadUrl
+      );
     }
 
     setFile(null);
@@ -478,6 +603,7 @@ export default function EditPdf() {
     setPageEdits({});
     setDownloadUrl("");
     setEditMode("text");
+    setIsDrawing(false);
   };
 
   return (
@@ -497,7 +623,8 @@ export default function EditPdf() {
           padding: "30px",
           boxShadow:
             "0 10px 35px rgba(0,0,0,0.08)",
-          border: "1px solid #e5e7eb",
+          border:
+            "1px solid #e5e7eb",
         }}
       >
         <div
@@ -515,7 +642,8 @@ export default function EditPdf() {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              margin: "0 auto 15px",
+              margin:
+                "0 auto 15px",
               fontSize: "34px",
             }}
           >
@@ -539,24 +667,29 @@ export default function EditPdf() {
               fontSize: "15px",
             }}
           >
-            Add text and drawings to your PDF.
+            Add text and drawings to
+            your PDF.
           </p>
         </div>
 
         {!file && (
           <div
             style={{
-              border: "2px dashed #cbd5e1",
+              border:
+                "2px dashed #cbd5e1",
               borderRadius: "18px",
-              padding: "50px 20px",
+              padding:
+                "50px 20px",
               textAlign: "center",
-              background: "#f8fafc",
+              background:
+                "#f8fafc",
             }}
           >
             <div
               style={{
                 fontSize: "45px",
-                marginBottom: "15px",
+                marginBottom:
+                  "15px",
               }}
             >
               📄
@@ -564,7 +697,8 @@ export default function EditPdf() {
 
             <h3
               style={{
-                margin: "0 0 8px",
+                margin:
+                  "0 0 8px",
                 color: "#1f2937",
               }}
             >
@@ -574,21 +708,29 @@ export default function EditPdf() {
             <p
               style={{
                 color: "#6b7280",
-                marginBottom: "20px",
+                marginBottom:
+                  "20px",
               }}
             >
-              Choose the PDF you want to edit.
+              Choose the PDF you
+              want to edit.
             </p>
 
             <label
               style={{
-                display: "inline-block",
-                background: "#2563eb",
+                display:
+                  "inline-block",
+                background:
+                  "#2563eb",
                 color: "#ffffff",
-                padding: "12px 24px",
-                borderRadius: "10px",
-                cursor: "pointer",
-                fontWeight: "600",
+                padding:
+                  "12px 24px",
+                borderRadius:
+                  "10px",
+                cursor:
+                  "pointer",
+                fontWeight:
+                  "600",
               }}
             >
               Choose PDF
@@ -596,7 +738,9 @@ export default function EditPdf() {
               <input
                 type="file"
                 accept="application/pdf,.pdf"
-                onChange={handleFileChange}
+                onChange={
+                  handleFileChange
+                }
                 style={{
                   display: "none",
                 }}
@@ -609,23 +753,32 @@ export default function EditPdf() {
           <>
             <div
               style={{
-                background: "#f8fafc",
-                borderRadius: "14px",
+                background:
+                  "#f8fafc",
+                borderRadius:
+                  "14px",
                 padding: "15px",
-                marginBottom: "20px",
+                marginBottom:
+                  "20px",
                 display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
+                justifyContent:
+                  "space-between",
+                alignItems:
+                  "center",
                 gap: "15px",
-                flexWrap: "wrap",
+                flexWrap:
+                  "wrap",
               }}
             >
               <div>
                 <div
                   style={{
-                    fontWeight: "700",
-                    color: "#111827",
-                    wordBreak: "break-word",
+                    fontWeight:
+                      "700",
+                    color:
+                      "#111827",
+                    wordBreak:
+                      "break-word",
                   }}
                 >
                   📄 {file.name}
@@ -633,25 +786,37 @@ export default function EditPdf() {
 
                 <div
                   style={{
-                    color: "#6b7280",
-                    fontSize: "14px",
-                    marginTop: "5px",
+                    color:
+                      "#6b7280",
+                    fontSize:
+                      "14px",
+                    marginTop:
+                      "5px",
                   }}
                 >
-                  Page {pageNumber} of {totalPages}
+                  Page {pageNumber} of{" "}
+                  {totalPages}
                 </div>
               </div>
 
               <button
                 type="button"
-                onClick={resetTool}
+                onClick={
+                  resetTool
+                }
                 style={{
-                  border: "1px solid #d1d5db",
-                  background: "#ffffff",
-                  padding: "9px 15px",
-                  borderRadius: "9px",
-                  cursor: "pointer",
-                  fontWeight: "600",
+                  border:
+                    "1px solid #d1d5db",
+                  background:
+                    "#ffffff",
+                  padding:
+                    "9px 15px",
+                  borderRadius:
+                    "9px",
+                  cursor:
+                    "pointer",
+                  fontWeight:
+                    "600",
                 }}
               >
                 Change PDF
@@ -660,25 +825,33 @@ export default function EditPdf() {
 
             <div
               style={{
-                display: "grid",
+                display:
+                  "grid",
                 gridTemplateColumns:
                   "minmax(220px, 280px) 1fr",
                 gap: "20px",
-                alignItems: "start",
+                alignItems:
+                  "start",
               }}
             >
               <div
                 style={{
-                  background: "#f8fafc",
-                  borderRadius: "14px",
-                  padding: "18px",
-                  border: "1px solid #e5e7eb",
+                  background:
+                    "#f8fafc",
+                  borderRadius:
+                    "14px",
+                  padding:
+                    "18px",
+                  border:
+                    "1px solid #e5e7eb",
                 }}
               >
                 <h3
                   style={{
-                    margin: "0 0 15px",
-                    color: "#111827",
+                    margin:
+                      "0 0 15px",
+                    color:
+                      "#111827",
                   }}
                 >
                   Editing Tools
@@ -686,22 +859,33 @@ export default function EditPdf() {
 
                 <button
                   type="button"
-                  onClick={() => setEditMode("text")}
+                  onClick={() =>
+                    setEditMode(
+                      "text"
+                    )
+                  }
                   style={{
                     width: "100%",
-                    padding: "11px",
-                    marginBottom: "10px",
-                    borderRadius: "9px",
+                    padding:
+                      "11px",
+                    marginBottom:
+                      "10px",
+                    borderRadius:
+                      "9px",
                     border:
-                      editMode === "text"
+                      editMode ===
+                      "text"
                         ? "2px solid #2563eb"
                         : "1px solid #d1d5db",
                     background:
-                      editMode === "text"
+                      editMode ===
+                      "text"
                         ? "#eff6ff"
                         : "#ffffff",
-                    cursor: "pointer",
-                    fontWeight: "600",
+                    cursor:
+                      "pointer",
+                    fontWeight:
+                      "600",
                   }}
                 >
                   ✏️ Add Text
@@ -709,34 +893,49 @@ export default function EditPdf() {
 
                 <button
                   type="button"
-                  onClick={() => setEditMode("draw")}
+                  onClick={() =>
+                    setEditMode(
+                      "draw"
+                    )
+                  }
                   style={{
                     width: "100%",
-                    padding: "11px",
-                    marginBottom: "18px",
-                    borderRadius: "9px",
+                    padding:
+                      "11px",
+                    marginBottom:
+                      "18px",
+                    borderRadius:
+                      "9px",
                     border:
-                      editMode === "draw"
+                      editMode ===
+                      "draw"
                         ? "2px solid #2563eb"
                         : "1px solid #d1d5db",
                     background:
-                      editMode === "draw"
+                      editMode ===
+                      "draw"
                         ? "#eff6ff"
                         : "#ffffff",
-                    cursor: "pointer",
-                    fontWeight: "600",
+                    cursor:
+                      "pointer",
+                    fontWeight:
+                      "600",
                   }}
                 >
                   🖊️ Draw
                 </button>
 
-                {editMode === "text" && (
+                {editMode ===
+                  "text" && (
                   <>
                     <label
                       style={{
-                        display: "block",
-                        fontWeight: "600",
-                        marginBottom: "6px",
+                        display:
+                          "block",
+                        fontWeight:
+                          "600",
+                        marginBottom:
+                          "6px",
                       }}
                     >
                       Text
@@ -744,27 +943,42 @@ export default function EditPdf() {
 
                     <textarea
                       value={text}
-                      onChange={(event) =>
-                        setText(event.target.value)
+                      onChange={(
+                        event
+                      ) =>
+                        setText(
+                          event.target
+                            .value
+                        )
                       }
                       placeholder="Enter text..."
                       rows={4}
                       style={{
-                        width: "100%",
-                        boxSizing: "border-box",
-                        padding: "10px",
-                        borderRadius: "8px",
-                        border: "1px solid #d1d5db",
-                        resize: "vertical",
-                        marginBottom: "12px",
+                        width:
+                          "100%",
+                        boxSizing:
+                          "border-box",
+                        padding:
+                          "10px",
+                        borderRadius:
+                          "8px",
+                        border:
+                          "1px solid #d1d5db",
+                        resize:
+                          "vertical",
+                        marginBottom:
+                          "12px",
                       }}
                     />
 
                     <label
                       style={{
-                        display: "block",
-                        fontWeight: "600",
-                        marginBottom: "6px",
+                        display:
+                          "block",
+                        fontWeight:
+                          "600",
+                        marginBottom:
+                          "6px",
                       }}
                     >
                       Font Size
@@ -774,27 +988,44 @@ export default function EditPdf() {
                       type="number"
                       min="8"
                       max="100"
-                      value={fontSize}
-                      onChange={(event) =>
+                      value={
+                        fontSize
+                      }
+                      onChange={(
+                        event
+                      ) =>
                         setFontSize(
-                          Number(event.target.value)
+                          Number(
+                            event
+                              .target
+                              .value
+                          )
                         )
                       }
                       style={{
-                        width: "100%",
-                        boxSizing: "border-box",
-                        padding: "9px",
-                        borderRadius: "8px",
-                        border: "1px solid #d1d5db",
-                        marginBottom: "12px",
+                        width:
+                          "100%",
+                        boxSizing:
+                          "border-box",
+                        padding:
+                          "9px",
+                        borderRadius:
+                          "8px",
+                        border:
+                          "1px solid #d1d5db",
+                        marginBottom:
+                          "12px",
                       }}
                     />
 
                     <label
                       style={{
-                        display: "block",
-                        fontWeight: "600",
-                        marginBottom: "6px",
+                        display:
+                          "block",
+                        fontWeight:
+                          "600",
+                        marginBottom:
+                          "6px",
                       }}
                     >
                       X Position
@@ -802,27 +1033,44 @@ export default function EditPdf() {
 
                     <input
                       type="number"
-                      value={textX}
-                      onChange={(event) =>
+                      value={
+                        textX
+                      }
+                      onChange={(
+                        event
+                      ) =>
                         setTextX(
-                          Number(event.target.value)
+                          Number(
+                            event
+                              .target
+                              .value
+                          )
                         )
                       }
                       style={{
-                        width: "100%",
-                        boxSizing: "border-box",
-                        padding: "9px",
-                        borderRadius: "8px",
-                        border: "1px solid #d1d5db",
-                        marginBottom: "12px",
+                        width:
+                          "100%",
+                        boxSizing:
+                          "border-box",
+                        padding:
+                          "9px",
+                        borderRadius:
+                          "8px",
+                        border:
+                          "1px solid #d1d5db",
+                        marginBottom:
+                          "12px",
                       }}
                     />
 
                     <label
                       style={{
-                        display: "block",
-                        fontWeight: "600",
-                        marginBottom: "6px",
+                        display:
+                          "block",
+                        fontWeight:
+                          "600",
+                        marginBottom:
+                          "6px",
                       }}
                     >
                       Y Position
@@ -830,34 +1078,58 @@ export default function EditPdf() {
 
                     <input
                       type="number"
-                      value={textY}
-                      onChange={(event) =>
+                      value={
+                        textY
+                      }
+                      onChange={(
+                        event
+                      ) =>
                         setTextY(
-                          Number(event.target.value)
+                          Number(
+                            event
+                              .target
+                              .value
+                          )
                         )
                       }
                       style={{
-                        width: "100%",
-                        boxSizing: "border-box",
-                        padding: "9px",
-                        borderRadius: "8px",
-                        border: "1px solid #d1d5db",
-                        marginBottom: "12px",
+                        width:
+                          "100%",
+                        boxSizing:
+                          "border-box",
+                        padding:
+                          "9px",
+                        borderRadius:
+                          "8px",
+                        border:
+                          "1px solid #d1d5db",
+                        marginBottom:
+                          "12px",
                       }}
                     />
 
                     <button
                       type="button"
-                      onClick={addTextToCanvas}
+                      onClick={
+                        addTextToCanvas
+                      }
                       style={{
-                        width: "100%",
-                        border: "none",
-                        background: "#2563eb",
-                        color: "#ffffff",
-                        padding: "11px",
-                        borderRadius: "9px",
-                        cursor: "pointer",
-                        fontWeight: "700",
+                        width:
+                          "100%",
+                        border:
+                          "none",
+                        background:
+                          "#2563eb",
+                        color:
+                          "#ffffff",
+                        padding:
+                          "11px",
+                        borderRadius:
+                          "9px",
+                        cursor:
+                          "pointer",
+                        fontWeight:
+                          "700",
                       }}
                     >
                       Add Text
@@ -865,13 +1137,17 @@ export default function EditPdf() {
                   </>
                 )}
 
-                {editMode === "draw" && (
+                {editMode ===
+                  "draw" && (
                   <>
                     <label
                       style={{
-                        display: "block",
-                        fontWeight: "600",
-                        marginBottom: "6px",
+                        display:
+                          "block",
+                        fontWeight:
+                          "600",
+                        marginBottom:
+                          "6px",
                       }}
                     >
                       Pen Color
@@ -879,22 +1155,35 @@ export default function EditPdf() {
 
                     <input
                       type="color"
-                      value={drawColor}
-                      onChange={(event) =>
-                        setDrawColor(event.target.value)
+                      value={
+                        drawColor
+                      }
+                      onChange={(
+                        event
+                      ) =>
+                        setDrawColor(
+                          event.target
+                            .value
+                        )
                       }
                       style={{
-                        width: "100%",
-                        height: "42px",
-                        marginBottom: "12px",
+                        width:
+                          "100%",
+                        height:
+                          "42px",
+                        marginBottom:
+                          "12px",
                       }}
                     />
 
                     <label
                       style={{
-                        display: "block",
-                        fontWeight: "600",
-                        marginBottom: "6px",
+                        display:
+                          "block",
+                        fontWeight:
+                          "600",
+                        marginBottom:
+                          "6px",
                       }}
                     >
                       Pen Size
@@ -904,73 +1193,117 @@ export default function EditPdf() {
                       type="range"
                       min="1"
                       max="15"
-                      value={drawSize}
-                      onChange={(event) =>
+                      value={
+                        drawSize
+                      }
+                      onChange={(
+                        event
+                      ) =>
                         setDrawSize(
-                          Number(event.target.value)
+                          Number(
+                            event
+                              .target
+                              .value
+                          )
                         )
                       }
                       style={{
-                        width: "100%",
-                        marginBottom: "15px",
+                        width:
+                          "100%",
+                        marginBottom:
+                          "15px",
                       }}
                     />
 
                     <p
                       style={{
-                        fontSize: "13px",
-                        color: "#6b7280",
+                        fontSize:
+                          "13px",
+                        color:
+                          "#6b7280",
                         margin: 0,
                       }}
                     >
-                      Click and drag on the PDF to draw.
+                      Click and drag on
+                      the PDF to draw.
                     </p>
                   </>
                 )}
 
                 <button
                   type="button"
-                  onClick={clearCanvasEdits}
+                  onClick={
+                    clearCanvasEdits
+                  }
                   style={{
-                    width: "100%",
-                    marginTop: "18px",
-                    border: "1px solid #d1d5db",
-                    background: "#ffffff",
-                    color: "#374151",
-                    padding: "10px",
-                    borderRadius: "9px",
-                    cursor: "pointer",
-                    fontWeight: "600",
+                    width:
+                      "100%",
+                    marginTop:
+                      "18px",
+                    border:
+                      "1px solid #d1d5db",
+                    background:
+                      "#ffffff",
+                    color:
+                      "#374151",
+                    padding:
+                      "10px",
+                    borderRadius:
+                      "9px",
+                    cursor:
+                      "pointer",
+                    fontWeight:
+                      "600",
                   }}
                 >
-                  Clear Current Page Edits
+                  Clear Current Page
+                  Edits
                 </button>
               </div>
 
               <div>
                 <div
                   style={{
-                    background: "#e5e7eb",
-                    borderRadius: "14px",
-                    padding: "20px",
-                    overflow: "auto",
-                    textAlign: "center",
+                    background:
+                      "#e5e7eb",
+                    borderRadius:
+                      "14px",
+                    padding:
+                      "20px",
+                    overflow:
+                      "auto",
+                    textAlign:
+                      "center",
                   }}
                 >
                   <canvas
-                    ref={canvasRef}
-                    onMouseDown={startDrawing}
-                    onMouseMove={draw}
-                    onMouseUp={stopDrawing}
-                    onMouseLeave={stopDrawing}
+                    ref={
+                      canvasRef
+                    }
+                    onMouseDown={
+                      startDrawing
+                    }
+                    onMouseMove={
+                      draw
+                    }
+                    onMouseUp={
+                      stopDrawing
+                    }
+                    onMouseLeave={
+                      stopDrawing
+                    }
                     style={{
-                      maxWidth: "100%",
-                      height: "auto",
-                      background: "#ffffff",
+                      maxWidth:
+                        "100%",
+                      height:
+                        "auto",
+                      background:
+                        "#ffffff",
                       boxShadow:
                         "0 5px 20px rgba(0,0,0,0.12)",
                       cursor:
-                        editMode === "draw"
+                        editMode ===
+                        "draw"
                           ? "crosshair"
                           : "default",
                     }}
@@ -979,27 +1312,42 @@ export default function EditPdf() {
 
                 <div
                   style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
+                    display:
+                      "flex",
+                    justifyContent:
+                      "center",
+                    alignItems:
+                      "center",
                     gap: "12px",
-                    marginTop: "15px",
+                    marginTop:
+                      "15px",
                   }}
                 >
                   <button
                     type="button"
-                    onClick={previousPage}
-                    disabled={pageNumber === 1}
+                    onClick={
+                      previousPage
+                    }
+                    disabled={
+                      pageNumber ===
+                      1
+                    }
                     style={{
-                      border: "1px solid #d1d5db",
-                      background: "#ffffff",
-                      padding: "9px 16px",
-                      borderRadius: "8px",
+                      border:
+                        "1px solid #d1d5db",
+                      background:
+                        "#ffffff",
+                      padding:
+                        "9px 16px",
+                      borderRadius:
+                        "8px",
                       cursor:
-                        pageNumber === 1
+                        pageNumber ===
+                        1
                           ? "not-allowed"
                           : "pointer",
-                      fontWeight: "600",
+                      fontWeight:
+                        "600",
                     }}
                   >
                     ← Previous
@@ -1007,28 +1355,39 @@ export default function EditPdf() {
 
                   <strong
                     style={{
-                      color: "#374151",
+                      color:
+                        "#374151",
                     }}
                   >
-                    {pageNumber} / {totalPages}
+                    {pageNumber} /{" "}
+                    {totalPages}
                   </strong>
 
                   <button
                     type="button"
-                    onClick={nextPage}
+                    onClick={
+                      nextPage
+                    }
                     disabled={
-                      pageNumber === totalPages
+                      pageNumber ===
+                      totalPages
                     }
                     style={{
-                      border: "1px solid #d1d5db",
-                      background: "#ffffff",
-                      padding: "9px 16px",
-                      borderRadius: "8px",
+                      border:
+                        "1px solid #d1d5db",
+                      background:
+                        "#ffffff",
+                      padding:
+                        "9px 16px",
+                      borderRadius:
+                        "8px",
                       cursor:
-                        pageNumber === totalPages
+                        pageNumber ===
+                        totalPages
                           ? "not-allowed"
                           : "pointer",
-                      fontWeight: "600",
+                      fontWeight:
+                        "600",
                     }}
                   >
                     Next →
@@ -1039,30 +1398,46 @@ export default function EditPdf() {
 
             <div
               style={{
-                marginTop: "24px",
-                paddingTop: "20px",
-                borderTop: "1px solid #e5e7eb",
+                marginTop:
+                  "24px",
+                paddingTop:
+                  "20px",
+                borderTop:
+                  "1px solid #e5e7eb",
               }}
             >
               {!downloadUrl && (
                 <button
                   type="button"
-                  onClick={savePdf}
-                  disabled={loading}
+                  onClick={
+                    savePdf
+                  }
+                  disabled={
+                    loading
+                  }
                   style={{
-                    width: "100%",
-                    border: "none",
-                    background: loading
-                      ? "#9ca3af"
-                      : "#16a34a",
-                    color: "#ffffff",
-                    padding: "14px 20px",
-                    borderRadius: "11px",
-                    cursor: loading
-                      ? "not-allowed"
-                      : "pointer",
-                    fontSize: "16px",
-                    fontWeight: "700",
+                    width:
+                      "100%",
+                    border:
+                      "none",
+                    background:
+                      loading
+                        ? "#9ca3af"
+                        : "#16a34a",
+                    color:
+                      "#ffffff",
+                    padding:
+                      "14px 20px",
+                    borderRadius:
+                      "11px",
+                    cursor:
+                      loading
+                        ? "not-allowed"
+                        : "pointer",
+                    fontSize:
+                      "16px",
+                    fontWeight:
+                      "700",
                   }}
                 >
                   {loading
@@ -1074,17 +1449,24 @@ export default function EditPdf() {
               {downloadUrl && (
                 <div
                   style={{
-                    background: "#ecfdf5",
-                    border: "1px solid #a7f3d0",
-                    borderRadius: "14px",
-                    padding: "20px",
-                    textAlign: "center",
+                    background:
+                      "#ecfdf5",
+                    border:
+                      "1px solid #a7f3d0",
+                    borderRadius:
+                      "14px",
+                    padding:
+                      "20px",
+                    textAlign:
+                      "center",
                   }}
                 >
                   <div
                     style={{
-                      fontSize: "30px",
-                      marginBottom: "8px",
+                      fontSize:
+                        "30px",
+                      marginBottom:
+                        "8px",
                     }}
                   >
                     ✅
@@ -1092,34 +1474,50 @@ export default function EditPdf() {
 
                   <h3
                     style={{
-                      margin: "0 0 8px",
-                      color: "#047857",
+                      margin:
+                        "0 0 8px",
+                      color:
+                        "#047857",
                     }}
                   >
-                    PDF edited successfully
+                    PDF edited
+                    successfully
                   </h3>
 
                   <p
                     style={{
-                      margin: "0 0 16px",
-                      color: "#065f46",
+                      margin:
+                        "0 0 16px",
+                      color:
+                        "#065f46",
                     }}
                   >
-                    Your edited PDF is ready.
+                    Your edited PDF
+                    is ready.
                   </p>
 
                   <button
                     type="button"
-                    onClick={downloadPdf}
+                    onClick={
+                      downloadPdf
+                    }
                     style={{
-                      border: "none",
-                      background: "#059669",
-                      color: "#ffffff",
-                      padding: "13px 28px",
-                      borderRadius: "10px",
-                      cursor: "pointer",
-                      fontSize: "16px",
-                      fontWeight: "700",
+                      border:
+                        "none",
+                      background:
+                        "#059669",
+                      color:
+                        "#ffffff",
+                      padding:
+                        "13px 28px",
+                      borderRadius:
+                        "10px",
+                      cursor:
+                        "pointer",
+                      fontSize:
+                        "16px",
+                      fontWeight:
+                        "700",
                     }}
                   >
                     ⬇️ Download PDF
@@ -1130,23 +1528,30 @@ export default function EditPdf() {
           </>
         )}
 
-        {message && !downloadUrl && (
-          <div
-            style={{
-              marginTop: "18px",
-              padding: "13px 15px",
-              borderRadius: "10px",
-              background: "#fef2f2",
-              color: "#b91c1c",
-              fontSize: "14px",
-              fontWeight: "600",
-            }}
-          >
-            {message}
-          </div>
-        )}
+        {message &&
+          !downloadUrl && (
+            <div
+              style={{
+                marginTop:
+                  "18px",
+                padding:
+                  "13px 15px",
+                borderRadius:
+                  "10px",
+                background:
+                  "#fef2f2",
+                color:
+                  "#b91c1c",
+                fontSize:
+                  "14px",
+                fontWeight:
+                  "600",
+              }}
+            >
+              {message}
+            </div>
+          )}
       </div>
     </div>
   );
 }
-```
