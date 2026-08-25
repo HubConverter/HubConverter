@@ -1,4 +1,3 @@
-```jsx
 import React, { useEffect, useState } from "react";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import * as pdfjsLib from "pdfjs-dist";
@@ -894,4 +893,3 @@ const translated = await translateLongText(
     </div>
   );
 }
-```
