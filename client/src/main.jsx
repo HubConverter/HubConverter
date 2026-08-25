@@ -14,6 +14,8 @@ import ProtectPdf from "./tools/ProtectPdf.jsx";
 import UnlockPdf from "./tools/UnlockPdf.jsx";
 import SignPdf from "./tools/SignPdf.jsx";
 import DeletePdfPages from "./tools/DeletePdfPages.jsx";
+import EditPdf from "./tools/EditPdf.jsx";
+
 
 
 import React, { useEffect, useState } from "react";
@@ -1027,6 +1029,39 @@ if (selectedTool === "delete-pdf-pages") {
     </div>
   );
 }
+  ```jsx
+if (selectedTool === "edit-pdf") {
+  return (
+    <div>
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "20px 24px 0",
+        }}
+      >
+        <button
+          onClick={() => setSelectedTool(null)}
+          style={{
+            border: "none",
+            background: "transparent",
+            color: "inherit",
+            fontSize: "15px",
+            fontWeight: "600",
+            cursor: "pointer",
+            padding: "10px 0",
+          }}
+        >
+          ← Back to Tools
+        </button>
+      </div>
+
+      <EditPdf />
+    </div>
+  );
+}
+```
+
   
   // =========================
   // TOOLS HOME
@@ -1196,6 +1231,12 @@ if (selectedTool === "delete-pdf-pages") {
   title="Delete PDF Pages"
   description="Remove unwanted pages from a PDF instantly."
   onClick={() => setSelectedTool("delete-pdf-pages")}
+/>
+          <ToolCard
+  icon="✏️"
+  title="Edit PDF"
+  description="Edit and customize your PDF easily."
+  onClick={() => setSelectedTool("edit-pdf")}
 />
         </div>
       </div>
