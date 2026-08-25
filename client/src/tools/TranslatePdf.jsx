@@ -209,7 +209,7 @@ export default function TranslatePdf() {
     }
 
     setFile(selectedFile);
-    setMessage(`Selected: ${selectedFile.name}`);
+    setMessage("Selected: " + selectedFile.name);
   };
 
   const extractText = async () => {
