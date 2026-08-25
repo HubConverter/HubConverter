@@ -161,8 +161,8 @@ function App() {
           className="brand"
           onClick={() => setView("home")}
         >
-          ⌨ <b>Shortcut<span>Hub</span></b>
-          <i>FINAL 3.0</i>
+         🔄 <b>Hub<span>Converter</span></b>
+<i>TOOLS</i>
         </div>
 
         <nav className="nav">
@@ -260,7 +260,7 @@ function App() {
       )}
 
       <footer>
-        ShortcutHub V3.0 Final · Learn faster. Work smarter.
+       HubConverter · Convert files easily. Work smarter.
       </footer>
     </>
   );
@@ -292,7 +292,7 @@ function SoftwarePage({ software, items, learn, back, favorites, toggleFavorite 
 
         <div className="sectionHead">
           <div>
-            <small>SHORTCUTHUB</small>
+           <small>HUBCONVERTER</small>
             <h2>{software} Shortcuts</h2>
           </div>
           <span>{items.length} shortcuts</span>
@@ -372,20 +372,20 @@ function Home({
   return (
     <>
       <section className="hero">
-        <div className="eyebrow">
-          THE COMPLETE SHORTCUT PLATFORM
-        </div>
+       <div className="eyebrow">
+  THE COMPLETE FILE CONVERTER PLATFORM
+</div>
 
-        <h1>
-          Every shortcut.
-          <br />
-          <em>One place.</em>
-        </h1>
+<h1>
+  Convert your files.
+  <br />
+  <em>Easy and fast.</em>
+</h1>
 
-        <p>
-          Search, learn, practice and master shortcuts
-          for work, study and everyday computing.
-        </p>
+<p>
+  Convert PDF, JPG, Word, Excel and other files
+  quickly and easily with HubConverter.
+</p>
 
         <div className="heroSearch">
           <input
@@ -1103,7 +1103,7 @@ if (selectedTool === "translate-pdf") {
 
       <div className="sectionHead">
         <div>
-          <small>SHORTCUTHUB TOOLS</small>
+          <small>HUBCONVERTER TOOLS</small>
 
           <h2>
             All Tools
