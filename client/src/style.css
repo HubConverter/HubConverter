@@ -1910,6 +1910,168 @@ body.theme-midnight {
       #fff7ed 100%
     );
 }
+/* =========================================================
+   SUNSHINE THEME - LIGHT YELLOW + RED
+   Fix text visibility
+========================================================= */
+
+body.theme-midnight {
+  color: #3b1111 !important;
+
+  background:
+    radial-gradient(
+      circle at 80% 15%,
+      rgba(255, 220, 80, 0.65),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at 15% 80%,
+      rgba(255, 90, 60, 0.20),
+      transparent 35%
+    ),
+    linear-gradient(
+      135deg,
+      #fffdf0 0%,
+      #fff3b0 48%,
+      #ffe4d6 100%
+    ) !important;
+}
+
+/* HEADER */
+body.theme-midnight header {
+  background: rgba(255, 251, 230, 0.92) !important;
+  border-bottom: 1px solid rgba(220, 38, 38, 0.20) !important;
+}
+
+body.theme-midnight .brand {
+  color: #7f1d1d !important;
+  text-shadow: none !important;
+}
+
+body.theme-midnight .brand span {
+  color: #dc2626 !important;
+}
+
+body.theme-midnight .brand i {
+  color: #92400e !important;
+}
+
+body.theme-midnight nav button,
+body.theme-midnight .actions button {
+  color: #7f1d1d !important;
+}
+
+body.theme-midnight nav button:hover,
+body.theme-midnight nav .sel {
+  color: #991b1b !important;
+  background: rgba(220, 38, 38, 0.10) !important;
+}
+
+/* HERO TEXT */
+body.theme-midnight .hero,
+body.theme-midnight .hero h1 {
+  color: #3b1111 !important;
+}
+
+body.theme-midnight .hero em {
+  color: #dc2626 !important;
+  text-shadow: none !important;
+}
+
+body.theme-midnight .hero p {
+  color: #6b4a3a !important;
+}
+
+/* TOOL NAMES */
+body.theme-midnight .toolBox h1,
+body.theme-midnight .toolBox > p {
+  color: #3b1111 !important;
+}
+
+/* TOOL CARDS */
+body.theme-midnight .app,
+body.theme-midnight .shortcut,
+body.theme-midnight .featureGrid article,
+body.theme-midnight .learnBox,
+body.theme-midnight .profile,
+body.theme-midnight .admin,
+body.theme-midnight .toolBox,
+body.theme-midnight .uploadBox,
+body.theme-midnight .fileItem,
+body.theme-midnight .sizeOption {
+  background: rgba(255, 255, 255, 0.78) !important;
+  border-color: rgba(220, 38, 38, 0.20) !important;
+  color: #3b1111 !important;
+  box-shadow: 0 12px 32px rgba(127, 29, 29, 0.12) !important;
+}
+
+/* CONVERTER CARD NAMES */
+body.theme-midnight .app strong {
+  color: #b91c1c !important;
+  text-shadow: none !important;
+}
+
+body.theme-midnight .app h3,
+body.theme-midnight .app h2,
+body.theme-midnight .app b,
+body.theme-midnight .app strong {
+  color: #7f1d1d !important;
+}
+
+body.theme-midnight .app small {
+  color: #785548 !important;
+}
+
+/* TOOL DESCRIPTIONS */
+body.theme-midnight .shortcut h3,
+body.theme-midnight .shortcut p,
+body.theme-midnight .featureGrid p {
+  color: #4b3028 !important;
+}
+
+/* SIZE OPTIONS */
+body.theme-midnight .sizeOption b {
+  color: #7f1d1d !important;
+}
+
+body.theme-midnight .sizeOption small {
+  color: #785548 !important;
+}
+
+/* UPLOAD AREA */
+body.theme-midnight .uploadBox {
+  color: #3b1111 !important;
+}
+
+body.theme-midnight .uploadBox strong {
+  color: #7f1d1d !important;
+}
+
+body.theme-midnight .uploadBox span {
+  color: #785548 !important;
+}
+
+/* BUTTONS */
+body.theme-midnight .primary,
+body.theme-midnight .heroSearch button,
+body.theme-midnight .convertButton {
+  background: linear-gradient(
+    135deg,
+    #facc15,
+    #f97316,
+    #dc2626
+  ) !important;
+
+  color: #ffffff !important;
+  box-shadow: 0 8px 25px rgba(220, 38, 38, 0.22) !important;
+}
+
+/* FOOTER */
+body.theme-midnight footer {
+  background: rgba(255, 248, 220, 0.92) !important;
+  color: #6b4a3a !important;
+  border-top: 1px solid rgba(220, 38, 38, 0.18) !important;
+}
 body.theme-midnight .app,
 body.theme-midnight .shortcut,
 body.theme-midnight .featureGrid article,
