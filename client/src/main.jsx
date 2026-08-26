@@ -18,7 +18,7 @@ import EditPdf from "./tools/EditPdf.jsx";
 import TranslatePdf from "./tools/TranslatePdf.jsx";
 
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./style.css";
 
@@ -79,6 +79,7 @@ const [theme, setTheme] = useState(
   localStorage.getItem("theme") || "ocean"
 );
   const [showThemes, setShowThemes] = useState(false);
+  const themePickerRef = useRef(null);
   const [toast, setToast] = useState("");
 
   useEffect(() => {
@@ -218,7 +219,7 @@ const [theme, setTheme] = useState(
   </nav>
 
   <div className="actions">
-    <div className="themePicker">
+   <div className="themePicker" ref={themePickerRef}>
       <button
         className="themeToggle"
         onClick={() => setShowThemes((current) => !current)}
@@ -1974,7 +1975,22 @@ function Admin({ notify }) {
 
     notify("Shortcut added");
   }
+useEffect(() => {
+  function handleOutsideClick(event) {
+    if (
+      themePickerRef.current &&
+      !themePickerRef.current.contains(event.target)
+    ) {
+      setShowThemes(false);
+    }
+  }
 
+  document.addEventListener("mousedown", handleOutsideClick);
+
+  return () => {
+    document.removeEventListener("mousedown", handleOutsideClick);
+  };
+}, []);
   return (
     <section className="wrap">
       <div className="admin">
