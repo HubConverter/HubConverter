@@ -2287,35 +2287,37 @@ body.midnight .protect-pdf-selected * {
   padding: 20px;
 }
 
+.hub-title-area {
+  position: absolute;
+  top: 4cm;
+  right: 8%;
+  text-align: center;
+  z-index: 5;
+}
+
 .hub-title-area h1 {
   margin: 0;
-
-  font-size: clamp(48px, 5vw, 82px);
-  line-height: 1;
-
+  font-size: 80px; /* approximately 20% smaller */
   font-weight: 900;
+  color: #ffd21f;
   letter-spacing: -2px;
 
-  color: #ffd329;
-
   text-shadow:
-    0 0 10px rgba(255, 195, 0, 0.45),
-    0 0 25px rgba(255, 170, 0, 0.25);
+    0 0 5px #fff176,
+    0 0 12px #ffd21f,
+    0 0 25px rgba(255, 210, 31, 0.9),
+    0 0 45px rgba(255, 180, 0, 0.65);
 }
 
 .hub-title-area h2 {
-  margin: 14px 0 0;
-
-  font-size: clamp(22px, 2.2vw, 36px);
-  font-weight: 900;
-
-  color: #20e840;
-
-  letter-spacing: 0.5px;
+  margin: 8px 0 0;
+  font-size: 30px;
+  font-weight: 800;
+  color: #20f52b;
 
   text-shadow:
-    0 0 10px rgba(0, 255, 60, 0.4),
-    0 0 22px rgba(0, 255, 60, 0.22);
+    0 0 6px rgba(32, 245, 43, 0.9),
+    0 0 18px rgba(32, 245, 43, 0.65);
 }
 
 
