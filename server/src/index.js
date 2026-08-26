@@ -5,6 +5,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import Database from 'better-sqlite3';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
 const app = express();
 
@@ -2187,7 +2188,6 @@ app.delete('/api/admin/shortcuts/:id', auth, admin, (req, res) => {
 
 const clientDist = path.join(
   process.cwd(),
-  '..',
   'client',
   'dist'
 );
