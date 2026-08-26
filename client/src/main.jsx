@@ -75,7 +75,9 @@ const [view, setView] = useState("tools-all");
   const [recent, setRecent] = useState([]);
   const [q, setQ] = useState("");
   const [filter, setFilter] = useState("");
-  const [theme, setTheme] = useState(localStorage.getItem("sh_theme") || "neon");
+const [theme, setTheme] = useState(
+  localStorage.getItem("theme") || "ocean"
+);
   const [showThemes, setShowThemes] = useState(false);
   const [toast, setToast] = useState("");
 
