@@ -2083,3 +2083,35 @@ body.sunset .protect-pdf-selected *,
 body.theme-light .protect-pdf-selected * {
   color: #ffffff !important;
 }
+/* =========================================================
+   FIX: MIDNIGHT (LIGHT YELLOW) HEADER & NAVIGATION LEGIBILITY
+   ========================================================= */
+
+/* Forces the header background to be light and clear */
+body.theme-midnight header,
+body[data-theme="midnight"] header,
+html[data-theme="midnight"] header {
+  background: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(10px) !important;
+  border-bottom: 1px solid rgba(234, 179, 8, 0.2) !important;
+}
+
+/* Forces the HubConverter logo and navigation text to be highly visible dark brown */
+body.theme-midnight header a,
+body.theme-midnight header span,
+body.theme-midnight .brand,
+body.theme-midnight nav a,
+body.theme-midnight nav button,
+body[data-theme="midnight"] .brand,
+body[data-theme="midnight"] nav a {
+  color: #2b2203 !important;
+}
+
+/* Adjusts the theme toggle button icon container to blend in correctly */
+body.theme-midnight .themeToggle,
+body[data-theme="midnight"] .themeToggle,
+body.theme-midnight header .toggleBtn {
+  background: rgba(0, 0, 0, 0.05) !important;
+  color: #2b2203 !important;
+  border: 1px solid rgba(234, 179, 8, 0.3) !important;
+}
