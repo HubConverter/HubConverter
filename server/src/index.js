@@ -343,7 +343,7 @@ for (const shortcut of powerPointUpdates) {
   ins.run(...shortcut);
 }
 
-// ShortcutHub migration: remove unwanted shortcut categories
+// HubConverter migration: remove unwanted shortcut categories
 try {
   const removeUnwanted = db.prepare("DELETE FROM shortcuts WHERE software IN (?, ?, ?)");
   removeUnwanted.run("Google Sheets", "Gmail", "VS Code");
@@ -1596,14 +1596,14 @@ const addUser = db.prepare(`
 
 addUser.run(
   'Administrator',
-  'admin@shortcuthub.local',
+  'admin@HubConverter.local',
   bcrypt.hashSync('Admin@123', 10),
   'admin'
 );
 
 addUser.run(
   'Demo User',
-  'demo@shortcuthub.local',
+  'demo@HubConverter.local',
   bcrypt.hashSync('Demo@123', 10),
   'user'
 );
@@ -2175,7 +2175,7 @@ app.delete('/api/admin/shortcuts/:id', auth, admin, (req, res) => {
    IMPORTANT:
    GitHub structure:
    
-   ShortcutHub/
+   HubConverter/
    ├── package.json
    └── src/
        ├── index.js
@@ -2221,7 +2221,7 @@ const HOST = '0.0.0.0';
 // duplicate data and must never run automatically on every server start.
 if (process.env.RUN_LEGACY_MIGRATIONS === 'true') {
 
-// ShortcutHub migration: replace PowerPoint shortcuts with the latest supplied list
+// HubConverter migration: replace PowerPoint shortcuts with the latest supplied list
 const latestPowerPointShortcuts = [('Go to the next slide shortcut', 'Page Down'), ('Go to the previous slide shortcut', 'Page Up'), ('Insert new slide shortcut', 'Ctrl + M'), ('Duplicate slide shortcut', 'Ctrl + D'), ('Change the zoom for the slide shortcut', 'Alt + W, Q (or Ctrl + Mouse scroll)'), ('Send selected slides to appendix', 'Ctrl + Alt + Shift + A'), ('Create Summary Slide', 'Ctrl + Alt + Shift + D'), ('Select a theme shortcut', 'Alt + G, H'), ('Select a slide layout shortcut', 'Alt + H, L'), ('Save selected slides', 'Ctrl + Alt + Shift + V'), ('Print selected slides', 'Ctrl + Alt + Shift + P'), ('Save presentation shortcut', 'Ctrl + S'), ('Save As shortcut', 'F12'), ('Save As shortcut', 'Ctrl+Shift+S'), ('New presentation shortcut', 'Ctrl + N'), ('Print presentation shortcut', 'Ctrl + P'), ('Switch between open presentations shortcut', 'Ctrl + F6'), ('Switch between open PowerPoint windows shortcut', 'Ctrl + TAB'), ('Duplicate and active presentation (PowerPoint 2013, 2016, 365) shortcut', 'Ctrl + Shift + N'), ('Add section to presentation (PowerPoint 2013, 2016, 365) shortcut', 'Ctrl + <'), ('Close PowerPoint shortcut', 'Alt + F4 or Alt + F, X'), ('Close Presentation shortcut', 'Ctrl + W or Ctrl + F4'), ('Open Find dialog box shortcut', 'Ctrl + F'), ('Open Find and Replace dialog box shortcut', 'Ctrl + H'), ('Open Header and Footer dialog box shortcut', 'Alt + Shift + D'), ('Open Spell Check shortcut', 'F7'), ('Open Thesaurus shortcut', 'Shift + F7'), ('Format selected Chart element shortcut', 'Ctrl + 1'), ('Show or Hide the Notes pane (PowerPoint 2013, 2016, 365) shortcut', 'Ctrl + Shift + H'), ('Switch to Slide Master View shortcut', "Shift + click 'Normal View'"), ('Switch to Handout Master View shortcut', "Shift + click 'Slide Sorter View'"), ('Close Thumbnails View shortcut', "Ctrl + Shift + click 'Normal View'")];
 try {
   db.prepare("DELETE FROM shortcuts WHERE software = ?").run("PowerPoint");
@@ -2235,7 +2235,7 @@ try {
 }
 
 
-// ShortcutHub migration: replace Tally shortcuts with the latest supplied list
+// HubConverter migration: replace Tally shortcuts with the latest supplied list
 const latestTallyShortcuts = [('F12', 'Only Press F12'), ('Alt F12', 'F12'), ('Ctrl F12', 'F12'), ('Alt P', 'Print'), ('Alt E', 'Export'), ('ALC', 'Create Ledger'), ('ALA', 'Alter Ledger'), ('DD', 'To See Entries (ALL) — Display → Daybook → Select Period'), ('DAL', 'To See One Ledger — Display → Account → Book Ledger'), ('Alt C', 'Make Ledger'), ('Ctrl Enter', 'Change Ledger'), ('Enter Enter', 'Change Ledger'), ('Ctrl A', 'Calculator'), ('Ctrl N', 'To Hide Ledger'), ('Alt R', 'To Hide Ledger'), ('Alt U', 'To Unhide Ledger'), ('F1', 'To select a company; To select the Accounts Button and Inventory buttons'), ('F2', 'To change the menu period'), ('F3', 'To select the company'), ('F4', 'To select the Contra voucher'), ('F5', 'To select the Payment voucher'), ('F6', 'To select the Receipt voucher'), ('F7', 'To select the Journal voucher'), ('F8', 'To select the Sales voucher'), ('F8 (CTRL+F8)', 'To select the Credit Note voucher'), ('F9', 'To select the Purchase voucher'), ('F9 (CTRL+F9)', 'To select the Debit Note voucher'), ('F10', 'To select the Reversing Journal voucher'), ('F10', 'To select the Memorandum voucher'), ('F11', 'To select the Functions and Features screen'), ('F12', 'To select the Configure screen'), ('ALT + 2', 'To Duplicate a voucher'), ('ALT + A', 'To Add a voucher'), ('ALT + C', 'To create a master at a voucher screen (if it has not been already assigned a different function)'), ('ALT + D', 'To delete a voucher; To delete a master'), ('ALT + E', 'To export the report in ASCII, SDF, HTML OR XML format'), ('ALT + I', 'To insert a voucher'), ('Alt+H', 'Help Shortcut'), ('ALT + O', 'To upload the report at your website'), ('Alt+I', 'Insert a voucher / To toggle between Item and Accounting invoice'), ('Alt+N', 'To view the report in automatic columns'), ('Alt+U', 'Retrieve the last line which is deleted using Alt+R'), ('Alt+Y', 'Register Tally'), ('ALT + M', 'To Email the report'), ('ALT + P', 'To print the report'), ('ALT + R', 'To remove a line in a report'), ('ALT + S', 'To bring back a line you removed using ALT + R'), ('ALT+ V', 'From Invoice screen to bring Stock Journal screen'), ('ALT + W', 'To view the Tally Web browser.'), ('Alt+Z', 'Zoom'), ('ALT + X', 'To cancel a voucher in Day Book/List of Vouchers'), ('ALT + R', 'To Register Tally'), ('CTRL + A', 'To accept a form – wherever you use this key combination, that screen or report gets accepted as it is.'), ('Ctrl+Alt+B', 'Check the Company Statutory details'), ('Ctrl+M', 'Switches to Main Area of Tally Screen'), ('Ctrl+N', 'Switches to Calculator / ODBC Section of Tally Screen'), ('Ctrl+R', 'Repeat narration in the same voucher type irrespective of Ledger Account'), ('Ctrl+T', 'Mark any voucher as Post Dated Voucher'), ('Ctrl+Alt+C', 'Copy the text from Tally (At creation and alternation screens)'), ('Ctrl+Alt+V', 'To paste the text from Tally (At creation and alternation screens)')];
 try {
   db.prepare("DELETE FROM shortcuts WHERE software = ?").run("Tally");
@@ -2249,7 +2249,7 @@ try {
 }
 
 
-// ShortcutHub migration: replace Windows shortcuts with the latest supplied list
+// HubConverter migration: replace Windows shortcuts with the latest supplied list
 const latestWindowsShortcuts = [('Windows key + S (or Q)', 'Open Search.'), ('Windows key + Alt + D', 'Open date and time in the taskbar.'), ('Windows key + Tab', 'Open Task View.'), ('Windows key + Ctrl + D', 'Create new virtual desktop.'), ('Windows key + Ctrl + F4', 'Close active virtual desktop.'), ('Windows key + Ctrl + Right arrow', 'Switch to the virtual desktop on the right.'), ('Windows key + Ctrl + Left arrow', 'Switch to the virtual desktop on the left.'), ('Windows key + P', 'Open Project settings.'), ('Windows key + A', 'Open Action center.'), ('Windows key + I', 'Open Settings app.'), ('Backspace', 'Return to Settings app home page.'), ('Windows key + E', 'Open File Explorer.'), ('Alt + D', 'Select address bar.'), ('Ctrl + E (or F)', 'Select search box.'), ('Ctrl + N', 'Open new window.'), ('Ctrl + W', 'Close active window.'), ('Ctrl + F (or F3)', 'Start search.'), ('Ctrl + Mouse scroll wheel', 'Change view file and folder.'), ('Ctrl + Shift + E', 'Expands all folders from the tree in the navigation pane.'), ('Ctrl + Shift + N', 'Create new folder on desktop or File Explorer.'), ('Ctrl + L', 'Focus on the address bar.'), ('Ctrl + Shift + Number (1-8)', 'Changes folder view.'), ('Alt + P', 'Display preview panel.'), ('Alt + Enter', 'Open Properties settings for the selected item.'), ('Alt + Right arrow key', 'View next folder.'), ('Alt + Left arrow key (or Backspace)', 'View previous folder.'), ('Alt + Up arrow', 'Move up a level in the folder path.'), ('F11', 'Switch active window full-screen mode.'), ('F5', 'Refresh the instance of File Explorer.'), ('F2', 'Rename selected item.'), ('F4', 'Switch focus to address bar.'), ('F5', "Refresh File Explorer's current view."), ('F6', 'Cycle through elements on the screen.'), ('Home', 'Scroll to top of the window.'), ('End', 'Scroll to bottom of window.'), ('Windows key', 'Open Start menu.'), ('Windows key + D', 'Display and hide the desktop.'), ('Windows key + L', 'Locks computer.'), ('Windows key + M', 'Minimize all windows.'), ('Windows key + B', 'Set focus notification area in the taskbar.'), ('Windows key + C', 'Launch Cortana app.'), ('Windows key + F', 'Launch Feedback Hub app.'), ('Windows key + G', 'Launch Game bar app.'), ('Windows key + Y', 'Change input between desktop and Mixed Reality.'), ('Windows key + O', 'Lock device orientation.'), ('Windows key + T', 'Cycle through apps in the taskbar.'), ('Windows key + Z', 'Switch input between the desktop experience and Windows Mixed Reality.'), ('Windows key + J', 'Set focus on a tip for Windows 10 when applicable.k'), ('Windows key + H', 'Open dictation feature.'), ('Windows key + R', 'Open Run command.'), ('Windows key + K', 'Open Connect settings.'), ('Windows key + X', 'Open Quick Link menu.'), ('Windows key + V', 'Open Clipboard bin.'), ('Windows key + W', 'Open the Windows Ink Workspace.'), ('Windows key + U', 'Open Ease of Access settings.'), ('Windows key + Ctrl + Enter', 'Open Narrator.'), ('Windows key + Plus (+)', 'Zoom in using the magnifier.'), ('Windows key + Minus (-)', 'Zoom out using the magnifier.'), ('Windows key + Esc', 'Exit magnifier.'), ('Windows key + Forward-slash (/)', 'Start IME reconversion.'), ('Windows key + Comma (,)', 'Temporarily peek at the desktop.'), ('Windows key + Up arrow key', 'Maximize app windows.'), ('Windows key + Down arrow key', 'Minimize app windows.'), ('Windows key + Home', 'Minimize or maximize all but the active desktop window.'), ('Windows key + Shift + M', 'Restore minimized windows on the desktop.'), ('Windows key + Shift + Up arrow key', 'Stretch desktop window to the top and bottom of the screen.'), ('Windows key + Shift + Down arrow key', 'Maximize or minimize active windows vertically while maintaining width.'), ('Windows key + Shift + Left arrow key', 'Move active window to monitor on the left.'), ('Windows key + Shift + Right arrow key', 'Move active window to monitor on the right.'), ('Windows key + Left arrow key', 'Snap app or window left.'), ('Windows key + Right arrow key', 'Snap app or window right.'), ('Windows key + Number (0-9)', 'Open app in number position in the taskbar.'), ('Windows key + Shift + Number (0-9)', 'Open another instance of the app in number position in the taskbar.'), ('Windows key + Ctrl + Number (0-9)', 'Switch to last active window of the app in number position in the taskbar.'), ('Windows key + Alt + Number (0-9)', 'Open Jump List of the app in number position in the taskbar.'), ('Windows key + Ctrl + Shift + Number (0-9)', 'Open another instance as an administrator of the app in number position in the taskbar.'), ('Windows key + Ctrl + Spacebar', 'Change previous selected input option.'), ('Windows key + Spacebar', 'Change keyboard layout and input language.'), ('Windows key + Ctrl + Shift + B', 'Wake up the device when black or a blank screen.'), ('Windows key + PrtScn', 'Capture full screenshot in the Screenshots folder.'), ('Windows key + Shift + S', 'Create part of the screen screenshot.'), ('Windows key + Shift + V', 'Cycle through notifications..'), ('Windows key + Ctrl + F', 'Open search for device on domain network.'), ('Windows key + Ctrl + Q', 'Open Quick Assist.'), ('Windows key + Period (.) or semicolon (;)', 'Open emoji panel.'), ('Windows key + Pause', 'Show System Properties dialog box.')];
 try {
   db.prepare("DELETE FROM shortcuts WHERE software = ?").run("Windows");
