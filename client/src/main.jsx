@@ -120,7 +120,22 @@ const [theme, setTheme] = useState(
       )
     );
   }
+useEffect(() => {
+  const handleOutsideThemeClick = (event) => {
+    if (
+      themePickerRef.current &&
+      !themePickerRef.current.contains(event.target)
+    ) {
+      setShowThemes(false);
+    }
+  };
 
+  document.addEventListener("mousedown", handleOutsideThemeClick);
+
+  return () => {
+    document.removeEventListener("mousedown", handleOutsideThemeClick);
+  };
+}, []);
   function openSoftware(software) {
     const selected = String(software || "").trim();
     setFilter(selected);
