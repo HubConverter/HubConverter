@@ -2084,34 +2084,36 @@ body.theme-light .protect-pdf-selected * {
   color: #ffffff !important;
 }
 /* =========================================================
-   FIX: MIDNIGHT (LIGHT YELLOW) HEADER & NAVIGATION LEGIBILITY
+   FIX: THEME DROPDOWN MENU LEGIBILITY (FOR YELLOW THEME)
    ========================================================= */
 
-/* Forces the header background to be light and clear */
-body.theme-midnight header,
-body[data-theme="midnight"] header,
-html[data-theme="midnight"] header {
-  background: rgba(255, 255, 255, 0.92) !important;
-  backdrop-filter: blur(10px) !important;
-  border-bottom: 1px solid rgba(234, 179, 8, 0.2) !important;
-}
-
-/* Forces the HubConverter logo and navigation text to be highly visible dark brown */
-body.theme-midnight header a,
-body.theme-midnight header span,
-body.theme-midnight .brand,
-body.theme-midnight nav a,
-body.theme-midnight nav button,
-body[data-theme="midnight"] .brand,
-body[data-theme="midnight"] nav a {
-  color: #2b2203 !important;
-}
-
-/* Adjusts the theme toggle button icon container to blend in correctly */
-body.theme-midnight .themeToggle,
-body[data-theme="midnight"] .themeToggle,
-body.theme-midnight header .toggleBtn {
-  background: rgba(0, 0, 0, 0.05) !important;
-  color: #2b2203 !important;
+/* 1. Force the dropdown menu card container to be white */
+body.theme-midnight .themeMenu,
+body[data-theme="midnight"] .themeMenu {
+  background: #ffffff !important;
   border: 1px solid rgba(234, 179, 8, 0.3) !important;
+  box-shadow: 0 10px 25px rgba(161, 98, 7, 0.15) !important;
+}
+
+/* 2. Make the header text inside the menu dark brown */
+body.theme-midnight .themeMenu b,
+body.theme-midnight .themeMenu h3,
+body[data-theme="midnight"] .themeMenu b {
+  color: #2b2203 !important;
+}
+
+/* 3. Make all theme buttons/items inside the dropdown dark brown */
+body.theme-midnight .themeChoice,
+body.theme-midnight .themeMenu li,
+body.theme-midnight .themeMenu button,
+body[data-theme="midnight"] .themeChoice {
+  color: #54430a !important; /* Soft brown text */
+}
+
+/* 4. Highlight effect when hovering or selecting "Midnight" item */
+body.theme-midnight .themeChoice:hover,
+body.theme-midnight .themeChoice.active,
+body[data-theme="midnight"] .themeChoice[style*="background"] {
+  background: #fef08a !important; /* Light yellow highlight container */
+  color: #2b2203 !important;      /* Dark text for selected item */
 }
