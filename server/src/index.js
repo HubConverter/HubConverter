@@ -8,7 +8,7 @@ import path from 'path';
 
 const app = express();
 
-const PORT = process.env.PORT || 4000;
+const PORT = Number(process.env.PORT) || 10000;
 const SECRET = process.env.JWT_SECRET || 'dev-change-me';
 
 const db = new Database('shortcut_hub_v3.db');
@@ -2505,8 +2505,34 @@ console.log('Tally, PowerPoint and Windows shortcuts updated successfully.');
 }
 }
 
-app.listen(PORT, HOST, () => {
-  console.log(
-    `ShortcutHub server running on ${HOST}:${PORT}`
-  );
+// =========================
+// RENDER SERVER START
+// =========================
+
+const RENDER_PORT = Number(process.env.PORT) || 10000;
+const RENDER_HOST = '0.0.0.0';
+
+// Start the HTTP server immediately so Render can detect the port.
+const server = app.listen(
+  RENDER_PORT,
+  RENDER_HOST,
+  () => {
+    console.log(
+      `HubConverter server running on ${RENDER_HOST}:${RENDER_PORT}`
+    );
+  }
+);
+
+// Graceful shutdown for Render
+process.on('SIGTERM', () => {
+  console.log('SIGTERM received. Shutting down server...');
+
+  server.close(() => {
+    console.log('Server closed.');
+    process.exit(0);
+  });
+
+  setTimeout(() => {
+    process.exit(0);
+  }, 25000).unref();
 });
