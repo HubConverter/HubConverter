@@ -1888,9 +1888,78 @@ body.theme-sunset {
   background: radial-gradient(circle at 78% 22%, rgba(251, 146, 60, 0.34), transparent 30%), radial-gradient(circle at 20% 75%, rgba(236, 72, 153, 0.24), transparent 34%), linear-gradient(135deg, #2a0d27 0%, #6b1d3e 48%, #3b1235 100%);
 }
 
-body.theme-midnight {
-  background: radial-gradient(circle at 76% 20%, rgba(129, 140, 248, 0.28), transparent 30%), radial-gradient(circle at 18% 78%, rgba(168, 85, 247, 0.20), transparent 35%), linear-gradient(135deg, #0a0618 0%, #1e1248 48%, #100a29 100%);
+/* =========================================================
+   REPLACED: MIDNIGHT THEME INTO LIGHT YELLOW THEME
+   ========================================================= */
+
+body.theme-midnight,
+body[data-theme="midnight"],
+html[data-theme="midnight"] {
+  color: #2b2203 !important;
+  background: 
+    radial-gradient(circle at 85% 10%, rgba(254, 240, 138, 0.6), transparent 30%), 
+    radial-gradient(circle at 12% 82%, rgba(253, 224, 71, 0.4), transparent 34%), 
+    linear-gradient(135deg, #fefce8 0%, #fef08a 50%, #fef9c3 100%) !important;
 }
+
+body.theme-midnight header, body[data-theme="midnight"] header, html[data-theme="midnight"] header,
+body.theme-midnight footer, body[data-theme="midnight"] footer, html[data-theme="midnight"] footer,
+body.theme-midnight .themeMenu, body[data-theme="midnight"] .themeMenu, html[data-theme="midnight"] .themeMenu { 
+  background: rgba(255, 255, 255, 0.88) !important; 
+}
+
+body.theme-midnight .primary, body[data-theme="midnight"] .primary, html[data-theme="midnight"] .primary,
+body.theme-midnight .heroSearch button, body[data-theme="midnight"] .heroSearch button, html[data-theme="midnight"] .heroSearch button { 
+  background: linear-gradient(135deg, #ca8a04, #eab308, #b45309) !important;
+  color: #ffffff !important;
+}
+
+body.theme-midnight .brand, body[data-theme="midnight"] .brand, html[data-theme="midnight"] .brand,
+body.theme-midnight nav button, body[data-theme="midnight"] nav button, html[data-theme="midnight"] nav button,
+body.theme-midnight .sectionHead h2, body[data-theme="midnight"] .sectionHead h2, html[data-theme="midnight"] .sectionHead h2,
+body.theme-midnight .hero h1, body[data-theme="midnight"] .hero h1, html[data-theme="midnight"] .hero h1,
+body.theme-midnight .shortcut h3, body[data-theme="midnight"] .shortcut h3, html[data-theme="midnight"] .shortcut h3,
+body.theme-midnight .shortcut, body[data-theme="midnight"] .shortcut, html[data-theme="midnight"] .shortcut,
+body.theme-midnight .featureGrid article, body[data-theme="midnight"] .featureGrid article, html[data-theme="midnight"] .featureGrid article,
+body.theme-midnight .learnBox, body[data-theme="midnight"] .learnBox, html[data-theme="midnight"] .learnBox,
+body.theme-midnight .toolBox h1, body[data-theme="midnight"] .toolBox h1, html[data-theme="midnight"] .toolBox h1,
+body.theme-midnight .themeMenu, body[data-theme="midnight"] .themeMenu, html[data-theme="midnight"] .themeMenu,
+body.theme-midnight .themeMenu > b, body[data-theme="midnight"] .themeMenu > b, html[data-theme="midnight"] .themeMenu > b,
+body.theme-midnight .themeChoice, body[data-theme="midnight"] .themeChoice, html[data-theme="midnight"] .themeChoice { 
+  color: #2b2203 !important; 
+}
+
+body.theme-midnight .hero p, body[data-theme="midnight"] .hero p, html[data-theme="midnight"] .hero p,
+body.theme-midnight .featureGrid p, body[data-theme="midnight"] .featureGrid p, html[data-theme="midnight"] .featureGrid p,
+body.theme-midnight .shortcut p, body[data-theme="midnight"] .shortcut p, html[data-theme="midnight"] .shortcut p,
+body.theme-midnight .app small, body[data-theme="midnight"] .app small, html[data-theme="midnight"] .app small,
+body.theme-midnight footer, body[data-theme="midnight"] footer, html[data-theme="midnight"] footer { 
+  color: #713f12 !important; 
+}
+
+body.theme-midnight .app, body[data-theme="midnight"] .app, html[data-theme="midnight"] .app,
+body.theme-midnight .shortcut, body[data-theme="midnight"] .shortcut, html[data-theme="midnight"] .shortcut,
+body.theme-midnight .featureGrid article, body[data-theme="midnight"] .featureGrid article, html[data-theme="midnight"] .featureGrid article,
+body.theme-midnight .learnBox, body[data-theme="midnight"] .learnBox, html[data-theme="midnight"] .learnBox,
+body.theme-midnight .profile, body[data-theme="midnight"] .profile, html[data-theme="midnight"] .profile,
+body.theme-midnight .toolBox, body[data-theme="midnight"] .toolBox, html[data-theme="midnight"] .toolBox,
+body.theme-midnight .uploadBox, body[data-theme="midnight"] .uploadBox, html[data-theme="midnight"] .uploadBox,
+body.theme-midnight .fileItem, body[data-theme="midnight"] .fileItem, html[data-theme="midnight"] .fileItem,
+body.theme-midnight .sizeOption, body[data-theme="midnight"] .sizeOption, html[data-theme="midnight"] .sizeOption {
+  background: rgba(255, 255, 255, 0.76) !important;
+  border-color: rgba(234, 179, 8, 0.25) !important;
+  box-shadow: 0 12px 32px rgba(161, 98, 7, 0.10) !important;
+}
+
+body.theme-midnight .heroSearch, body[data-theme="midnight"] .heroSearch, html[data-theme="midnight"] .heroSearch,
+body.theme-midnight .themeToggle, body[data-theme="midnight"] .themeToggle, html[data-theme="midnight"] .themeToggle {
+  background: rgba(255, 255, 255, 0.80) !important;
+  color: #2b2203 !important;
+}
+
+body.theme-midnight .heroSearch input, body[data-theme="midnight"] .heroSearch input, html[data-theme="midnight"] .heroSearch input { color: #2b2203 !important; }
+body.theme-midnight .app strong, body[data-theme="midnight"] .app strong, html[data-theme="midnight"] .app strong { color: #a16207 !important; }
+body.theme-midnight kbd, body[data-theme="midnight"] kbd, html[data-theme="midnight"] kbd { color: #2b2203 !important; background: #fef9c3 !important; }
 
 body.theme-light {
   color: #15213b;
@@ -1971,17 +2040,17 @@ body.theme-light kbd { color: #15213b !important; background: #eff6ff !important
 html[data-theme="neon"] .protect-pdf-selected,
 html[data-theme="ocean"] .protect-pdf-selected,
 html[data-theme="sunset"] .protect-pdf-selected,
-html[data-theme="midnight"] .protect-pdf-selected,
+
 
 body[data-theme="neon"] .protect-pdf-selected,
 body[data-theme="ocean"] .protect-pdf-selected,
 body[data-theme="sunset"] .protect-pdf-selected,
-body[data-theme="midnight"] .protect-pdf-selected,
+
 
 body.theme-neon .protect-pdf-selected,
 body.theme-ocean .protect-pdf-selected,
 body.theme-sunset .protect-pdf-selected,
-body.theme-midnight .protect-pdf-selected,
+
 
 body.neon .protect-pdf-selected,
 body.ocean .protect-pdf-selected,
@@ -1996,21 +2065,21 @@ body.midnight .protect-pdf-selected {
 html[data-theme="neon"] .protect-pdf-selected *,
 html[data-theme="ocean"] .protect-pdf-selected *,
 html[data-theme="sunset"] .protect-pdf-selected *,
-html[data-theme="midnight"] .protect-pdf-selected *,
+
 
 body[data-theme="neon"] .protect-pdf-selected *,
 body[data-theme="ocean"] .protect-pdf-selected *,
 body[data-theme="sunset"] .protect-pdf-selected *,
-body[data-theme="midnight"] .protect-pdf-selected *,
+
 
 body.theme-neon .protect-pdf-selected *,
 body.theme-ocean .protect-pdf-selected *,
 body.theme-sunset .protect-pdf-selected *,
-body.theme-midnight .protect-pdf-selected *,
+
 
 body.neon .protect-pdf-selected *,
 body.ocean .protect-pdf-selected *,
 body.sunset .protect-pdf-selected *,
-body.midnight .protect-pdf-selected * {
+body.theme-light .protect-pdf-selected * {
   color: #ffffff !important;
 }
