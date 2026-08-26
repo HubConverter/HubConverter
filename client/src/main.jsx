@@ -174,59 +174,62 @@ useEffect(() => {
 
   return (
     <>
-{/* =========================================================
-    PASTE THIS AT THE TOP OF YOUR MAIN.JSX RETURN BLOCK
-    ========================================================= */}
-<header className="main-navbar">
-  <div className="nav-container">
-    <div className="brand-logo">
-      <div className="mini-logo-circle">HC</div>
-      <span className="brand-name">HubConverter</span>
-    </div>
-    <nav className="nav-links">
-      <a href="#" className="nav-item active">📄 PDF Converter Tools</a>
-      <a href="#" className="nav-item">🖼️ JPG Tools</a>
-    </nav>
+    <header>
+  {/* HUBCONVERTER — HOME */}
+  <div
+    className="brand"
+    onClick={() => {
+      setView("tools-all");
+      setSelectedTool(null);
+    }}
+    style={{
+      cursor: "pointer",
+    }}
+  >
+    🔄 HubConverter
   </div>
-</header>
 
-<section className="hero-showcase-card">
-  {/* Left Side Element: Connected Arrow Matrix Node */}
-  <div className="hero-left-graphic">
-    <div className="sync-glow-ring">
-      <div className="inner-hc-mark">HC</div>
-      <div className="arrow-overlay"></div>
-    </div>
-  </div>
-  
-  {/* Right Side Content Elements: Main Headings & Top 3 Cards */}
-  <div className="hero-right-content">
-    <h1 className="hero-main-title">Hub Converter</h1>
-    <p className="hero-subtitle">CONVERT YOUR FILE EASILY HERE</p>
-    
-    <div className="featured-tools-row">
-      <div className="feat-tool-card">
-        <span className="feat-icon">🖼️</span>
-        <h4>Image Background</h4>
-        <p>Isolate subjects and create transparency.</p>
-        <button className="feat-btn">Open Tool →</button>
-      </div>
-      <div className="feat-tool-card">
-        <span className="feat-icon">📄</span>
-        <h4>JPG to PDF</h4>
-        <p>Convert image files into a cohesive PDF document.</p>
-        <button className="feat-btn">Open Tool →</button>
-      </div>
-      <div className="feat-tool-card">
-        <span className="feat-icon">📉</span>
-        <h4>Image Size Reducer</h4>
-        <p>Compress image files for smaller sizes and faster loading.</p>
-        <button className="feat-btn">Open Tool →</button>
-      </div>
-    </div>
-  </div>
-</section>
+  <nav
+    style={{
+      display: "flex",
+      alignItems: "center",
+      gap: "28px",
+    }}
+  >
 
+    {/* PDF CONVERTER TOOLS */}
+    <button
+      onClick={() => {
+        setView("tools-pdf");
+        setSelectedTool(null);
+      }}
+      style={{
+        background: "transparent",
+        border: "none",
+        color: "#fff",
+        cursor: "pointer",
+        fontSize: "18px",
+      }}
+    >
+      🔄 PDF Converter Tools
+    </button>
+
+    {/* JPG TOOLS */}
+    <button
+      onClick={() => {
+        setView("tools-jpg");
+        setSelectedTool(null);
+      }}
+      style={{
+        background: "transparent",
+        border: "none",
+        color: "#fff",
+        cursor: "pointer",
+        fontSize: "18px",
+      }}
+    >
+      🖼️ JPG Tools
+    </button>
 
   </nav>
 
