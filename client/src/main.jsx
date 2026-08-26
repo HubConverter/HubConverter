@@ -1343,16 +1343,102 @@ return (
     {/* =========================
         ALL TOOLS HOME
     ========================= */}
+{category === "all" && (
+  <div className="hub-home">
 
-    {category === "all" && (
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns:
-            "repeat(auto-fit, minmax(210px, 1fr))",
-          gap: "18px",
-        }}
-      >
+    {/* =========================================
+        HERO / BRAND AREA
+    ========================================= */}
+    <section className="hub-hero">
+
+      {/* HC LOGO — USE YOUR IMAGE */}
+      <div className="hub-logo-wrap">
+        <img
+          src="/hc-logo.png"
+          alt="HubConverter HC Logo"
+          className="hub-logo"
+        />
+      </div>
+
+      {/* TITLE */}
+      <div className="hub-title-area">
+        <h1>Hub Converter</h1>
+        <h2>CONVERT YOUR FILE EASILY HERE</h2>
+      </div>
+
+    </section>
+
+
+    {/* =========================================
+        FEATURED TOOLS
+    ========================================= */}
+    <section className="featured-tools">
+
+      {[
+        {
+          icon: "🖼️",
+          title: "Image Background",
+          description: "Isolate subjects and create transparency.",
+          id: null,
+        },
+        {
+          icon: "📄",
+          title: "JPG to PDF",
+          description: "Convert image files into a cohesive PDF document.",
+          id: "jpg-to-pdf",
+        },
+        {
+          icon: "🖼️➡️🖼️",
+          title: "Image Compressor",
+          description: "Compress image files for smaller sizes and faster loading.",
+          id: null,
+        },
+      ].map((tool) => (
+        <article
+          key={tool.title}
+          className="featured-tool-card"
+          onClick={
+            tool.id
+              ? () => setSelectedTool(tool.id)
+              : undefined
+          }
+        >
+
+          <div className="featured-tool-icon">
+            {tool.icon}
+          </div>
+
+          <h3>{tool.title}</h3>
+
+          <p>{tool.description}</p>
+
+          <button
+            className="featured-open-button"
+            disabled={!tool.id}
+            onClick={(event) => {
+              event.stopPropagation();
+
+              if (tool.id) {
+                setSelectedTool(tool.id);
+              }
+            }}
+          >
+            {tool.id ? "Open Tool →" : "Open Tool →"}
+          </button>
+
+        </article>
+      ))}
+
+    </section>
+
+
+    {/* =========================================
+        ALL TOOLS
+    ========================================= */}
+    <section className="all-tools-home">
+
+      <div className="all-tools-grid">
+
         {toolsToShow.map((tool) => (
           <ToolCard
             key={tool.title}
@@ -1367,8 +1453,33 @@ return (
             }
           />
         ))}
+
       </div>
-    )}
+
+    </section>
+
+
+    {/* =========================================
+        BOTTOM MESSAGE
+    ========================================= */}
+    <div className="hub-bottom-banner">
+      <div className="hub-bottom-rocket">
+        🚀
+      </div>
+
+      <div>
+        <strong>
+          Fast • Secure • Easy to Use
+        </strong>
+
+        <span>
+          All your file conversion needs in one place
+        </span>
+      </div>
+    </div>
+
+  </div>
+)}
 
     {/* =========================
         PDF CONVERTER TOOLS
