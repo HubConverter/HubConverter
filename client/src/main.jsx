@@ -60,8 +60,8 @@ const themes = [
   { id: "neon", label: "Neon", icon: "✦" },
   { id: "ocean", label: "Ocean", icon: "🌊" },
   { id: "sunset", label: "Sunset", icon: "☀" },
-  { id: "midnight", name: "Sunshine",icon: "☀️"  }
-  { id: "light", label: "Light", icon: "☀︎" },
+  { id: "midnight", label: "Sunshine", icon: "☀️" },
+{ id: "light", label: "Light", icon: "☀︎" },
 ];
 
 function App() {
