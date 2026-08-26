@@ -1893,8 +1893,26 @@ body.theme-midnight {
 }
 
 body.theme-light {
-  color: #15213b;
-  background: radial-gradient(circle at 85% 10%, rgba(125, 211, 252, 0.58), transparent 30%), radial-gradient(circle at 12% 82%, rgba(196, 181, 253, 0.42), transparent 34%), linear-gradient(135deg, #f8fbff 0%, #e7f3ff 50%, #f7f2ff 100%);
+  color: #3b1f1f;
+
+  background:
+    radial-gradient(
+      circle at 85% 10%,
+      rgba(255, 220, 90, 0.65),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at 15% 80%,
+      rgba(255, 120, 90, 0.38),
+      transparent 34%
+    ),
+    linear-gradient(
+      135deg,
+      #fffdf0 0%,
+      #fff4c7 45%,
+      #ffe2d6 75%,
+      #fff8e8 100%
+    );
 }
 
 body.theme-ocean header,
@@ -1917,7 +1935,16 @@ body.theme-sunset .heroSearch button { background: linear-gradient(135deg, #f973
 body.theme-midnight .primary,
 body.theme-midnight .heroSearch button { background: linear-gradient(135deg, #818cf8, #7c3aed, #c026d3) !important; }
 body.theme-light .primary,
-body.theme-light .heroSearch button { background: linear-gradient(135deg, #0284c7, #2563eb, #7c3aed) !important; }
+body.theme-light .heroSearch button {
+  background: linear-gradient(
+    135deg,
+    #ffd43b,
+    #ff8a3d,
+    #e53935
+  ) !important;
+
+  color: #ffffff !important;
+}
 
 body.theme-light .brand,
 body.theme-light nav button,
@@ -1959,7 +1986,9 @@ body.theme-light .themeToggle {
 }
 
 body.theme-light .heroSearch input { color: #15213b !important; }
-body.theme-light .app strong { color: #7c3aed !important; }
+body.theme-light .app strong {
+  color: #d62828 !important;
+}
 body.theme-light kbd { color: #15213b !important; background: #eff6ff !important; }
 /* =========================================================
  /* =========================================================
