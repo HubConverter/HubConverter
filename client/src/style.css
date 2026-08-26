@@ -1888,84 +1888,9 @@ body.theme-sunset {
   background: radial-gradient(circle at 78% 22%, rgba(251, 146, 60, 0.34), transparent 30%), radial-gradient(circle at 20% 75%, rgba(236, 72, 153, 0.24), transparent 34%), linear-gradient(135deg, #2a0d27 0%, #6b1d3e 48%, #3b1235 100%);
 }
 
-/* =========================================================
-   REPLACED: MIDNIGHT THEME INTO LIGHT YELLOW THEME
-   ========================================================= */
-
-/* Main background & base text color */
 body.theme-midnight {
-  color: #2b2203 !important;
-  background: 
-    radial-gradient(circle at 85% 10%, rgba(254, 240, 138, 0.6), transparent 30%), 
-    radial-gradient(circle at 12% 82%, rgba(253, 224, 71, 0.4), transparent 34%), 
-    linear-gradient(135deg, #fefce8 0%, #fef08a 50%, #fef9c3 100%) !important;
+  background: radial-gradient(circle at 76% 20%, rgba(129, 140, 248, 0.28), transparent 30%), radial-gradient(circle at 18% 78%, rgba(168, 85, 247, 0.20), transparent 35%), linear-gradient(135deg, #0a0618 0%, #1e1248 48%, #100a29 100%);
 }
-
-/* Header, footer, and menus */
-body.theme-midnight header,
-body.theme-midnight footer,
-body.theme-midnight .themeMenu { 
-  background: rgba(255, 255, 255, 0.88) !important; 
-}
-
-/* Primary interface buttons */
-body.theme-midnight .primary,
-body.theme-midnight .heroSearch button { 
-  background: linear-gradient(135deg, #ca8a04, #eab308, #b45309) !important;
-  color: #ffffff !important;
-}
-
-/* Primary text readability adjustments */
-body.theme-midnight .brand,
-body.theme-midnight nav button,
-body.theme-midnight .sectionHead h2,
-body.theme-midnight .hero h1,
-body.theme-midnight .shortcut h3,
-body.theme-midnight .shortcut,
-body.theme-midnight .featureGrid article,
-body.theme-midnight .learnBox,
-body.theme-midnight .toolBox h1,
-body.theme-midnight .themeMenu,
-body.theme-midnight .themeMenu > b,
-body.theme-midnight .themeChoice { 
-  color: #2b2203 !important; 
-}
-
-/* Secondary/Description text */
-body.theme-midnight .hero p,
-body.theme-midnight .featureGrid p,
-body.theme-midnight .shortcut p,
-body.theme-midnight .app small,
-body.theme-midnight footer { 
-  color: #713f12 !important; 
-}
-
-/* UI Boxes & Input containers */
-body.theme-midnight .app,
-body.theme-midnight .shortcut,
-body.theme-midnight .featureGrid article,
-body.theme-midnight .learnBox,
-body.theme-midnight .profile,
-body.theme-midnight .toolBox,
-body.theme-midnight .uploadBox,
-body.theme-midnight .fileItem,
-body.theme-midnight .sizeOption {
-  background: rgba(255, 255, 255, 0.76) !important;
-  border-color: rgba(234, 179, 8, 0.25) !important;
-  box-shadow: 0 12px 32px rgba(161, 98, 7, 0.10) !important;
-}
-
-/* Search bar wrapper & toggles */
-body.theme-midnight .heroSearch,
-body.theme-midnight .themeToggle {
-  background: rgba(255, 255, 255, 0.80) !important;
-  color: #2b2203 !important;
-}
-
-body.theme-midnight .heroSearch input { color: #2b2203 !important; }
-body.theme-midnight .app strong { color: #a16207 !important; }
-body.theme-midnight kbd { color: #2b2203 !important; background: #fef9c3 !important; }
-
 
 body.theme-light {
   color: #15213b;
