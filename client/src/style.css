@@ -2409,12 +2409,10 @@ kbd {
     grid-template-columns: 1fr;
   }
 }
+/* Sunshine theme - title colour ONLY */
 body.theme-sunshine .hub-title-area h1,
 body[data-theme="sunshine"] .hub-title-area h1,
 html[data-theme="sunshine"] body .hub-title-area h1 {
-    color: #8A2BE2 !important;
-    -webkit-text-fill-color: #8A2BE2 !important;
-    background: #8A2BE2 !important;
-    background-image: none !important;
+    color: #8B2BE2 !important;
     text-shadow: none !important;
 }
