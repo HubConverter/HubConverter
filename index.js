@@ -26,30 +26,7 @@ CREATE TABLE IF NOT EXISTS progress(user_id INTEGER,shortcut_id INTEGER,
 CREATE TABLE IF NOT EXISTS activity(id INTEGER PRIMARY KEY AUTOINCREMENT,user_id INTEGER,
  shortcut_id INTEGER,kind TEXT,created_at TEXT DEFAULT CURRENT_TIMESTAMP);
 `);
-const seed=[
-['Excel','📊','Office','Ctrl+C','Copy','Beginner','Editing','Copies selected cells or content.'],
-['Excel','📊','Office','Ctrl+V','Paste','Beginner','Editing','Pastes copied content.'],
-['Excel','📊','Office','Ctrl+S','Save workbook','Beginner','File','Saves the current workbook.'],
-['Excel','📊','Office','Alt+=','AutoSum','Beginner','Formula','Quickly inserts a SUM formula.'],
-['Word','📝','Office','Ctrl+B','Bold','Beginner','Formatting','Makes selected text bold.'],
-['Word','📝','Office','Ctrl+P','Print','Beginner','File','Opens print settings.'],
-['PowerPoint','📽️','Office','Ctrl+M','New slide','Beginner','Slides','Creates a new slide.'],
-['PowerPoint','📽️','Office','F5','Start slideshow','Beginner','Presentation','Starts from the beginning.'],
-['Tally','▣','Accounting','F2','Change date','Beginner','Voucher','Changes voucher date.'],
-['Tally','▣','Accounting','F8','Sales voucher','Beginner','Voucher','Opens Sales voucher.'],
-['BUSY','B','Accounting','F2','Change date','Beginner','Workflow','Changes working date.'],
-['Photoshop','Ps','Design','Ctrl+T','Free Transform','Intermediate','Transform','Transforms the selected layer/object.'],
-['Photoshop','Ps','Design','B','Brush tool','Beginner','Tools','Selects the Brush tool.'],
-['Windows','⊞','System','Win+D','Show desktop','Beginner','System','Shows or hides the desktop.'],
-['Windows','⊞','System','Win+E','File Explorer','Beginner','System','Opens File Explorer.'],
-['Windows','⊞','System','Alt+Tab','Switch apps','Beginner','Window','Switches between open applications.'],
-['Chrome','🌐','Browser','Ctrl+T','New tab','Beginner','Tabs','Opens a new browser tab.'],
-['Chrome','🌐','Browser','Ctrl+Shift+T','Reopen closed tab','Intermediate','Tabs','Restores the last closed tab.'],
-['Chrome','🌐','Browser','Ctrl+L','Address bar','Beginner','Navigation','Focuses the address bar.'],
-['Gmail','✉️','Web','C','Compose','Beginner','Email','Starts a new message when shortcuts are enabled.'],
-['VS Code','</>','Development','Ctrl+P','Quick Open','Beginner','Navigation','Opens Quick Open.'],
-['Google Sheets','📗','Web','Ctrl+;','Insert date','Beginner','Editing','Inserts the current date.']
-];
+
 if(db.prepare('SELECT COUNT(*) c FROM shortcuts').get().c===0){
  const ins=db.prepare('INSERT INTO shortcuts(software,icon,category,keys,action,level,type,example) VALUES(?,?,?,?,?,?,?,?)');
  db.transaction(rows=>rows.forEach(r=>ins.run(...r)))(seed);
