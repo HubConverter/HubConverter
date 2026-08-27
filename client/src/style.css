@@ -1879,6 +1879,18 @@ html[data-theme="sunshine"] body::before {
     0 0 13px rgb(255 215 32 / 0.76);
 }
 
+/* Only the main Hub Converter title changes in the Light theme. */
+body:where(.theme-light, [data-theme="light"]) .hub-title-area h1,
+html[data-theme="light"] body .hub-title-area h1 {
+  color: #087de8 !important;
+  -webkit-text-fill-color: #087de8;
+  text-shadow:
+    0 2px 0 #0353a6,
+    0 4px 0 rgb(3 53 111 / 0.24),
+    0 0 3px #ffffff,
+    0 0 12px rgb(8 125 232 / 0.58);
+}
+
 .hub-title-area h2 {
   max-width: 48rem;
   margin: 0.85rem 0 0;
