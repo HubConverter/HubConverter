@@ -59,13 +59,63 @@ const fallback = [
 const themes = [
   { id: "neon", label: "Neon", icon: "✦" },
   { id: "ocean", label: "Ocean", icon: "🌊" },
-  { id: "sunset", label: "Sunset", icon: "☀" },
-  { id: "midnight", label: "Sunshine", icon: "☀️" },
-{ id: "light", label: "Light", icon: "☀︎" },
+  { id: "sunset", label: "Sunset", icon: "🌇" },
+  { id: "sunshine", label: "Sunshine", icon: "☀️" },
+  { id: "midnight", label: "Midnight", icon: "🌙" },
+  { id: "light", label: "Light", icon: "◌" },
 ];
 
+function HubLogo({ className = "", decorative = false }) {
+  return (
+    <svg
+      className={"hub-logo-svg " + className}
+      viewBox="0 0 160 160"
+      role={decorative ? undefined : "img"}
+      aria-label={decorative ? undefined : "HubConverter logo"}
+      aria-hidden={decorative || undefined}
+    >
+      <defs>
+        <filter id="hubLogoGlow" x="-40%" y="-40%" width="180%" height="180%">
+          <feGaussianBlur stdDeviation="3" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+      <circle cx="80" cy="80" r="70" fill="#071b4b" stroke="#04d9ff" strokeWidth="3" />
+      <path
+        d="M43 58a49 49 0 0 1 59-21l-7-15 35 14-21 31-6-15a28 28 0 0 0-36 13Z"
+        fill="#00cfff"
+        stroke="#b7f8ff"
+        strokeWidth="2"
+        strokeLinejoin="round"
+        filter="url(#hubLogoGlow)"
+      />
+      <path
+        d="M116 59a49 49 0 0 1-7 62l13 9-34 14-2-38 13 8a28 28 0 0 0 3-38Z"
+        fill="#ff9a19"
+        stroke="#fff0a2"
+        strokeWidth="2"
+        strokeLinejoin="round"
+        filter="url(#hubLogoGlow)"
+      />
+      <path
+        d="M72 125a49 49 0 0 1-43-45l-15 3 18-33 31 22-15 4a28 28 0 0 0 25 28Z"
+        fill="#45df47"
+        stroke="#c7ffc8"
+        strokeWidth="2"
+        strokeLinejoin="round"
+        filter="url(#hubLogoGlow)"
+      />
+      <circle cx="80" cy="81" r="27" fill="#087a25" stroke="#69ff57" strokeWidth="3" />
+      <path d="M80 103V67m0 0-14 14m14-14 14 14" fill="none" stroke="#eaffdc" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 function App() {
-const [view, setView] = useState("tools-all");
+  const [view, setView] = useState("tools-all");
   const [selectedSoftware, setSelectedSoftware] = useState("");
   const [items, setItems] = useState([]);
   const [allItems, setAllItems] = useState([]);
@@ -75,9 +125,10 @@ const [view, setView] = useState("tools-all");
   const [recent, setRecent] = useState([]);
   const [q, setQ] = useState("");
   const [filter, setFilter] = useState("");
-const [theme, setTheme] = useState(
-  localStorage.getItem("theme") || "ocean"
-);
+  const [theme, setTheme] = useState(
+    localStorage.getItem("sh_theme") || "sunshine"
+  );
+  const [toolsResetKey, setToolsResetKey] = useState(0);
   const [showThemes, setShowThemes] = useState(false);
   const themePickerRef = useRef(null);
   const [toast, setToast] = useState("");
@@ -100,13 +151,22 @@ const [theme, setTheme] = useState(
   }, []);
 
   useEffect(() => {
-    document.body.className = `theme-${theme}`;
+    const themeClasses = themes.map((item) => `theme-${item.id}`);
+    document.body.classList.remove(...themeClasses);
+    document.body.classList.add(`theme-${theme}`);
+    document.body.dataset.theme = theme;
     localStorage.setItem("sh_theme", theme);
   }, [theme]);
 
   function notify(message) {
     setToast(message);
     setTimeout(() => setToast(""), 2200);
+  }
+
+  function showTools(nextView = "tools-all") {
+    setView(nextView);
+    setToolsResetKey((current) => current + 1);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   async function search(nextQ = q, nextSoftware = filter) {
@@ -174,122 +234,99 @@ useEffect(() => {
 
   return (
     <>
-    <header>
-  {/* HUBCONVERTER — HOME */}
-  <div
-    className="brand"
-    onClick={() => {
-      setView("tools-all");
-      setSelectedTool(null);
-    }}
-    style={{
-      cursor: "pointer",
-    }}
-  >
-    🔄 HubConverter
-  </div>
-
-  <nav
-    style={{
-      display: "flex",
-      alignItems: "center",
-      gap: "28px",
-    }}
-  >
-
-    {/* PDF CONVERTER TOOLS */}
-    <button
-      onClick={() => {
-        setView("tools-pdf");
-        setSelectedTool(null);
-      }}
-      style={{
-        background: "transparent",
-        border: "none",
-        color: "#fff",
-        cursor: "pointer",
-        fontSize: "18px",
-      }}
-    >
-      🔄 PDF Converter Tools
-    </button>
-
-    {/* JPG TOOLS */}
-    <button
-      onClick={() => {
-        setView("tools-jpg");
-        setSelectedTool(null);
-      }}
-      style={{
-        background: "transparent",
-        border: "none",
-        color: "#fff",
-        cursor: "pointer",
-        fontSize: "18px",
-      }}
-    >
-      🖼️ JPG Tools
-    </button>
-
-  </nav>
-
-  <div className="actions">
-   <div className="themePicker" ref={themePickerRef}>
+    <header className="site-header">
       <button
-        className="themeToggle"
-        onClick={() => setShowThemes((current) => !current)}
-        aria-label="Choose a color theme"
-        aria-expanded={showThemes}
-        title="Choose a color theme"
+        className="brand"
+        type="button"
+        onClick={() => showTools("tools-all")}
+        aria-label="Go to the HubConverter home page"
       >
-        ◐
+        <HubLogo className="brand-mark" decorative />
+        <span className="brand-copy"><span>Hub</span>Converter</span>
       </button>
 
-      {showThemes && (
-        <div
-          className="themeMenu"
-          role="menu"
-          aria-label="Color themes"
+      <nav className="main-nav" aria-label="Tool categories">
+        <button
+          className={view === "tools-pdf" ? "sel" : ""}
+          type="button"
+          onClick={() => showTools("tools-pdf")}
         >
-          <b>Choose a theme</b>
+          ▣ <span>PDF Converter Tools</span>
+        </button>
 
-          {themes.map((item) => (
-            <button
-              key={item.id}
-              className={
-                theme === item.id
-                  ? "themeChoice active"
-                  : "themeChoice"
-              }
-              onClick={() => {
-                setTheme(item.id);
-                setShowThemes(false);
-              }}
-              role="menuitem"
-            >
-              <span>{item.icon}</span> {item.label}
-            </button>
-          ))}
+        <button
+          className={view === "tools-jpg" ? "sel" : ""}
+          type="button"
+          onClick={() => showTools("tools-jpg")}
+        >
+          🖼️ <span>JPG Tools</span>
+        </button>
+      </nav>
+
+      <div className="actions">
+        <label className="headerSearch">
+          <span aria-hidden="true">⌕</span>
+          <input
+            value={q}
+            onChange={(event) => setQ(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") showTools("tools-all");
+            }}
+            placeholder="Search tools..."
+            aria-label="Search converter tools"
+          />
+        </label>
+
+        <div className="themePicker" ref={themePickerRef}>
+          <button
+            className="themeToggle"
+            type="button"
+            onClick={() => setShowThemes((current) => !current)}
+            aria-label="Choose a color theme"
+            aria-expanded={showThemes}
+            title="Choose a color theme"
+          >
+            ☀
+          </button>
+
+          {showThemes && (
+            <div className="themeMenu" role="menu" aria-label="Color themes">
+              <b>Choose a theme</b>
+
+              {themes.map((item) => (
+                <button
+                  key={item.id}
+                  className={theme === item.id ? "themeChoice active" : "themeChoice"}
+                  type="button"
+                  onClick={() => {
+                    setTheme(item.id);
+                    setShowThemes(false);
+                  }}
+                  role="menuitem"
+                >
+                  <span>{item.icon}</span> {item.label}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
-      )}
-    </div>
-  </div>
-</header>
+      </div>
+    </header>
 
       
 
-   {view === "tools-all" && <Tools category="all" />}
+   {view === "tools-all" && <Tools category="all" query={q} resetKey={toolsResetKey} />}
 
-{view === "tools-pdf" && <Tools category="pdf" />}
+{view === "tools-pdf" && <Tools category="pdf" query={q} resetKey={toolsResetKey} />}
 
-{view === "tools-jpg" && <Tools category="jpg" />}
+{view === "tools-jpg" && <Tools category="jpg" query={q} resetKey={toolsResetKey} />}
 
       {view === "software" && (
         <SoftwarePage
           software={selectedSoftware}
           items={items}
           learn={() => setView("learn")}
-          back={() => setView("home")}
+          back={() => showTools("tools-all")}
           favorites={favorites}
           toggleFavorite={toggleFavorite}
         />
@@ -321,8 +358,8 @@ useEffect(() => {
 ========================= */
 
 function SoftwarePage({ software, items, learn, back, favorites, toggleFavorite }) {
-  return (
-    <section className="wrap">
+ return (
+   <section className="wrap">
       <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
         <button
           onClick={back}
@@ -558,8 +595,12 @@ function Home({
    TOOLS
 ========================= */
 
-function Tools({ category = "all" }) {
+function Tools({ category = "all", query = "", resetKey = 0 }) {
   const [selectedTool, setSelectedTool] = useState(null);
+
+  useEffect(() => {
+    setSelectedTool(null);
+  }, [category, resetKey]);
 
   // =========================
   // TOOL PAGES
@@ -1330,15 +1371,22 @@ const allTools = [
   })),
 ];
 
-const toolsToShow =
+const toolsForCategory =
   category === "pdf"
     ? pdfTools
     : category === "jpg"
       ? jpgTools
       : allTools;
 
-return (
-  <section className="wrap">
+const toolsToShow = toolsForCategory.filter((tool) => {
+  const term = query.trim().toLowerCase();
+  return !term || [tool.title, tool.description].some((value) =>
+    value.toLowerCase().includes(term)
+  );
+});
+
+ return (
+   <main className={category === "all" ? "tools-page" : "wrap"}>
 
     {/* =========================
         ALL TOOLS HOME
@@ -1350,22 +1398,22 @@ return (
         HERO / BRAND AREA
     ========================================= */}
     <section className="hub-hero">
-
-      {/* HC LOGO — USE YOUR IMAGE */}
       <div className="hub-logo-wrap">
-        <img
-          src="/hc-logo.png"
-          alt="HubConverter HC Logo"
-          className="hub-logo"
-        />
+        <HubLogo className="hub-logo" decorative />
       </div>
 
-      {/* TITLE */}
       <div className="hub-title-area">
+        <p className="hub-kicker">HubConverter file tools</p>
         <h1>Hub Converter</h1>
-        <h2>CONVERT YOUR FILE EASILY HERE</h2>
-      </div>
+        <h2>Convert your files easily here</h2>
 
+        <div className="hub-checks" aria-label="HubConverter benefits">
+          <span>Fast</span>
+          <span>Secure</span>
+          <span>Easy to use</span>
+          <span>100% Free</span>
+        </div>
+      </div>
     </section>
 
 
@@ -1435,9 +1483,14 @@ return (
     {/* =========================================
         ALL TOOLS
     ========================================= */}
-    <section className="all-tools-home">
-
-      <div className="all-tools-grid">
+     <section className="all-tools-home">
+       <div className="home-section-title">
+         <span />
+         <h2>All Converter Tools</h2>
+         <span />
+       </div>
+ 
+       <div className="all-tools-grid">
 
         {toolsToShow.map((tool) => (
           <ToolCard
@@ -1462,21 +1515,24 @@ return (
     {/* =========================================
         BOTTOM MESSAGE
     ========================================= */}
-    <div className="hub-bottom-banner">
-      <div className="hub-bottom-rocket">
-        🚀
-      </div>
-
-      <div>
-        <strong>
-          Fast • Secure • Easy to Use
-        </strong>
-
-        <span>
-          All your file conversion needs in one place
-        </span>
-      </div>
-    </div>
+     <section className="hub-bottom-banner" aria-label="Service benefits">
+       <div className="hub-benefit">
+         <span aria-hidden="true">♢</span>
+         <div><strong>100% Secure</strong><small>Your files are safe with us</small></div>
+       </div>
+       <div className="hub-benefit">
+         <span aria-hidden="true">👍</span>
+         <div><strong>Easy to Use</strong><small>Simple and user friendly</small></div>
+       </div>
+       <div className="hub-benefit">
+         <span aria-hidden="true">ϟ</span>
+         <div><strong>Fast Conversion</strong><small>Get results in seconds</small></div>
+       </div>
+       <div className="hub-benefit">
+         <span aria-hidden="true">🎁</span>
+         <div><strong>100% Free</strong><small>No signup required</small></div>
+       </div>
+     </section>
 
   </div>
 )}
@@ -1551,8 +1607,8 @@ return (
       </>
     )}
 
-  </section>
-);
+   </main>
+ );
 }
 
 /* =========================
@@ -1568,21 +1624,11 @@ function ToolCard({
 }) {
   return (
     <article
-      className="shortcut"
-      style={{
-        cursor: comingSoon
-          ? "default"
-          : "pointer",
-      }}
+      className={comingSoon ? "tool-card is-disabled" : "tool-card"}
       onClick={comingSoon ? undefined : onClick}
     >
 
-      <div
-        style={{
-          fontSize: "36px",
-          marginBottom: "12px",
-        }}
-      >
+      <div className="tool-card-icon">
         {icon}
       </div>
 
@@ -1595,12 +1641,9 @@ function ToolCard({
       </p>
 
       <button
+        type="button"
         disabled={comingSoon}
-        className={
-          comingSoon
-            ? ""
-            : "primary"
-        }
+        className="tool-card-button"
         onClick={(event) => {
           event.stopPropagation();
 
