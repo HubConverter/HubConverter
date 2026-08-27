@@ -1859,26 +1859,19 @@ html[data-theme="sunshine"] body::before {
   text-transform: uppercase;
 }
 
-.hub-title-area h1 {
-  margin: 0;
-  color: #ffe94a;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: clamp(3rem, 5.5vw, 5.7rem);
-  font-weight: 700;
-  letter-spacing: -0.055em;
-  line-height: 0.9;
-  background: none;
-  -webkit-background-clip: initial;
-  background-clip: initial;
-  -webkit-text-fill-color: #ffe94a;
-  filter: none;
-  text-shadow:
-    0 2px 0 #bd6700,
-    0 4px 0 rgb(83 37 0 / 0.30),
-    0 0 3px #fff9a8,
-    0 0 13px rgb(255 215 32 / 0.76);
+/* SUNSHINE — Hub Converter title ONLY */
+body:where(.theme-sunshine, [data-theme="sunshine"]) .hub-title-area h1,
+html[data-theme="sunshine"] body .hub-title-area h1 {
+    margin: 0;
+    color: #8A2BE2 !important;
+    -webkit-text-fill-color: #8A2BE2 !important;
+    background: none !important;
+    background-image: none !important;
+    -webkit-background-clip: initial !important;
+    background-clip: initial !important;
+    text-shadow: none !important;
+    filter: none !important;
 }
-
 /* Only the main Hub Converter title changes in the Light theme. */
 body:where(.theme-light, [data-theme="light"]) .hub-title-area h1,
 html[data-theme="light"] body .hub-title-area h1 {
