@@ -1861,36 +1861,34 @@ html[data-theme="sunshine"] body::before {
 
 .hub-title-area h1 {
   margin: 0;
-  color: rgb(var(--gold));
+  color: #ffe94a;
   font-family: Arial, Helvetica, sans-serif;
-  font-size: clamp(2.75rem, 5.1vw, 5.3rem);
-  font-weight: 900;
-  letter-spacing: -0.075em;
   font-size: clamp(3rem, 5.5vw, 5.7rem);
   font-weight: 700;
   letter-spacing: -0.055em;
   line-height: 0.9;
-  text-shadow: 0 4px 0 rgb(101 47 0 / 0.38), 0 0 26px rgb(var(--gold) / 0.42);
-  background: linear-gradient(to bottom, #fff8a3 0%, rgb(var(--gold)) 38%, #ffb300 70%, #dc8200 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow: 0 3px 0 rgb(101 47 0 / 0.42), 0 0 22px rgb(var(--gold) / 0.34);
+  background: none;
+  -webkit-background-clip: initial;
+  background-clip: initial;
+  -webkit-text-fill-color: #ffe94a;
+  filter: none;
+  text-shadow:
+    0 2px 0 #bd6700,
+    0 4px 0 rgb(83 37 0 / 0.30),
+    0 0 3px #fff9a8,
+    0 0 13px rgb(255 215 32 / 0.76);
 }
 
 .hub-title-area h2 {
   max-width: 48rem;
   margin: 0.85rem 0 0;
   color: rgb(var(--success));
-  font-size: clamp(1.05rem, 1.8vw, 1.85rem);
-  font-weight: 900;
-  letter-spacing: 0.05em;
   font-size: clamp(1.15rem, 2.05vw, 2.05rem);
   font-weight: 800;
   letter-spacing: 0.035em;
   line-height: 1.1;
   text-transform: uppercase;
-  text-shadow: 0 0 16px rgb(var(--success) / 0.42);
+  text-shadow: 0 1px 0 rgb(0 79 20 / 0.48), 0 0 9px rgb(106 255 70 / 0.42);
 }
 
 .hub-checks {
