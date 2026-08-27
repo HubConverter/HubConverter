@@ -2271,16 +2271,92 @@ body::before {
   background-size: 52px 52px !important;
   opacity: 0.8;
 }
-
 /* =========================================================
-   HUB HOME
+   HUBCONVERTER HOME PAGE
+   EXACT FUTURISTIC BLUE / YELLOW / GREEN DESIGN
    ========================================================= */
 
 .hub-home {
   position: relative;
-  max-width: 1450px;
+  width: 100%;
+  min-height: calc(100vh - 74px);
+  max-width: 1600px;
   margin: 0 auto;
-  padding: 18px 28px 40px;
+  padding: 0;
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 75% 30%,
+      rgba(0, 140, 255, 0.35),
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at 20% 65%,
+      rgba(0, 180, 255, 0.18),
+      transparent 35%
+    ),
+    linear-gradient(
+      135deg,
+      #03192b 0%,
+      #042d49 45%,
+      #07527d 100%
+    );
+}
+
+/* =========================================================
+   FUTURISTIC GRID
+   ========================================================= */
+
+.hub-home::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  background-image:
+    linear-gradient(
+      rgba(70, 190, 255, 0.10) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(70, 190, 255, 0.10) 1px,
+      transparent 1px
+    );
+
+  background-size: 40px 40px;
+
+  opacity: 0.65;
+}
+
+/* =========================================================
+   BLUE GLOW
+   ========================================================= */
+
+.hub-home::after {
+  content: "";
+  position: absolute;
+
+  width: 700px;
+  height: 700px;
+
+  right: -180px;
+  top: -120px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(0, 170, 255, 0.28),
+      rgba(0, 100, 255, 0.12) 40%,
+      transparent 72%
+    );
+
+  filter: blur(25px);
+
+  pointer-events: none;
 }
 
 /* =========================================================
@@ -2289,89 +2365,157 @@ body::before {
 
 .hub-hero {
   position: relative;
+  z-index: 2;
+
+  width: 100%;
+  min-height: 403px;
+
   display: grid;
-  grid-template-columns: 40% 60%;
+  grid-template-columns: 42% 58%;
+
   align-items: center;
-  min-height: 450px;
-  margin-bottom: 10px;
-}
 
-/* LOGO */
-.hub-logo-wrap {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 390px;
-}
+  padding: 0 45px;
 
-.hub-logo {
-  width: min(410px, 95%);
-  height: auto;
-  object-fit: contain;
-
-  filter:
-    drop-shadow(0 0 12px rgba(0, 200, 255, 0.8))
-    drop-shadow(0 0 30px rgba(0, 130, 255, 0.55))
-    drop-shadow(0 0 65px rgba(0, 100, 255, 0.35));
-
-  transition: transform 0.3s ease;
-}
-
-.hub-logo:hover {
-  transform: scale(1.035);
-
-  filter:
-    drop-shadow(0 0 18px rgba(0, 220, 255, 0.95))
-    drop-shadow(0 0 40px rgba(0, 150, 255, 0.7))
-    drop-shadow(0 0 80px rgba(0, 110, 255, 0.45));
+  box-sizing: border-box;
 }
 
 /* =========================================================
-   TITLE
+   LOGO AREA
+   ========================================================= */
+
+.hub-logo-wrap {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  height: 100%;
+  min-height: 403px;
+}
+
+/* BLUE LIGHT BEHIND LOGO */
+
+.hub-logo-wrap::before {
+  content: "";
+
+  position: absolute;
+
+  width: 360px;
+  height: 360px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(0, 180, 255, 0.24),
+      rgba(0, 100, 255, 0.10) 45%,
+      transparent 72%
+    );
+
+  filter: blur(20px);
+}
+
+/* =========================================================
+   HC LOGO
+   ========================================================= */
+
+.hub-logo {
+  position: relative;
+  z-index: 2;
+
+  width: min(370px, 90%);
+
+  height: auto;
+
+  object-fit: contain;
+
+  filter:
+    drop-shadow(0 0 8px rgba(0, 190, 255, 0.80))
+    drop-shadow(0 0 22px rgba(0, 150, 255, 0.60))
+    drop-shadow(0 0 45px rgba(0, 100, 255, 0.40));
+
+  transition:
+    transform 0.3s ease,
+    filter 0.3s ease;
+}
+
+.hub-logo:hover {
+  transform: scale(1.025);
+
+  filter:
+    drop-shadow(0 0 12px rgba(0, 220, 255, 0.95))
+    drop-shadow(0 0 30px rgba(0, 170, 255, 0.75))
+    drop-shadow(0 0 55px rgba(0, 100, 255, 0.50));
+}
+
+/* =========================================================
+   TITLE AREA
    ========================================================= */
 
 .hub-title-area {
-  position: absolute !important;
-  top: 45px !important;
-  right: 5% !important;
+  position: relative;
+  z-index: 5;
 
-  width: 55%;
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
 
   text-align: center;
-  z-index: 5;
+
+  padding: 20px;
 }
+
+/* =========================================================
+   MAIN TITLE
+   ========================================================= */
 
 .hub-title-area h1 {
   margin: 0;
 
-  font-size: clamp(58px, 6vw, 88px);
+  font-size: clamp(58px, 5.2vw, 82px);
+
   line-height: 1;
+
   font-weight: 900;
+
+  letter-spacing: -3px;
 
   color: #ffd21f !important;
 
-  letter-spacing: -2px;
-
   text-shadow:
-    0 0 4px #fff8a0,
-    0 0 10px #ffe14a,
-    0 0 20px #ffd21f,
-    0 0 40px rgba(255, 190, 0, 0.9),
-    0 0 70px rgba(255, 160, 0, 0.45);
+    0 0 5px #fff176,
+    0 0 12px #ffd21f,
+    0 0 25px #ffd21f,
+    0 0 45px rgba(255, 190, 0, 0.90),
+    0 0 75px rgba(255, 170, 0, 0.60);
 }
 
-.hub-title-area h2 {
-  margin: 15px 0 0;
+/* =========================================================
+   GREEN SUBTITLE
+   ========================================================= */
 
-  font-size: clamp(24px, 2.4vw, 34px);
+.hub-title-area h2 {
+  margin: 18px 0 0;
+
+  font-size: clamp(24px, 2.1vw, 34px);
+
+  line-height: 1.1;
+
   font-weight: 900;
 
   color: #20f52b !important;
 
+  letter-spacing: 0;
+
   text-shadow:
-    0 0 5px #20f52b,
-    0 0 14px rgba(32, 245, 43, 0.9),
-    0 0 28px rgba(32, 245, 43, 0.55);
+    0 0 6px rgba(32, 245, 43, 1),
+    0 0 15px rgba(32, 245, 43, 0.90),
+    0 0 30px rgba(32, 245, 43, 0.65);
 }
 
 /* =========================================================
@@ -2379,6 +2523,13 @@ body::before {
    ========================================================= */
 
 .featured-tools {
+  position: relative;
+  z-index: 5;
+
+  width: calc(100% - 90px);
+
+  margin: 0 auto 22px;
+
   display: grid;
 
   grid-template-columns:
@@ -2386,50 +2537,57 @@ body::before {
 
   gap: 20px;
 
-  padding: 20px;
+  padding: 18px;
 
-  border: 1px solid #00d9ff !important;
+  box-sizing: border-box;
+
+  border:
+    1px solid rgba(0, 215, 255, 0.90);
 
   border-radius: 22px;
 
   background:
     linear-gradient(
       135deg,
-      rgba(3, 52, 91, 0.90),
-      rgba(1, 22, 50, 0.88)
-    ) !important;
+      rgba(4, 45, 78, 0.88),
+      rgba(2, 20, 43, 0.82)
+    );
 
   box-shadow:
-    0 0 12px rgba(0, 220, 255, 0.85),
-    0 0 35px rgba(0, 130, 255, 0.35),
+    0 0 12px rgba(0, 210, 255, 0.70),
+    0 0 35px rgba(0, 130, 255, 0.28),
     inset 0 0 35px rgba(0, 180, 255, 0.08);
 
   backdrop-filter: blur(12px);
-
-  margin-bottom: 25px;
 }
 
-/* FEATURED CARD */
+/* =========================================================
+   FEATURED TOOL CARD
+   ========================================================= */
 
 .featured-tool-card {
-  min-height: 230px;
+  position: relative;
+
+  min-height: 220px;
 
   padding: 24px;
 
-  border-radius: 16px;
+  box-sizing: border-box;
 
-  border: 1px solid rgba(0, 200, 255, 0.65) !important;
+  border:
+    1px solid rgba(0, 180, 255, 0.48);
+
+  border-radius: 15px;
 
   background:
     linear-gradient(
       145deg,
-      rgba(9, 55, 94, 0.98),
-      rgba(2, 23, 51, 0.98)
-    ) !important;
+      rgba(8, 45, 78, 0.96),
+      rgba(2, 20, 43, 0.98)
+    );
 
   box-shadow:
-    inset 0 0 25px rgba(0, 170, 255, 0.06),
-    0 0 15px rgba(0, 130, 255, 0.08);
+    inset 0 0 20px rgba(0, 160, 255, 0.05);
 
   transition:
     transform 0.25s ease,
@@ -2438,37 +2596,51 @@ body::before {
 }
 
 .featured-tool-card:hover {
-  transform: translateY(-7px);
+  transform: translateY(-5px);
 
-  border-color: #00eaff !important;
+  border-color: #00ddff;
 
   box-shadow:
-    0 0 20px rgba(0, 220, 255, 0.65),
-    0 0 40px rgba(0, 120, 255, 0.25),
-    inset 0 0 25px rgba(0, 200, 255, 0.08);
+    0 0 18px rgba(0, 215, 255, 0.55),
+    0 0 35px rgba(0, 130, 255, 0.25),
+    inset 0 0 25px rgba(0, 180, 255, 0.08);
 }
 
+/* =========================================================
+   FEATURED ICON
+   ========================================================= */
+
 .featured-tool-icon {
-  font-size: 50px;
+  font-size: 48px;
+
   line-height: 1;
 
   margin-bottom: 18px;
 
   filter:
-    drop-shadow(0 0 10px rgba(0, 200, 255, 0.55));
+    drop-shadow(0 0 8px rgba(0, 200, 255, 0.50));
 }
+
+/* =========================================================
+   FEATURED TITLE
+   ========================================================= */
 
 .featured-tool-card h3 {
   margin: 0 0 10px;
 
   font-size: 22px;
-  font-weight: 850;
+
+  font-weight: 800;
 
   color: #ffffff !important;
 
   text-shadow:
-    0 0 10px rgba(255, 255, 255, 0.12);
+    0 0 8px rgba(255, 255, 255, 0.10);
 }
+
+/* =========================================================
+   FEATURED DESCRIPTION
+   ========================================================= */
 
 .featured-tool-card p {
   margin: 0 0 18px;
@@ -2476,46 +2648,52 @@ body::before {
   min-height: 48px;
 
   font-size: 15px;
+
   line-height: 1.55;
 
-  color: #d8edff !important;
+  color: #d5eaff !important;
 }
 
-/* FEATURED BUTTON */
+/* =========================================================
+   FEATURED BUTTON
+   ========================================================= */
 
 .featured-open-button {
-  border: 0 !important;
+  border: 0;
 
-  padding: 12px 22px;
+  padding: 11px 20px;
 
-  border-radius: 9px;
+  border-radius: 8px;
 
   color: #ffffff !important;
 
   font-size: 15px;
-  font-weight: 800;
+
+  font-weight: 700;
+
+  cursor: pointer;
 
   background:
     linear-gradient(
       135deg,
-      #008cff,
-      #3847ff,
-      #742cff
-    ) !important;
+      #087eff,
+      #3035ff,
+      #661cff
+    );
 
   box-shadow:
-    0 0 12px rgba(0, 140, 255, 0.45),
-    0 6px 20px rgba(55, 55, 255, 0.30);
+    0 5px 18px rgba(38, 73, 255, 0.40);
 
-  transition: 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .featured-open-button:hover {
-  transform: translateY(-3px);
+  transform: translateY(-2px);
 
   box-shadow:
-    0 0 18px rgba(0, 200, 255, 0.6),
-    0 10px 28px rgba(70, 60, 255, 0.45);
+    0 8px 26px rgba(38, 73, 255, 0.65);
 }
 
 /* =========================================================
@@ -2523,7 +2701,13 @@ body::before {
    ========================================================= */
 
 .all-tools-home {
-  width: 100%;
+  position: relative;
+
+  z-index: 5;
+
+  width: calc(100% - 90px);
+
+  margin: 0 auto;
 }
 
 .all-tools-grid {
@@ -2535,34 +2719,33 @@ body::before {
   gap: 18px;
 }
 
-/* TOOL CARD */
+/* =========================================================
+   TOOL CARDS
+   ========================================================= */
 
 .all-tools-grid .shortcut {
   position: relative;
 
   min-height: 205px;
 
-  padding: 22px !important;
+  padding: 20px;
 
-  border-radius: 15px !important;
+  box-sizing: border-box;
 
-  border: 1px solid rgba(0, 190, 255, 0.55) !important;
+  border:
+    1px solid rgba(0, 175, 255, 0.48);
+
+  border-radius: 14px;
 
   background:
     linear-gradient(
       145deg,
-      rgba(5, 45, 82, 0.96),
-      rgba(2, 20, 45, 0.98)
-    ) !important;
+      rgba(5, 40, 70, 0.96),
+      rgba(2, 18, 39, 0.98)
+    );
 
   box-shadow:
-    inset 0 0 22px rgba(0, 170, 255, 0.045),
-    0 8px 25px rgba(0, 0, 0, 0.30),
-    0 0 10px rgba(0, 150, 255, 0.08) !important;
-
-  color: #ffffff !important;
-
-  overflow: hidden;
+    inset 0 0 20px rgba(0, 160, 255, 0.04);
 
   transition:
     transform 0.22s ease,
@@ -2570,73 +2753,51 @@ body::before {
     box-shadow 0.22s ease;
 }
 
-/* BLUE NEON BOTTOM LINE */
-
-.all-tools-grid .shortcut::after {
-  content: "";
-
-  position: absolute;
-
-  left: 18px;
-  right: 18px;
-  bottom: 9px;
-
-  height: 3px;
-
-  border-radius: 20px;
-
-  background:
-    linear-gradient(
-      90deg,
-      #00eaff,
-      #287cff,
-      #8b35ff
-    );
-
-  box-shadow:
-    0 0 12px rgba(0, 200, 255, 0.75);
-}
-
-/* HOVER */
-
 .all-tools-grid .shortcut:hover {
-  transform:
-    translateY(-6px)
-    scale(1.01);
+  transform: translateY(-5px);
 
-  border-color: #00eaff !important;
+  border-color: #00d8ff;
 
   box-shadow:
-    inset 0 0 25px rgba(0, 190, 255, 0.07),
-    0 15px 35px rgba(0, 0, 0, 0.42),
-    0 0 25px rgba(0, 190, 255, 0.30),
-    0 0 45px rgba(90, 60, 255, 0.14) !important;
+    0 0 18px rgba(0, 205, 255, 0.38),
+    0 0 35px rgba(0, 100, 255, 0.18),
+    inset 0 0 25px rgba(0, 170, 255, 0.07);
 }
 
-/* TOOL ICON */
+/* =========================================================
+   TOOL ICON
+   ========================================================= */
 
-.all-tools-grid .shortcut .appIcon,
-.all-tools-grid .shortcut > .appIcon {
-  filter:
-    drop-shadow(0 0 9px rgba(0, 205, 255, 0.65));
+.all-tools-grid .shortcutTop {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
 }
 
-/* TOOL TITLE */
+/* =========================================================
+   TOOL TITLE
+   ========================================================= */
 
 .all-tools-grid .shortcut h3 {
-  color: #ffffff !important;
+  margin: 8px 0;
 
   font-size: 19px;
 
   font-weight: 800;
 
-  margin: 10px 0;
+  color: #ffffff !important;
 }
 
-/* TOOL DESCRIPTION */
+/* =========================================================
+   TOOL DESCRIPTION
+   ========================================================= */
 
 .all-tools-grid .shortcut p {
-  color: #cfe7ff !important;
+  margin: 0;
+
+  color: #c8ddf4 !important;
 
   font-size: 14px;
 
@@ -2644,52 +2805,19 @@ body::before {
 }
 
 /* =========================================================
-   OPEN TOOL BUTTONS
-   ========================================================= */
-
-.all-tools-grid .shortcut button {
-  border: 0 !important;
-
-  border-radius: 9px !important;
-
-  padding: 10px 17px !important;
-
-  color: #ffffff !important;
-
-  background:
-    linear-gradient(
-      135deg,
-      #008cff,
-      #3947ff,
-      #7430ff
-    ) !important;
-
-  box-shadow:
-    0 5px 18px rgba(0, 100, 255, 0.35);
-
-  font-weight: 750;
-
-  transition: 0.2s ease;
-}
-
-.all-tools-grid .shortcut button:hover {
-  transform: translateY(-2px);
-
-  box-shadow:
-    0 0 18px rgba(0, 190, 255, 0.55),
-    0 8px 25px rgba(80, 50, 255, 0.40);
-}
-
-/* =========================================================
    BOTTOM BANNER
    ========================================================= */
 
 .hub-bottom-banner {
+  position: relative;
+
+  z-index: 5;
+
   width: min(600px, 90%);
 
-  margin: 25px auto 0;
+  margin: 18px auto 25px;
 
-  padding: 13px 22px;
+  padding: 12px 22px;
 
   display: flex;
 
@@ -2699,41 +2827,46 @@ body::before {
 
   gap: 15px;
 
-  border: 1px solid rgba(0, 210, 255, 0.55) !important;
+  box-sizing: border-box;
 
-  border-radius: 13px;
+  border:
+    1px solid rgba(0, 175, 255, 0.50);
+
+  border-radius: 12px;
 
   background:
-    linear-gradient(
-      135deg,
-      rgba(4, 42, 75, 0.88),
-      rgba(2, 21, 47, 0.88)
-    ) !important;
+    rgba(3, 30, 55, 0.78);
 
   box-shadow:
-    0 0 20px rgba(0, 160, 255, 0.18);
+    0 0 18px rgba(0, 130, 255, 0.15);
 }
 
 .hub-bottom-rocket {
   font-size: 30px;
 
   filter:
-    drop-shadow(0 0 8px rgba(0, 200, 255, 0.5));
+    drop-shadow(0 0 7px rgba(0, 190, 255, 0.45));
+}
+
+.hub-bottom-banner div:last-child {
+  display: flex;
+
+  flex-direction: column;
 }
 
 .hub-bottom-banner strong {
-  color: #00e1ff !important;
+  color: #00d8ff !important;
 
   font-size: 19px;
 
   text-align: center;
 
   text-shadow:
-    0 0 10px rgba(0, 220, 255, 0.45);
+    0 0 8px rgba(0, 216, 255, 0.45);
 }
 
 .hub-bottom-banner span {
-  color: #c7dcf3 !important;
+  color: #bcd2eb !important;
 
   font-size: 14px;
 
@@ -2745,6 +2878,11 @@ body::before {
    ========================================================= */
 
 @media (max-width: 1150px) {
+
+  .hub-hero {
+    grid-template-columns: 38% 62%;
+  }
+
   .all-tools-grid {
     grid-template-columns:
       repeat(4, minmax(0, 1fr));
@@ -2752,14 +2890,17 @@ body::before {
 }
 
 @media (max-width: 900px) {
+
   .hub-hero {
     grid-template-columns: 1fr;
+
     min-height: auto;
+
+    padding: 30px 20px;
   }
 
   .hub-logo-wrap {
-    min-height: 300px;
-    padding-top: 80px;
+    min-height: 280px;
   }
 
   .hub-logo {
@@ -2767,17 +2908,17 @@ body::before {
   }
 
   .hub-title-area {
-    position: relative !important;
-    top: auto !important;
-    right: auto !important;
-
-    width: 100%;
-
-    margin-bottom: 25px;
+    padding: 20px 10px 35px;
   }
 
   .featured-tools {
+    width: calc(100% - 40px);
+
     grid-template-columns: 1fr;
+  }
+
+  .all-tools-home {
+    width: calc(100% - 40px);
   }
 
   .all-tools-grid {
@@ -2787,27 +2928,13 @@ body::before {
 }
 
 @media (max-width: 650px) {
-  .hub-home {
-    padding: 15px 12px 28px;
+
+  .hub-hero {
+    padding: 20px 12px;
   }
 
-  .all-tools-grid {
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr));
-  }
-
-  .hub-title-area h1 {
-    font-size: 46px;
-  }
-
-  .hub-title-area h2 {
-    font-size: 21px;
-  }
-}
-
-@media (max-width: 430px) {
-  .all-tools-grid {
-    grid-template-columns: 1fr;
+  .hub-logo-wrap {
+    min-height: 240px;
   }
 
   .hub-logo {
@@ -2815,6 +2942,46 @@ body::before {
   }
 
   .hub-title-area h1 {
+    font-size: 46px;
+
+    letter-spacing: -2px;
+  }
+
+  .hub-title-area h2 {
+    font-size: 21px;
+  }
+
+  .featured-tools {
+    width: calc(100% - 24px);
+
+    padding: 12px;
+  }
+
+  .all-tools-home {
+    width: calc(100% - 24px);
+  }
+
+  .all-tools-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 430px) {
+
+  .all-tools-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hub-title-area h1 {
     font-size: 40px;
+  }
+
+  .hub-title-area h2 {
+    font-size: 18px;
+  }
+
+  .hub-logo {
+    width: 220px;
   }
 }
