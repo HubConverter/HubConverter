@@ -4,7 +4,7 @@
 
    Theme support:
    Add ONE of these to <body> (or use data-theme):
-   theme-neon | theme-ocean | theme-sunset | theme-midnight | theme-light
+   theme-neon | theme-ocean | theme-sunset | theme-sunshine | theme-light
 
    All backgrounds, tool cards (folders), borders and buttons use
    the same variables, so they change together with the theme.
@@ -187,26 +187,6 @@ html[data-theme="sunset"] body {
   --gold: 253 224 71;
   --card: 103 29 74;
   --card-2: 64 18 58;
-}
-
-body:where(.theme-midnight, [data-theme="midnight"]),
-html[data-theme="midnight"] body {
-  --bg-0: 9 6 24;
-  --bg-1: 30 18 72;
-  --bg-2: 16 10 41;
-  --surface: 35 23 84;
-  --surface-2: 57 35 123;
-  --surface-solid: 19 12 49;
-  --text: 248 247 255;
-  --muted: 214 207 255;
-  --faint: 172 161 237;
-  --accent: 129 140 248;
-  --accent-2: 124 58 237;
-  --accent-3: 217 70 239;
-  --success: 167 243 208;
-  --gold: 253 224 71;
-  --card: 43 27 108;
-  --card-2: 23 15 66;
 }
 
 body:where(.theme-light, [data-theme="light"]),
@@ -1779,8 +1759,8 @@ html[data-theme="sunshine"] body::before {
   grid-template-columns: minmax(260px, 0.72fr) minmax(500px, 1.28fr);
   align-items: center;
   gap: clamp(2rem, 5vw, 5.5rem);
-  min-height: 395px;
-  padding: clamp(2.5rem, 5vw, 4.8rem) max(2rem, calc((100vw - 1440px) / 2)) clamp(4.5rem, 8vw, 6.5rem);
+  min-height: 345px;
+  padding: clamp(1.8rem, 3vw, 2.7rem) max(2rem, calc((100vw - 1440px) / 2)) clamp(3.7rem, 5vw, 4.7rem);
   overflow: hidden;
   isolation: isolate;
   background:
@@ -1828,8 +1808,8 @@ html[data-theme="sunshine"] body::before {
 .hub-logo-wrap {
   position: relative;
   display: grid;
-  width: min(29vw, 23rem);
-  min-width: 15rem;
+  width: min(23vw, 19rem);
+  min-width: 12.5rem;
   aspect-ratio: 1;
   place-items: center;
   justify-self: end;
@@ -1882,7 +1862,7 @@ html[data-theme="sunshine"] body::before {
 .hub-title-area h1 {
   margin: 0;
   color: rgb(var(--gold));
-  font-size: clamp(3.25rem, 6.4vw, 6.8rem);
+  font-size: clamp(2.75rem, 5.1vw, 5.3rem);
   font-weight: 900;
   letter-spacing: -0.075em;
   line-height: 0.9;
@@ -1893,7 +1873,7 @@ html[data-theme="sunshine"] body::before {
   max-width: 48rem;
   margin: 0.85rem 0 0;
   color: rgb(var(--success));
-  font-size: clamp(1.18rem, 2.25vw, 2.25rem);
+  font-size: clamp(1.05rem, 1.8vw, 1.85rem);
   font-weight: 900;
   letter-spacing: 0.05em;
   line-height: 1.1;
@@ -1905,7 +1885,7 @@ html[data-theme="sunshine"] body::before {
   display: flex;
   flex-wrap: wrap;
   gap: 0.6rem 1.55rem;
-  margin-top: 1.6rem;
+  margin-top: 1.2rem;
   color: rgb(var(--text));
   font-size: clamp(0.85rem, 1.4vw, 1.08rem);
   font-weight: 700;
@@ -2193,6 +2173,28 @@ html[data-theme="sunshine"] body::before {
   margin-top: 0.18rem;
   color: rgb(var(--muted));
   font-size: 0.76rem;
+}
+
+/* Protect PDF: always keep the selected filename readable in dark themes. */
+body:not(.theme-light) .protect-pdf-selected,
+body:not(.theme-light) .protectPdfSelected,
+body:not(.theme-light) .protect-selected-file,
+body:not(.theme-light) .selected-file,
+body:not(.theme-light) .selectedFile {
+  color: rgb(var(--text)) !important;
+  border: 1px solid rgb(var(--accent) / 0.48) !important;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgb(var(--card) / 0.96), rgb(var(--card-2) / 0.98)) !important;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.12), 0 8px 22px rgb(0 0 0 / 0.22);
+}
+
+body:not(.theme-light) .protect-pdf-selected *,
+body:not(.theme-light) .protectPdfSelected *,
+body:not(.theme-light) .protect-selected-file *,
+body:not(.theme-light) .selected-file *,
+body:not(.theme-light) .selectedFile * {
+  color: rgb(var(--text)) !important;
+  opacity: 1 !important;
 }
 
 /* Category pages and shortcut pages. */
