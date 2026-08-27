@@ -61,7 +61,6 @@ const themes = [
   { id: "ocean", label: "Ocean", icon: "🌊" },
   { id: "sunset", label: "Sunset", icon: "🌇" },
   { id: "sunshine", label: "Sunshine", icon: "☀️" },
-  { id: "midnight", label: "Midnight", icon: "🌙" },
   { id: "light", label: "Light", icon: "◌" },
 ];
 
@@ -125,8 +124,9 @@ function App() {
   const [recent, setRecent] = useState([]);
   const [q, setQ] = useState("");
   const [filter, setFilter] = useState("");
+  const savedTheme = localStorage.getItem("sh_theme");
   const [theme, setTheme] = useState(
-    localStorage.getItem("sh_theme") || "sunshine"
+    savedTheme === "midnight" ? "sunshine" : savedTheme || "sunshine"
   );
   const [toolsResetKey, setToolsResetKey] = useState(0);
   const [showThemes, setShowThemes] = useState(false);
@@ -151,8 +151,14 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const themeClasses = themes.map((item) => `theme-${item.id}`);
-    document.body.classList.remove(...themeClasses);
+    document.body.classList.remove(
+      "theme-neon",
+      "theme-ocean",
+      "theme-sunset",
+      "theme-sunshine",
+      "theme-midnight",
+      "theme-light"
+    );
     document.body.classList.add(`theme-${theme}`);
     document.body.dataset.theme = theme;
     localStorage.setItem("sh_theme", theme);
