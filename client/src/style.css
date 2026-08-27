@@ -2409,14 +2409,12 @@ kbd {
     grid-template-columns: 1fr;
   }
 }
-/* Sunshine theme — Hub Converter title */
-body:where(.theme-sunshine, [data-theme="sunshine"]) .hero h1,
-body:where(.theme-sunshine, [data-theme="sunshine"]) .homeHero h1,
-body:where(.theme-sunshine, [data-theme="sunshine"]) .home-hero h1 {
-  background: linear-gradient(90deg, #6d28ff, #8b35ff, #d11cff);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent !important;
-  text-shadow: none;
+body.theme-sunshine .hub-title-area h1,
+body[data-theme="sunshine"] .hub-title-area h1,
+html[data-theme="sunshine"] body .hub-title-area h1 {
+    color: #8A2BE2 !important;
+    -webkit-text-fill-color: #8A2BE2 !important;
+    background: #8A2BE2 !important;
+    background-image: none !important;
+    text-shadow: none !important;
 }
