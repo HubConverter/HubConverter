@@ -2414,3 +2414,8 @@ body.theme-sunshine .hub-title-area h1 {
     color: #8A2BE2 !important;
     -webkit-text-fill-color: #8A2BE2 !important;
 }
+/* SUNSHINE THEME - SUBTITLE ONLY */
+body.theme-sunshine .hub-title-area h2 {
+    color: #8A2BE2 !important;
+    -webkit-text-fill-color: #8A2BE2 !important;
+}
