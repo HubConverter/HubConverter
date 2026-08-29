@@ -2953,3 +2953,259 @@ table {
     margin-right: 0 !important;
   }
 }
+/* =========================================================
+   GLOBAL CONVERTER TOOL THEME FIX
+   Makes ALL converter pages follow the selected theme
+   ========================================================= */
+
+.toolPage,
+.tool-page {
+  color: rgb(var(--text)) !important;
+  background: transparent !important;
+}
+
+.toolPage *,
+.tool-page * {
+  box-sizing: border-box;
+}
+
+/* Main converter box */
+.toolBox,
+.tool-box {
+  color: rgb(var(--text)) !important;
+  background:
+    linear-gradient(
+      145deg,
+      rgb(var(--surface-2) / 0.92),
+      rgb(var(--surface-solid) / 0.90)
+    ) !important;
+  border-color: rgb(var(--accent) / 0.38) !important;
+}
+
+/* Converter headings */
+.toolPage h1,
+.toolPage h2,
+.toolPage h3,
+.toolPage strong,
+.toolPage b,
+.tool-page h1,
+.tool-page h2,
+.tool-page h3,
+.tool-page strong,
+.tool-page b {
+  color: rgb(var(--text)) !important;
+}
+
+/* Converter descriptions */
+.toolPage p,
+.toolPage small,
+.toolPage span,
+.tool-page p,
+.tool-page small,
+.tool-page span {
+  color: rgb(var(--muted)) !important;
+}
+
+/* Upload area */
+.uploadBox,
+.upload-box {
+  color: rgb(var(--text)) !important;
+  background:
+    linear-gradient(
+      145deg,
+      rgb(var(--card) / 0.90),
+      rgb(var(--card-2) / 0.92)
+    ) !important;
+  border-color: rgb(var(--accent) / 0.62) !important;
+}
+
+/* Upload text */
+.uploadBox strong,
+.uploadBox b,
+.uploadBox span,
+.upload-box strong,
+.upload-box b,
+.upload-box span {
+  color: rgb(var(--text)) !important;
+}
+
+/* File lists */
+.fileList,
+.file-list {
+  background: transparent !important;
+}
+
+.fileItem,
+.file-item {
+  color: rgb(var(--text)) !important;
+  background: rgb(var(--card) / 0.78) !important;
+  border-color: rgb(var(--accent) / 0.30) !important;
+}
+
+.fileItem *,
+.file-item * {
+  color: rgb(var(--text)) !important;
+}
+
+/* Size selectors */
+.sizeSelector,
+.size-selector {
+  color: rgb(var(--text)) !important;
+  background: rgb(var(--surface-solid) / 0.78) !important;
+  border-color: rgb(var(--accent) / 0.32) !important;
+}
+
+.sizeOption,
+.size-option {
+  color: rgb(var(--text)) !important;
+  background: rgb(var(--card) / 0.78) !important;
+  border-color: rgb(var(--accent) / 0.30) !important;
+}
+
+.sizeOption:hover,
+.size-option:hover {
+  background: rgb(var(--accent) / 0.12) !important;
+  border-color: rgb(var(--accent) / 0.60) !important;
+}
+
+.sizeOption.active,
+.size-option.active {
+  color: #ffffff !important;
+  background:
+    linear-gradient(
+      110deg,
+      rgb(var(--accent)),
+      rgb(var(--accent-2)),
+      rgb(var(--accent-3))
+    ) !important;
+  border-color: rgb(var(--accent)) !important;
+}
+
+/* Inputs / selects / textareas inside ALL tools */
+.toolPage input,
+.toolPage select,
+.toolPage textarea,
+.tool-page input,
+.tool-page select,
+.tool-page textarea {
+  color: rgb(var(--text)) !important;
+  background: rgb(var(--surface-solid) / 0.80) !important;
+  border-color: rgb(var(--accent) / 0.35) !important;
+}
+
+.toolPage input::placeholder,
+.toolPage textarea::placeholder,
+.tool-page input::placeholder,
+.tool-page textarea::placeholder {
+  color: rgb(var(--faint)) !important;
+}
+
+/* Buttons */
+.toolPage button:not(.close),
+.tool-page button:not(.close) {
+  color: rgb(var(--text));
+}
+
+/* Main conversion buttons */
+.toolPage .convertButton,
+.toolPage .convert-button,
+.tool-page .convertButton,
+.tool-page .convert-button {
+  color: #ffffff !important;
+  background:
+    linear-gradient(
+      110deg,
+      rgb(var(--accent)),
+      rgb(var(--accent-2)) 55%,
+      rgb(var(--accent-3))
+    ) !important;
+  border-color: rgb(var(--accent) / 0.60) !important;
+}
+
+/* Download buttons */
+.toolPage .downloadButton,
+.toolPage .download-button,
+.tool-page .downloadButton,
+.tool-page .download-button {
+  color: #ffffff !important;
+  background:
+    linear-gradient(
+      110deg,
+      rgb(var(--success)),
+      rgb(var(--accent-2))
+    ) !important;
+}
+
+/* Back button */
+.toolPage .backButton,
+.toolPage .back-button,
+.tool-page .backButton,
+.tool-page .back-button {
+  color: rgb(var(--text)) !important;
+  background: transparent !important;
+}
+
+/* Tables */
+.toolPage table,
+.tool-page table {
+  color: rgb(var(--text)) !important;
+  background: rgb(var(--surface-solid) / 0.70) !important;
+}
+
+.toolPage th,
+.toolPage td,
+.tool-page th,
+.tool-page td {
+  color: rgb(var(--text)) !important;
+  border-color: rgb(var(--accent) / 0.22) !important;
+}
+
+/* Cards used inside converter tools */
+.toolPage .card,
+.toolPage .tool-card,
+.toolPage .resultBox,
+.toolPage .result-box,
+.tool-page .card,
+.tool-page .tool-card,
+.tool-page .resultBox,
+.tool-page .result-box {
+  color: rgb(var(--text)) !important;
+  background:
+    linear-gradient(
+      145deg,
+      rgb(var(--card) / 0.82),
+      rgb(var(--card-2) / 0.88)
+    ) !important;
+  border-color: rgb(var(--accent) / 0.32) !important;
+}
+
+/* Links */
+.toolPage a,
+.tool-page a {
+  color: rgb(var(--accent)) !important;
+}
+
+/* Error messages */
+.toolPage .error,
+.tool-page .error {
+  color: rgb(var(--danger)) !important;
+}
+
+/* =========================================================
+   FORCE THEME VARIABLES ON TOOL CONTENT
+   ========================================================= */
+
+body.theme-neon .toolPage,
+body.theme-ocean .toolPage,
+body.theme-sunset .toolPage,
+body.theme-sunshine .toolPage,
+body.theme-midnight .toolPage,
+body.theme-light .toolPage,
+body.theme-neon .tool-page,
+body.theme-ocean .tool-page,
+body.theme-sunset .tool-page,
+body.theme-sunshine .tool-page,
+body.theme-midnight .tool-page,
+body.theme-light .tool-page {
+  color: rgb(var(--text)) !important;
+}
