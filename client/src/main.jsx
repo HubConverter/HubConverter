@@ -1639,44 +1639,6 @@ function ToolCard({
         {icon}
       </div>
 
-/* =========================================
-   MOBILE
-   ========================================= */
-
-@media (max-width: 768px) {
-
-  .featured-tools {
-    grid-template-columns: 1fr;
-    width: calc(100% - 24px);
-    gap: 14px;
-  }
-
-  .featured-tool-card {
-    grid-template-columns: 62px 1fr;
-    column-gap: 14px;
-    min-height: 160px;
-    padding: 18px;
-  }
-
-  .featured-tool-icon {
-    width: 55px;
-    height: 55px;
-    font-size: 34px;
-  }
-
-  .featured-tool-card h3 {
-    font-size: 18px;
-  }
-
-  .featured-tool-card p {
-    font-size: 14px;
-  }
-
-  .featured-open-button {
-    width: 100%;
-    min-width: 0;
-  }
-}
 
       <h3>
         {title}
