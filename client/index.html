@@ -1,1 +1,24 @@
-<!doctype html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b3154"><title>HubConverter</title></head><body><div id="root"></div><script type="module" src="/src/main.jsx"></script></body></html>
+<!doctype html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b3154"><title>HubConverter</title></head><body><div id="root"></div><script type="module" src="/src/main.jsx"></script>
+  // Drag and drop
+    ["dragenter", "dragover"].forEach(eventName => {
+      uploadBox.addEventListener(eventName, event => {
+        event.preventDefault();
+        uploadBox.classList.add("dragging");
+      });
+    });
+
+    ["dragleave", "drop"].forEach(eventName => {
+      uploadBox.addEventListener(eventName, event => {
+        event.preventDefault();
+        uploadBox.classList.remove("dragging");
+      });
+    });
+
+    uploadBox.addEventListener("drop", event => {
+      const files = event.dataTransfer.files;
+
+      if (files.length > 0) {
+        fileName.textContent = "Selected file: " + files[0].name;
+      }
+    });
+  </script></body></html>
