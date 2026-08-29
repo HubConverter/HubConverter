@@ -634,7 +634,7 @@ function Tools({ category = "all", query = "", resetKey = 0 }) {
               fontSize: "15px",
               fontWeight: "600",
               cursor: "pointer",
-              padding: "10px 0",
+              padding: "5px 0",
             }}
           >
             ← Back to Tools
