@@ -2017,169 +2017,58 @@ html[data-theme="light"] body .hub-title-area h1 {
 }
 
 .featured-tool-card h3 {
-  grid-column: 2;
-  grid-row: 1;
-
-  margin: 4px 0 8px;
-  font-size: 20px;
-  line-height: 1.2;
+  z-index: 1;
+  grid-area: heading;
+  align-self: end;
+  margin: 0;
+  color: rgb(var(--text));
+  font-size: clamp(0.92rem, 1.15vw, 1.08rem);
 }
 
 .featured-tool-card p {
-  grid-column: 2;
-  grid-row: 2;
+  z-index: 1;
+  grid-area: copy;
+  align-self: center;
+  margin: 0.4rem 0 0.75rem;
+  color: rgb(var(--muted));
+  font-size: 0.8rem;
+  line-height: 1.42;
+}
 
-  margin: 0 0 16px;
-  font-size: 15px;
-  line-height: 1.45;
+.featured-open-button,
+.tool-card-button {
+  z-index: 1;
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  justify-content: center;
+  padding: 0.47rem 0.85rem;
+  color: white;
+  border: 1px solid rgb(255 255 255 / 0.22);
+  border-radius: 9px;
+  background: linear-gradient(110deg, rgb(var(--accent)), rgb(var(--accent-2)) 58%, rgb(var(--accent-3)));
+  box-shadow: 0 7px 17px rgb(var(--accent) / 0.22), inset 0 1px 0 rgb(255 255 255 / 0.25);
+  font-weight: 800;
+  transition: transform 0.18s ease, filter 0.18s ease;
 }
 
 .featured-open-button {
-  grid-column: 2;
-  grid-row: 3;
-
-  width: fit-content;
-  min-width: 150px;
-  min-height: 46px;
-  padding: 10px 20px;
-  border-radius: 10px;
+  grid-area: action;
+  justify-self: start;
+  min-width: 9.4rem;
 }
 
-
-/* =========================================
-   MOBILE
-   ========================================= */
-
-@media (max-width: 768px) {
-
-  .featured-tools {
-    grid-template-columns: 1fr;
-    width: calc(100% - 24px);
-    gap: 14px;
-  }
-
-  .featured-tool-card {
-    grid-template-columns: 62px 1fr;
-    column-gap: 14px;
-    min-height: 160px;
-    padding: 18px;
-  }
-
-  .featured-tool-icon {
-    width: 55px;
-    height: 55px;
-    font-size: 34px;
-  }
-
-  .featured-tool-card h3 {
-    font-size: 18px;
-  }
-
-  .featured-tool-card p {
-    font-size: 14px;
-  }
-
-  .featured-open-button {
-    width: 100%;
-    min-width: 0;
-  }
+.featured-open-button:hover:not(:disabled),
+.tool-card-button:hover:not(:disabled) {
+  filter: saturate(1.15) brightness(1.08);
+  transform: translateY(-2px);
 }
 
-.all-tools-home {
-  width: min(100% - 3rem, 1450px);
-  margin: 1.3rem auto 0;
-}
-
-.home-section-title {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  margin: 1.2rem 0 0.85rem;
-}
-
-.home-section-title span {
-  width: clamp(3.5rem, 8vw, 8rem);
-  height: 3px;
-  border-radius: 99px;
-  background: linear-gradient(90deg, transparent, rgb(var(--accent)), rgb(var(--accent-2)));
-  box-shadow: 0 0 10px rgb(var(--accent) / 0.72);
-}
-
-.home-section-title span:last-child {
-  transform: scaleX(-1);
-}
-
-.home-section-title h2 {
-  margin: 0;
-  color: rgb(var(--text));
-  font-size: clamp(1.25rem, 2vw, 1.65rem);
-  font-weight: 850;
-}
-
-.all-tools-grid {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 0.72rem;
-}
-
-.tool-card {
-  position: relative;
-  display: flex;
-  min-height: 186px;
-  flex-direction: column;
-  align-items: center;
-  padding: 1rem 0.7rem 0.95rem;
-  overflow: hidden;
-  color: rgb(var(--text));
-  border: 1px solid rgb(var(--accent) / 0.67);
-  border-radius: 16px;
-  background: linear-gradient(145deg, rgb(var(--card) / 0.96), rgb(var(--card-2) / 0.98));
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.15), 0 10px 30px rgb(0 0 0 / 0.30), 0 0 20px rgb(var(--accent) / 0.10);
-  cursor: pointer;
-  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.tool-card::after {
-  position: absolute;
-  right: 1.1rem;
-  bottom: 0.55rem;
-  left: 1.1rem;
-  height: 2px;
-  content: "";
-  border-radius: 99px;
-  background: linear-gradient(90deg, rgb(var(--accent)), rgb(var(--accent-2)), rgb(var(--accent-3)));
-  box-shadow: 0 0 9px rgb(var(--accent) / 0.67);
-}
-
-.tool-card:hover:not(.is-disabled) {
-  z-index: 1;
-  border-color: rgb(var(--accent));
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.20), 0 20px 38px rgb(0 0 0 / 0.42), 0 0 28px rgb(var(--accent) / 0.26);
-  transform: translateY(-5px);
-}
-
-.tool-card.is-disabled {
-  cursor: default;
-  opacity: 0.78;
-}
-
-.tool-card-icon {
-  display: grid;
-  min-height: 48px;
-  place-items: center;
-  margin-bottom: 0.45rem;
-  font-size: 2.5rem;
-  line-height: 1;
-  filter: drop-shadow(0 0 8px rgb(var(--accent) / 0.38));
-}
-
-.tool-card h3 {
-  margin: 0;
-  color: rgb(var(--text));
-  font-size: 0.95rem;
-  line-height: 1.25;
-  text-align: center;
+.featured-open-button:disabled,
+.tool-card-button:disabled {
+  cursor: not-allowed;
+  filter: grayscale(0.45);
+  opacity: 0.52;
 }
 
 .tool-card p {
