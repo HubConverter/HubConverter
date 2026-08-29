@@ -1465,12 +1465,12 @@ const toolsToShow = toolsForCategory.filter((tool) => {
           description: "Convert image files into a cohesive PDF document.",
           id: "jpg-to-pdf",
         },
-        {
-          icon: "🖼️➡️🖼️",
-          title: "Image Compressor",
-          description: "Compress image files for smaller sizes and faster loading.",
-          id: null,
-        },
+        
+  icon: "🖼️➡️🖼️",
+  title: "Image Compressor",
+  description: "Compress image files for smaller sizes and faster loading.",
+ id: "image-compressor",
+},
       ].map((tool) => (
         <article
           key={tool.title}
