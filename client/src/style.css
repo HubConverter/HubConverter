@@ -2427,6 +2427,500 @@ body.theme-sunshine .hub-title-area h2 {
     margin-right: 0 !important;
   }
 }
+* =========================================
+   HUBCONVERTER - MOBILE RESPONSIVE CSS
+   ========================================= */
+
+/* ---------- GLOBAL ---------- */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+img,
+video,
+canvas,
+svg {
+  max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  max-width: 100%;
+  font: inherit;
+}
+
+
+/* =========================================
+   MAIN APP
+   ========================================= */
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+
+/* =========================================
+   CONTAINERS
+   ========================================= */
+
+.container,
+.content,
+.main-content,
+.page-content {
+  width: 100%;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+/* =========================================
+   NAVBAR / HEADER
+   ========================================= */
+
+header,
+.navbar,
+nav {
+  width: 100%;
+  max-width: 100%;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 12px 20px;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-links a,
+.nav-links button {
+  white-space: nowrap;
+}
+
+
+/* =========================================
+   HERO SECTION
+   ========================================= */
+
+.hero {
+  width: 100%;
+  padding: 60px 30px;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: clamp(30px, 5vw, 60px);
+  margin: 0 0 15px;
+}
+
+.hero p {
+  font-size: clamp(16px, 2vw, 20px);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+
+/* =========================================
+   SEARCH BAR
+   ========================================= */
+
+.search-container,
+.search-box {
+  width: 100%;
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 0 20px;
+}
+
+.search-container input,
+.search-box input,
+.search-input {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-size: 16px;
+}
+
+
+/* =========================================
+   CARDS / TOOLS
+   ========================================= */
+
+.cards,
+.tools-grid,
+.tool-grid,
+.grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.card,
+.tool-card {
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  padding: 20px;
+  border-radius: 16px;
+}
+
+.card h2,
+.card h3,
+.tool-card h2,
+.tool-card h3 {
+  overflow-wrap: anywhere;
+}
+
+
+/* =========================================
+   BUTTONS
+   ========================================= */
+
+button {
+  min-height: 44px;
+  cursor: pointer;
+}
+
+.btn,
+button {
+  touch-action: manipulation;
+}
+
+
+/* =========================================
+   CONVERTER PANELS
+   ========================================= */
+
+.converter,
+.converter-panel,
+.tool-panel,
+.upload-panel {
+  width: 100%;
+  max-width: 1000px;
+  margin: 20px auto;
+  padding: 30px;
+  border-radius: 18px;
+}
+
+.converter input[type="file"] {
+  width: 100%;
+}
+
+
+/* =========================================
+   FILE UPLOAD AREA
+   ========================================= */
+
+.drop-zone,
+.upload-area {
+  width: 100%;
+  min-height: 180px;
+  padding: 30px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+
+/* =========================================
+   TABLES
+   ========================================= */
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+
+/* =========================================
+   DESKTOP → TABLET
+   ========================================= */
+
+@media (max-width: 1024px) {
+
+  .cards,
+  .tools-grid,
+  .tool-grid,
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .hero {
+    padding: 50px 25px;
+  }
+
+  .converter,
+  .converter-panel,
+  .tool-panel,
+  .upload-panel {
+    margin-left: 20px;
+    margin-right: 20px;
+    width: calc(100% - 40px);
+  }
+}
+
+
+/* =========================================
+   TABLET
+   ========================================= */
+
+@media (max-width: 768px) {
+
+  /* Navbar */
+
+  .navbar {
+    padding: 10px 15px;
+    flex-wrap: wrap;
+  }
+
+  .nav-links {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  /* Cards */
+
+  .cards,
+  .tools-grid,
+  .tool-grid,
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 15px;
+  }
+
+  /* Hero */
+
+  .hero {
+    padding: 40px 20px;
+  }
+
+  /* Converter */
+
+  .converter,
+  .converter-panel,
+  .tool-panel,
+  .upload-panel {
+    padding: 22px;
+    margin: 15px;
+    width: calc(100% - 30px);
+  }
+
+  /* Buttons */
+
+  .button-row,
+  .actions,
+  .button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .button-row button,
+  .actions button,
+  .button-group button {
+    flex: 1 1 150px;
+  }
+}
+
+
+/* =========================================
+   MOBILE
+   ========================================= */
+
+@media (max-width: 600px) {
+
+  body {
+    font-size: 16px;
+  }
+
+  /* Header */
+
+  .navbar {
+    padding: 10px 12px;
+  }
+
+  .nav-links {
+    gap: 6px;
+  }
+
+  .nav-links a,
+  .nav-links button {
+    font-size: 14px;
+    padding: 9px 10px;
+  }
+
+  /* Hero */
+
+  .hero {
+    padding: 30px 15px;
+  }
+
+  .hero h1 {
+    font-size: 32px;
+    line-height: 1.15;
+  }
+
+  .hero p {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  /* Search */
+
+  .search-container,
+  .search-box {
+    padding: 0 12px;
+  }
+
+  .search-container input,
+  .search-box input,
+  .search-input {
+    min-height: 48px;
+    font-size: 16px;
+  }
+
+  /* One card per row */
+
+  .cards,
+  .tools-grid,
+  .tool-grid,
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .card,
+  .tool-card {
+    padding: 18px;
+    border-radius: 14px;
+  }
+
+  /* Converter */
+
+  .converter,
+  .converter-panel,
+  .tool-panel,
+  .upload-panel {
+    padding: 18px;
+    margin: 12px;
+    width: calc(100% - 24px);
+    border-radius: 14px;
+  }
+
+  /* Upload */
+
+  .drop-zone,
+  .upload-area {
+    min-height: 150px;
+    padding: 20px 12px;
+  }
+
+  /* Buttons */
+
+  .button-row,
+  .actions,
+  .button-group {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .button-row button,
+  .actions button,
+  .button-group button {
+    width: 100%;
+    min-height: 48px;
+  }
+
+  /* Select */
+
+  select {
+    width: 100%;
+    min-height: 46px;
+    font-size: 16px;
+  }
+
+  /* Inputs */
+
+  input,
+  textarea {
+    width: 100%;
+    font-size: 16px;
+  }
+}
+
+
+/* =========================================
+   VERY SMALL PHONES
+   ========================================= */
+
+@media (max-width: 380px) {
+
+  .hero h1 {
+    font-size: 27px;
+  }
+
+  .hero {
+    padding: 25px 10px;
+  }
+
+  .card,
+  .tool-card {
+    padding: 15px;
+  }
+
+  .converter,
+  .converter-panel,
+  .tool-panel,
+  .upload-panel {
+    margin: 8px;
+    width: calc(100% - 16px);
+    padding: 15px;
+  }
+}
+/* MOBILE: Keep theme icon on the right */
+@media (max-width: 600px) {
+  .theme-toggle {
+    margin-left: auto !important;
+    margin-right: 0 !important;
+  }
+}
 /* =========================================
    MOBILE THEME ICON - RIGHT SIDE
    ========================================= */
