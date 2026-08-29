@@ -2954,49 +2954,402 @@ table {
   }
 }
 /* =========================================================
-   GLOBAL CONVERTER TOOL THEME FIX
-   Makes ALL converter pages follow the selected theme
+   HUBCONVERTER - GLOBAL THEME CSS
+   ========================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: 8 20 35;
+  --surface: 13 31 50;
+  --surface-2: 17 40 64;
+  --surface-solid: 12 27 45;
+
+  --card: 17 38 61;
+  --card-2: 21 47 73;
+
+  --text: 240 248 255;
+  --muted: 164 187 208;
+  --faint: 115 143 169;
+
+  --line: 63 91 119;
+
+  --accent: 0 200 255;
+  --accent-2: 99 102 241;
+  --accent-3: 0 255 190;
+
+  --success: 43 211 139;
+  --danger: 255 91 110;
+  --warning: 255 196 77;
+}
+
+/* =========================================================
+   THEMES
+   ========================================================= */
+
+body.theme-neon {
+  --bg: 5 10 22;
+  --surface: 10 20 38;
+  --surface-2: 15 31 55;
+  --surface-solid: 8 18 34;
+
+  --card: 13 28 50;
+  --card-2: 18 39 66;
+
+  --text: 240 250 255;
+  --muted: 164 192 216;
+  --faint: 108 140 169;
+
+  --line: 48 83 115;
+
+  --accent: 0 229 255;
+  --accent-2: 91 92 255;
+  --accent-3: 0 255 184;
+
+  --success: 40 220 145;
+  --danger: 255 82 104;
+  --warning: 255 195 72;
+}
+
+body.theme-ocean {
+  --bg: 5 22 34;
+  --surface: 8 38 55;
+  --surface-2: 12 54 73;
+  --surface-solid: 7 32 48;
+
+  --card: 10 47 65;
+  --card-2: 14 61 82;
+
+  --text: 240 252 255;
+  --muted: 166 203 218;
+  --faint: 111 156 177;
+
+  --line: 47 103 125;
+
+  --accent: 24 190 255;
+  --accent-2: 31 128 255;
+  --accent-3: 0 232 194;
+
+  --success: 45 218 145;
+  --danger: 255 92 110;
+  --warning: 255 198 75;
+}
+
+body.theme-sunset {
+  --bg: 35 12 23;
+  --surface: 55 19 31;
+  --surface-2: 76 26 38;
+  --surface-solid: 46 16 28;
+
+  --card: 65 23 37;
+  --card-2: 83 30 45;
+
+  --text: 255 246 243;
+  --muted: 221 179 169;
+  --faint: 170 117 109;
+
+  --line: 124 62 62;
+
+  --accent: 255 111 76;
+  --accent-2: 236 72 153;
+  --accent-3: 255 183 77;
+
+  --success: 65 215 137;
+  --danger: 255 92 105;
+  --warning: 255 196 70;
+}
+
+body.theme-sunshine {
+  --bg: 38 32 8;
+  --surface: 58 49 11;
+  --surface-2: 77 65 14;
+  --surface-solid: 49 42 9;
+
+  --card: 67 56 12;
+  --card-2: 86 72 15;
+
+  --text: 255 253 235;
+  --muted: 222 211 159;
+  --faint: 170 157 98;
+
+  --line: 126 112 49;
+
+  --accent: 255 202 40;
+  --accent-2: 255 143 0;
+  --accent-3: 255 226 84;
+
+  --success: 79 218 137;
+  --danger: 255 91 91;
+  --warning: 255 185 40;
+}
+
+body.theme-midnight {
+  --bg: 4 7 15;
+  --surface: 8 12 24;
+  --surface-2: 13 19 36;
+  --surface-solid: 7 10 21;
+
+  --card: 11 16 30;
+  --card-2: 17 23 41;
+
+  --text: 235 241 255;
+  --muted: 153 166 192;
+  --faint: 91 104 132;
+
+  --line: 42 53 76;
+
+  --accent: 117 139 255;
+  --accent-2: 87 67 255;
+  --accent-3: 70 220 255;
+
+  --success: 48 207 138;
+  --danger: 255 82 105;
+  --warning: 255 191 67;
+}
+
+body.theme-light {
+  --bg: 245 247 251;
+  --surface: 255 255 255;
+  --surface-2: 247 250 253;
+  --surface-solid: 255 255 255;
+
+  --card: 255 255 255;
+  --card-2: 247 250 253;
+
+  --text: 21 34 54;
+  --muted: 102 116 135;
+  --faint: 143 155 170;
+
+  --line: 221 228 236;
+
+  --accent: 22 117 232;
+  --accent-2: 99 102 241;
+  --accent-3: 0 170 150;
+
+  --success: 24 166 102;
+  --danger: 207 52 66;
+  --warning: 211 139 0;
+}
+
+/* =========================================================
+   BODY
+   ========================================================= */
+
+body {
+  margin: 0;
+  min-width: 320px;
+
+  font-family:
+    Inter,
+    "Segoe UI",
+    Arial,
+    sans-serif;
+
+  background:
+    radial-gradient(
+      circle at 15% 10%,
+      rgb(var(--accent) / 0.12),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at 85% 80%,
+      rgb(var(--accent-2) / 0.10),
+      transparent 34%
+    ),
+    rgb(var(--bg));
+
+  color: rgb(var(--text));
+
+  transition:
+    background 0.3s ease,
+    color 0.3s ease;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* =========================================================
+   ROOT
+   ========================================================= */
+
+#root,
+.app,
+main {
+  min-height: 100vh;
+  background: transparent !important;
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+header {
+  background: rgb(var(--surface-solid) / 0.90) !important;
+  color: rgb(var(--text)) !important;
+  border-bottom: 1px solid rgb(var(--line) / 0.65) !important;
+
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+header *,
+nav *,
+.actions * {
+  color: rgb(var(--text));
+}
+
+nav button {
+  background: transparent;
+  color: rgb(var(--muted)) !important;
+  border: 0;
+}
+
+nav button:hover,
+nav .sel {
+  background: rgb(var(--accent) / 0.12) !important;
+  color: rgb(var(--accent)) !important;
+}
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.hero {
+  color: rgb(var(--text)) !important;
+
+  background:
+    radial-gradient(
+      circle at 20% 10%,
+      rgb(var(--accent) / 0.22),
+      transparent 38%
+    ),
+    linear-gradient(
+      135deg,
+      rgb(var(--surface-2)),
+      rgb(var(--bg))
+    ) !important;
+}
+
+.hero h1,
+.hero h2,
+.hero h3 {
+  color: rgb(var(--text)) !important;
+}
+
+.hero p {
+  color: rgb(var(--muted)) !important;
+}
+
+/* =========================================================
+   GENERAL CARDS
+   ========================================================= */
+
+.card,
+.apps .card,
+.featureGrid .card,
+.featureGrid article,
+.shortcut,
+.profile,
+.admin,
+.learnBox,
+.empty {
+  background:
+    linear-gradient(
+      145deg,
+      rgb(var(--card) / 0.90),
+      rgb(var(--card-2) / 0.88)
+    ) !important;
+
+  color: rgb(var(--text)) !important;
+
+  border: 1px solid rgb(var(--line) / 0.70) !important;
+
+  box-shadow:
+    0 10px 30px rgb(0 0 0 / 0.16);
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.card *,
+.apps .card *,
+.featureGrid article *,
+.shortcut *,
+.profile *,
+.admin *,
+.learnBox *,
+.empty * {
+  color: inherit;
+}
+
+.card p,
+.featureGrid p,
+.shortcut p {
+  color: rgb(var(--muted)) !important;
+}
+
+/* =========================================================
+   ALL CONVERTER TOOLS
    ========================================================= */
 
 .toolPage,
 .tool-page {
   color: rgb(var(--text)) !important;
   background: transparent !important;
+
+  transition:
+    color 0.3s ease,
+    background 0.3s ease;
 }
 
-.toolPage *,
-.tool-page * {
-  box-sizing: border-box;
-}
+/* Main tool panel */
 
-/* Main converter box */
 .toolBox,
 .tool-box {
   color: rgb(var(--text)) !important;
+
   background:
     linear-gradient(
       145deg,
-      rgb(var(--surface-2) / 0.92),
-      rgb(var(--surface-solid) / 0.90)
+      rgb(var(--surface-2) / 0.94),
+      rgb(var(--surface-solid) / 0.92)
     ) !important;
-  border-color: rgb(var(--accent) / 0.38) !important;
+
+  border: 1px solid rgb(var(--line) / 0.70) !important;
+
+  box-shadow:
+    0 15px 45px rgb(0 0 0 / 0.18);
 }
 
-/* Converter headings */
+/* Tool headings */
+
 .toolPage h1,
 .toolPage h2,
 .toolPage h3,
+.toolPage h4,
 .toolPage strong,
 .toolPage b,
 .tool-page h1,
 .tool-page h2,
 .tool-page h3,
+.tool-page h4,
 .tool-page strong,
 .tool-page b {
   color: rgb(var(--text)) !important;
 }
 
-/* Converter descriptions */
+/* Tool descriptions */
+
 .toolPage p,
 .toolPage small,
 .toolPage span,
@@ -3006,20 +3359,30 @@ table {
   color: rgb(var(--muted)) !important;
 }
 
-/* Upload area */
+/* =========================================================
+   UPLOAD BOX
+   ========================================================= */
+
 .uploadBox,
 .upload-box {
   color: rgb(var(--text)) !important;
+
   background:
     linear-gradient(
       145deg,
-      rgb(var(--card) / 0.90),
-      rgb(var(--card-2) / 0.92)
+      rgb(var(--card) / 0.92),
+      rgb(var(--card-2) / 0.90)
     ) !important;
-  border-color: rgb(var(--accent) / 0.62) !important;
+
+  border: 2px dashed rgb(var(--accent) / 0.55) !important;
 }
 
-/* Upload text */
+.uploadBox:hover,
+.upload-box:hover {
+  background: rgb(var(--accent) / 0.08) !important;
+  border-color: rgb(var(--accent)) !important;
+}
+
 .uploadBox strong,
 .uploadBox b,
 .uploadBox span,
@@ -3029,7 +3392,10 @@ table {
   color: rgb(var(--text)) !important;
 }
 
-/* File lists */
+/* =========================================================
+   FILE ITEMS
+   ========================================================= */
+
 .fileList,
 .file-list {
   background: transparent !important;
@@ -3038,8 +3404,11 @@ table {
 .fileItem,
 .file-item {
   color: rgb(var(--text)) !important;
-  background: rgb(var(--card) / 0.78) !important;
-  border-color: rgb(var(--accent) / 0.30) !important;
+
+  background:
+    rgb(var(--card) / 0.82) !important;
+
+  border: 1px solid rgb(var(--line) / 0.70) !important;
 }
 
 .fileItem *,
@@ -3047,30 +3416,40 @@ table {
   color: rgb(var(--text)) !important;
 }
 
-/* Size selectors */
+/* =========================================================
+   SIZE SELECTOR
+   ========================================================= */
+
 .sizeSelector,
 .size-selector {
   color: rgb(var(--text)) !important;
-  background: rgb(var(--surface-solid) / 0.78) !important;
-  border-color: rgb(var(--accent) / 0.32) !important;
+
+  background:
+    rgb(var(--surface-solid) / 0.82) !important;
+
+  border: 1px solid rgb(var(--line) / 0.70) !important;
 }
 
 .sizeOption,
 .size-option {
   color: rgb(var(--text)) !important;
-  background: rgb(var(--card) / 0.78) !important;
-  border-color: rgb(var(--accent) / 0.30) !important;
+
+  background:
+    rgb(var(--card) / 0.80) !important;
+
+  border: 1px solid rgb(var(--line) / 0.65) !important;
 }
 
 .sizeOption:hover,
 .size-option:hover {
   background: rgb(var(--accent) / 0.12) !important;
-  border-color: rgb(var(--accent) / 0.60) !important;
+  border-color: rgb(var(--accent) / 0.65) !important;
 }
 
 .sizeOption.active,
 .size-option.active {
-  color: #ffffff !important;
+  color: #fff !important;
+
   background:
     linear-gradient(
       110deg,
@@ -3078,10 +3457,14 @@ table {
       rgb(var(--accent-2)),
       rgb(var(--accent-3))
     ) !important;
+
   border-color: rgb(var(--accent)) !important;
 }
 
-/* Inputs / selects / textareas inside ALL tools */
+/* =========================================================
+   ALL TOOL INPUTS
+   ========================================================= */
+
 .toolPage input,
 .toolPage select,
 .toolPage textarea,
@@ -3089,8 +3472,25 @@ table {
 .tool-page select,
 .tool-page textarea {
   color: rgb(var(--text)) !important;
-  background: rgb(var(--surface-solid) / 0.80) !important;
-  border-color: rgb(var(--accent) / 0.35) !important;
+
+  background:
+    rgb(var(--surface-solid) / 0.86) !important;
+
+  border: 1px solid rgb(var(--line) / 0.80) !important;
+
+  outline: none;
+}
+
+.toolPage input:focus,
+.toolPage select:focus,
+.toolPage textarea:focus,
+.tool-page input:focus,
+.tool-page select:focus,
+.tool-page textarea:focus {
+  border-color: rgb(var(--accent)) !important;
+
+  box-shadow:
+    0 0 0 3px rgb(var(--accent) / 0.12);
 }
 
 .toolPage input::placeholder,
@@ -3100,18 +3500,17 @@ table {
   color: rgb(var(--faint)) !important;
 }
 
-/* Buttons */
-.toolPage button:not(.close),
-.tool-page button:not(.close) {
-  color: rgb(var(--text));
-}
+/* =========================================================
+   BUTTONS
+   ========================================================= */
 
-/* Main conversion buttons */
-.toolPage .convertButton,
-.toolPage .convert-button,
-.tool-page .convertButton,
-.tool-page .convert-button {
-  color: #ffffff !important;
+.primary,
+.convertButton,
+.convert-button,
+.downloadButton,
+.download-button {
+  color: #fff !important;
+
   background:
     linear-gradient(
       110deg,
@@ -3119,93 +3518,198 @@ table {
       rgb(var(--accent-2)) 55%,
       rgb(var(--accent-3))
     ) !important;
-  border-color: rgb(var(--accent) / 0.60) !important;
+
+  border: 0 !important;
+
+  box-shadow:
+    0 8px 22px rgb(var(--accent) / 0.22);
 }
 
-/* Download buttons */
-.toolPage .downloadButton,
-.toolPage .download-button,
-.tool-page .downloadButton,
-.tool-page .download-button {
-  color: #ffffff !important;
-  background:
-    linear-gradient(
-      110deg,
-      rgb(var(--success)),
-      rgb(var(--accent-2))
-    ) !important;
-}
-
-/* Back button */
-.toolPage .backButton,
-.toolPage .back-button,
-.tool-page .backButton,
-.tool-page .back-button {
-  color: rgb(var(--text)) !important;
-  background: transparent !important;
-}
-
-/* Tables */
-.toolPage table,
-.tool-page table {
-  color: rgb(var(--text)) !important;
-  background: rgb(var(--surface-solid) / 0.70) !important;
-}
-
-.toolPage th,
-.toolPage td,
-.tool-page th,
-.tool-page td {
-  color: rgb(var(--text)) !important;
-  border-color: rgb(var(--accent) / 0.22) !important;
-}
-
-/* Cards used inside converter tools */
-.toolPage .card,
-.toolPage .tool-card,
-.toolPage .resultBox,
-.toolPage .result-box,
-.tool-page .card,
-.tool-page .tool-card,
-.tool-page .resultBox,
-.tool-page .result-box {
-  color: rgb(var(--text)) !important;
-  background:
-    linear-gradient(
-      145deg,
-      rgb(var(--card) / 0.82),
-      rgb(var(--card-2) / 0.88)
-    ) !important;
-  border-color: rgb(var(--accent) / 0.32) !important;
-}
-
-/* Links */
-.toolPage a,
-.tool-page a {
-  color: rgb(var(--accent)) !important;
-}
-
-/* Error messages */
-.toolPage .error,
-.tool-page .error {
-  color: rgb(var(--danger)) !important;
+.primary:hover,
+.convertButton:hover,
+.convert-button:hover,
+.downloadButton:hover,
+.download-button:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
 }
 
 /* =========================================================
-   FORCE THEME VARIABLES ON TOOL CONTENT
+   TOOL RESULT / OPTION CARDS
    ========================================================= */
 
-body.theme-neon .toolPage,
-body.theme-ocean .toolPage,
-body.theme-sunset .toolPage,
-body.theme-sunshine .toolPage,
-body.theme-midnight .toolPage,
-body.theme-light .toolPage,
-body.theme-neon .tool-page,
-body.theme-ocean .tool-page,
-body.theme-sunset .tool-page,
-body.theme-sunshine .tool-page,
-body.theme-midnight .tool-page,
-body.theme-light .tool-page {
+.resultBox,
+.result-box,
+.tool-card,
+.toolCard {
   color: rgb(var(--text)) !important;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgb(var(--card) / 0.88),
+      rgb(var(--card-2) / 0.88)
+    ) !important;
+
+  border-color: rgb(var(--line) / 0.70) !important;
+}
+
+/* =========================================================
+   MODALS
+   ========================================================= */
+
+.modalOverlay,
+.modal-overlay {
+  background: rgb(0 0 0 / 0.62) !important;
+}
+
+.modalBox,
+.modal-box {
+  color: rgb(var(--text)) !important;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgb(var(--surface-2)),
+      rgb(var(--surface-solid))
+    ) !important;
+
+  border: 1px solid rgb(var(--line)) !important;
+}
+
+.modalBox *,
+.modal-box * {
+  color: inherit;
+}
+
+.close {
+  color: rgb(var(--text)) !important;
+}
+
+/* =========================================================
+   KBD
+   ========================================================= */
+
+kbd {
+  color: rgb(var(--text)) !important;
+
+  background:
+    rgb(var(--surface-2)) !important;
+
+  border: 1px solid rgb(var(--line)) !important;
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+footer {
+  color: rgb(var(--muted)) !important;
+
+  background:
+    rgb(var(--surface-solid)) !important;
+
+  border-top: 1px solid rgb(var(--line) / 0.55);
+}
+
+/* =========================================================
+   THEME PICKER
+   ========================================================= */
+
+.themePicker {
+  margin-left: auto !important;
+}
+
+.themeToggle {
+  color: rgb(var(--text)) !important;
+
+  background:
+    rgb(var(--card) / 0.80) !important;
+
+  border: 1px solid rgb(var(--line)) !important;
+}
+
+.themeMenu {
+  color: rgb(var(--text)) !important;
+
+  background:
+    rgb(var(--surface-solid)) !important;
+
+  border: 1px solid rgb(var(--line)) !important;
+
+  box-shadow:
+    0 15px 40px rgb(0 0 0 / 0.25);
+}
+
+.themeMenu button {
+  color: rgb(var(--text)) !important;
+}
+
+.themeMenu button:hover {
+  background: rgb(var(--accent) / 0.12) !important;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+  .toolPage,
+  .tool-page {
+    width: 100%;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .toolBox,
+  .tool-box {
+    width: 100%;
+    max-width: 100%;
+    padding: 18px !important;
+  }
+
+  .uploadBox,
+  .upload-box {
+    width: 100%;
+  }
+
+  .sizeSelector,
+  .size-selector {
+    width: 100%;
+  }
+
+  .sizeOption,
+  .size-option {
+    width: 100%;
+  }
+
+  .toolPage button,
+  .tool-page button {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+
+  .toolBox,
+  .tool-box {
+    padding: 14px !important;
+    border-radius: 14px !important;
+  }
+
+  .toolPage h1,
+  .tool-page h1 {
+    font-size: 28px !important;
+  }
+
+  .uploadBox,
+  .upload-box {
+    padding: 22px 12px !important;
+  }
+
+  .sizeSelector,
+  .size-selector {
+    gap: 8px !important;
+  }
 }
