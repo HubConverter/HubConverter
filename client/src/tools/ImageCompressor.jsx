@@ -8,7 +8,7 @@ const TARGETS = [
   { value: 500, label: "Less than 500 KB" },
 ];
 
-const MAX_INPUT_SIZE = 50 * 1024 * 1024;
+const MAX_INPUT_SIZE = 5 * 1024 * 1024; // 8 MB
 
 function formatBytes(bytes) {
   if (!bytes) return "0 KB";
@@ -243,7 +243,7 @@ export default function ImageCompressor() {
     }
 
     if (selectedFile.size > MAX_INPUT_SIZE) {
-      setError("The selected image is too large. Maximum input size is 50 MB.");
+      setError("The selected image is too large. Maximum input size is 8 MB.");
       event.target.value = "";
       return;
     }
@@ -434,14 +434,15 @@ export default function ImageCompressor() {
             </strong>
 
             <span
-              style={{
-                display: "block",
-                marginTop: "8px",
-                opacity: 0.65,
-              }}
-            >
-              JPG, JPEG, PNG or WebP
-            </span>
+  style={{
+    display: "block",
+    marginTop: "8px",
+    fontSize: "13px",
+    opacity: 0.6,
+  }}
+>
+  Maximum input size: 8 MB
+</span>
 
             <span
               style={{
@@ -451,7 +452,7 @@ export default function ImageCompressor() {
                 opacity: 0.6,
               }}
             >
-              Maximum input size: 50 MB
+              Maximum input size: 8 MB
             </span>
 
             <input
