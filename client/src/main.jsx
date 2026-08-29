@@ -1427,75 +1427,217 @@ const toolsToShow = toolsForCategory.filter((tool) => {
     {/* =========================================
         FEATURED TOOLS
     ========================================= */}
-  /* =========================================
-   FEATURED TOOLS
-   ========================================= */
+    <section className="featured-tools">
 
-.featured-tools {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 22px;
-  width: 100%;
-  max-width: 1000px;
-  margin: 25px auto;
+      {[
+        {
+          icon: "🖼️",
+          title: "Image Background",
+          description: "Isolate subjects and create transparency.",
+          id: null,
+        },
+        {
+          icon: "📄",
+          title: "JPG to PDF",
+          description: "Convert image files into a cohesive PDF document.",
+          id: "jpg-to-pdf",
+        },
+        {
+          icon: "🖼️➡️🖼️",
+          title: "Image Compressor",
+          description: "Compress image files for smaller sizes and faster loading.",
+          id: null,
+        },
+      ].map((tool) => (
+        <article
+          key={tool.title}
+          className="featured-tool-card"
+          onClick={
+            tool.id
+              ? () => setSelectedTool(tool.id)
+              : undefined
+          }
+        >
+
+          <div className="featured-tool-icon">
+            {tool.icon}
+          </div>
+
+          <h3>{tool.title}</h3>
+
+          <p>{tool.description}</p>
+
+          <button
+            className="featured-open-button"
+            disabled={!tool.id}
+            onClick={(event) => {
+              event.stopPropagation();
+
+              if (tool.id) {
+                setSelectedTool(tool.id);
+              }
+            }}
+          >
+            {tool.id ? "Open Tool →" : "Open Tool →"}
+          </button>
+
+        </article>
+      ))}
+
+    </section>
+
+
+    {/* =========================================
+        ALL TOOLS
+    ========================================= */}
+     <section className="all-tools-home">
+       <div className="home-section-title">
+         <span />
+         <h2>All Converter Tools</h2>
+         <span />
+       </div>
+ 
+       <div className="all-tools-grid">
+
+        {toolsToShow.map((tool) => (
+          <ToolCard
+            key={tool.title}
+            icon={tool.icon}
+            title={tool.title}
+            description={tool.description}
+            comingSoon={tool.comingSoon}
+            onClick={
+              tool.id
+                ? () => setSelectedTool(tool.id)
+                : undefined
+            }
+          />
+        ))}
+
+      </div>
+
+    </section>
+
+
+    {/* =========================================
+        BOTTOM MESSAGE
+    ========================================= */}
+     <section className="hub-bottom-banner" aria-label="Service benefits">
+       <div className="hub-benefit">
+         <span aria-hidden="true">♢</span>
+         <div><strong>100% Secure</strong><small>Your files are safe with us</small></div>
+       </div>
+       <div className="hub-benefit">
+         <span aria-hidden="true">👍</span>
+         <div><strong>Easy to Use</strong><small>Simple and user friendly</small></div>
+       </div>
+       <div className="hub-benefit">
+         <span aria-hidden="true">ϟ</span>
+         <div><strong>Fast Conversion</strong><small>Get results in seconds</small></div>
+       </div>
+       <div className="hub-benefit">
+         <span aria-hidden="true">🎁</span>
+         <div><strong>100% Free</strong><small>No signup required</small></div>
+       </div>
+     </section>
+
+  </div>
+)}
+
+    {/* =========================
+        PDF CONVERTER TOOLS
+    ========================= */}
+
+    {category === "pdf" && (
+      <>
+        <div style={{ marginBottom: "18px" }}>
+          <small>PDF TOOLS</small>
+
+          <h2 style={{ marginTop: "5px" }}>
+            PDF Tools
+          </h2>
+        </div>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns:
+              "repeat(auto-fit, minmax(210px, 1fr))",
+            gap: "18px",
+          }}
+        >
+          {pdfTools.map((tool) => (
+            <ToolCard
+              key={tool.title}
+              icon={tool.icon}
+              title={tool.title}
+              description={tool.description}
+              onClick={() => setSelectedTool(tool.id)}
+            />
+          ))}
+        </div>
+      </>
+    )}
+
+    {/* =========================
+        JPG / IMAGE TOOLS
+    ========================= */}
+
+    {category === "jpg" && (
+      <>
+        <div style={{ marginBottom: "18px" }}>
+          <small>IMAGE TOOLS</small>
+
+          <h2 style={{ marginTop: "5px" }}>
+            Image Tools
+          </h2>
+        </div>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns:
+              "repeat(auto-fit, minmax(210px, 1fr))",
+            gap: "18px",
+          }}
+        >
+          {jpgTools.map((tool) => (
+            <ToolCard
+              key={tool.title}
+              icon={tool.icon}
+              title={tool.title}
+              description={tool.description}
+              comingSoon
+            />
+          ))}
+        </div>
+      </>
+    )}
+
+   </main>
+ );
 }
 
-.featured-tool-card {
-  display: grid;
-  grid-template-columns: 72px 1fr;
-  grid-template-rows: auto auto auto;
-  column-gap: 16px;
+/* =========================
+   TOOL CARD
+========================= */
 
-  padding: 22px;
-  min-height: 190px;
-  border-radius: 18px;
-  cursor: pointer;
-}
+function ToolCard({
+  icon,
+  title,
+  description,
+  onClick,
+  comingSoon,
+}) {
+  return (
+    <article
+      className={comingSoon ? "tool-card is-disabled" : "tool-card"}
+      onClick={comingSoon ? undefined : onClick}
+    >
 
-.featured-tool-icon {
-  grid-column: 1;
-  grid-row: 1 / 4;
-
-  width: 65px;
-  height: 65px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  font-size: 42px;
-  line-height: 1;
-}
-
-.featured-tool-card h3 {
-  grid-column: 2;
-  grid-row: 1;
-
-  margin: 4px 0 8px;
-  font-size: 20px;
-  line-height: 1.2;
-}
-
-.featured-tool-card p {
-  grid-column: 2;
-  grid-row: 2;
-
-  margin: 0 0 16px;
-  font-size: 15px;
-  line-height: 1.45;
-}
-
-.featured-open-button {
-  grid-column: 2;
-  grid-row: 3;
-
-  width: fit-content;
-  min-width: 150px;
-  min-height: 46px;
-  padding: 10px 20px;
-  border-radius: 10px;
-}
-
+      <div className="tool-card-icon">
+        {icon}
+      </div>
 
 /* =========================================
    MOBILE
