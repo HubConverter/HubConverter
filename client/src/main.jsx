@@ -1450,64 +1450,68 @@ const toolsToShow = toolsForCategory.filter((tool) => {
     {/* =========================================
         FEATURED TOOLS
     ========================================= */}
-    <section className="featured-tools">
+   <section className="featured-tools">
 
-      {[
-        {
-          icon: "🖼️",
-          title: "Image Background",
-          description: "Isolate subjects and create transparency.",
-          id: null,
-        },
-        {
-          icon: "📄",
-          title: "JPG to PDF",
-          description: "Convert image files into a cohesive PDF document.",
-          id: "jpg-to-pdf",
-        },
-        
-  icon: "🖼️➡️🖼️",
-  title: "Image Compressor",
-  description: "Compress image files for smaller sizes and faster loading.",
- id: "image-compressor",
-},
-      ].map((tool) => (
-        <article
-          key={tool.title}
-          className="featured-tool-card"
-          onClick={
-            tool.id
-              ? () => setSelectedTool(tool.id)
-              : undefined
+  {[
+    {
+      icon: "🖼️",
+      title: "Image Background",
+      description: "Isolate subjects and create transparency.",
+      id: null,
+    },
+
+    {
+      icon: "📄",
+      title: "JPG to PDF",
+      description: "Convert image files into a cohesive PDF document.",
+      id: "jpg-to-pdf",
+    },
+
+    {
+      icon: "🖼️➡️🖼️",
+      title: "Image Compressor",
+      description: "Compress image files for smaller sizes and faster loading.",
+      id: "image-compressor",
+    },
+  ].map((tool) => (
+
+    <article
+      key={tool.title}
+      className="featured-tool-card"
+      onClick={
+        tool.id
+          ? () => setSelectedTool(tool.id)
+          : undefined
+      }
+    >
+
+      <div className="featured-tool-icon">
+        {tool.icon}
+      </div>
+
+      <h3>{tool.title}</h3>
+
+      <p>{tool.description}</p>
+
+      <button
+        className="featured-open-button"
+        disabled={!tool.id}
+        onClick={(event) => {
+          event.stopPropagation();
+
+          if (tool.id) {
+            setSelectedTool(tool.id);
           }
-        >
+        }}
+      >
+        Open Tool →
+      </button>
 
-          <div className="featured-tool-icon">
-            {tool.icon}
-          </div>
+    </article>
 
-          <h3>{tool.title}</h3>
+  ))}
 
-          <p>{tool.description}</p>
-
-          <button
-            className="featured-open-button"
-            disabled={!tool.id}
-            onClick={(event) => {
-              event.stopPropagation();
-
-              if (tool.id) {
-                setSelectedTool(tool.id);
-              }
-            }}
-          >
-            {tool.id ? "Open Tool →" : "Open Tool →"}
-          </button>
-
-        </article>
-      ))}
-
-    </section>
+</section>
 
 
     {/* =========================================
