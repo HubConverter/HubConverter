@@ -2943,3 +2943,88 @@ table {
     margin-right: 0 !important;
   }
 }
+/* =========================================
+   FEATURED TOOL CARDS
+   Icon LEFT + Content RIGHT
+   ========================================= */
+
+.featuredTools {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  width: 100%;
+  max-width: 1000px;
+  margin: 25px auto;
+}
+
+.featuredToolCard {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  padding: 22px;
+  border-radius: 18px;
+  min-height: 180px;
+}
+
+.featuredToolIcon {
+  flex: 0 0 70px;
+  width: 70px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+}
+
+.featuredToolContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.featuredToolContent h3 {
+  margin: 4px 0 10px;
+  font-size: 21px;
+}
+
+.featuredToolContent p {
+  margin: 0 0 18px;
+  line-height: 1.45;
+}
+
+.featuredToolContent .primary {
+  margin-top: 0;
+}
+
+
+/* =========================================
+   MOBILE
+   ========================================= */
+
+@media (max-width: 768px) {
+  .featuredTools {
+    grid-template-columns: 1fr;
+    width: calc(100% - 24px);
+    margin: 20px auto;
+  }
+
+  .featuredToolCard {
+    width: 100%;
+    padding: 18px;
+    gap: 15px;
+  }
+
+  .featuredToolIcon {
+    flex: 0 0 58px;
+    width: 58px;
+    height: 58px;
+    font-size: 38px;
+  }
+
+  .featuredToolContent h3 {
+    font-size: 18px;
+  }
+
+  .featuredToolContent p {
+    font-size: 14px;
+  }
+}
