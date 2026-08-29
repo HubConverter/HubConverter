@@ -2918,3 +2918,10 @@ table {
     padding: 15px;
   }
 }
+/* MOBILE: Keep theme icon on the right */
+@media (max-width: 600px) {
+  .theme-toggle {
+    margin-left: auto !important;
+    margin-right: 0 !important;
+  }
+}
