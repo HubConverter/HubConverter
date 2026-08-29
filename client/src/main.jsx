@@ -164,6 +164,7 @@ function App() {
     localStorage.setItem("sh_theme", theme);
   }, [theme]);
 
+
   function notify(message) {
     setToast(message);
     setTimeout(() => setToast(""), 2200);
@@ -2248,3 +2249,21 @@ const root = createRoot(
 );
 
 root.render(<App />);
+/* =========================================
+   MOBILE THEME ICON - RIGHT SIDE
+   ========================================= */
+
+@media (max-width: 600px) {
+  .themePicker {
+    margin-left: auto !important;
+    margin-right: 0 !important;
+    position: relative !important;
+    left: auto !important;
+    right: 0 !important;
+  }
+
+  .themeToggle {
+    margin-left: auto !important;
+    margin-right: 0 !important;
+  }
+}
