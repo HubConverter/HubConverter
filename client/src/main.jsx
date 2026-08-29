@@ -16,6 +16,8 @@ import SignPdf from "./tools/SignPdf.jsx";
 import DeletePdfPages from "./tools/DeletePdfPages.jsx";
 import EditPdf from "./tools/EditPdf.jsx";
 import TranslatePdf from "./tools/TranslatePdf.jsx";
+import ImageCompressor from "./tools/ImageCompressor.jsx";
+
 
 
 import React, { useEffect, useRef, useState } from "react";
@@ -1188,7 +1190,36 @@ if (selectedTool === "translate-pdf") {
     </div>
   );
 }
+if (selectedTool === "image-compressor") {
+  return (
+    <div>
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "20px 24px 0",
+        }}
+      >
+        <button
+          onClick={() => setSelectedTool(null)}
+          style={{
+            border: "none",
+            background: "transparent",
+            color: "inherit",
+            fontSize: "15px",
+            fontWeight: "600",
+            cursor: "pointer",
+            padding: "10px 0",
+          }}
+        >
+          ← Back to Tools
+        </button>
+      </div>
 
+      <ImageCompressor />
+    </div>
+  );
+}
   
  // =========================
 // TOOLS HOME
@@ -1306,21 +1337,13 @@ const pdfTools = [
 ];
 
 const jpgTools = [
+  
   {
-    icon: "🔄",
-    title: "JPG to PNG",
-    description: "Convert JPG images to PNG.",
-  },
-  {
-    icon: "🖼️",
-    title: "PNG to JPG",
-    description: "Convert PNG images to JPG.",
-  },
-  {
-    icon: "🗜️",
-    title: "Image Compressor",
-    description: "Reduce image file size.",
-  },
+  icon: "🖼️➡️🖼️",
+  title: "Image Compressor",
+  description: "Compress image files for smaller sizes and faster loading.",
+ id: "image-compressor",
+},
   {
     icon: "📐",
     title: "Image Resizer",
@@ -1602,14 +1625,19 @@ const toolsToShow = toolsForCategory.filter((tool) => {
           }}
         >
           {jpgTools.map((tool) => (
-            <ToolCard
-              key={tool.title}
-              icon={tool.icon}
-              title={tool.title}
-              description={tool.description}
-              comingSoon
-            />
-          ))}
+  <ToolCard
+    key={tool.title}
+    icon={tool.icon}
+    title={tool.title}
+    description={tool.description}
+    comingSoon={!tool.id}
+    onClick={
+      tool.id
+        ? () => setSelectedTool(tool.id)
+        : undefined
+    }
+  />
+))}
         </div>
       </>
     )}
