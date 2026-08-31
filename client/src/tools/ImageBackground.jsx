@@ -1,26 +1,29 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 /*
 ===========================================================
  HUBCONVERTER - IMAGE BACKGROUND TOOL
 ===========================================================
 
-FLOW
+Workflow:
 
-1. Upload image / Drag & Drop
-2. Background removes automatically
-3. Select Background OR Color from LEFT sidebar
-4. Download button appears
-5. Download final PNG
+  1. Upload / Drag & Drop
+  2. Remove Background
+  3. Choose Background / Color
+  4. Preview
+  5. Download
 
-DESIGN
-
-- Compact screen
-- Approximately 50% smaller than previous large layout
-- Background / Color sidebar on LEFT
-- No separate preview sections
-- No Remove Background button
-- Multiple images can be added
+Features:
+- JPG / PNG / WEBP
+- Multiple images
+- Drag & drop
+- Background removal
+- Background image selection
+- Solid color selection
+- Final preview
+- Zoom
+- PNG download
+- Mobile responsive
 ===========================================================
 */
 
@@ -28,7 +31,7 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
 /* =========================================================
    BACKGROUNDS
-   More backgrounds added
+   All backgrounds are intentionally shown together.
 ========================================================= */
 
 const BACKGROUNDS = [
@@ -41,116 +44,40 @@ const BACKGROUNDS = [
     url: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1000&q=85",
   },
   {
-    name: "Tropical",
-    url: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1000&q=85",
+    name: "Garden",
+    url: "https://images.unsplash.com/photo-1558904541-efa843a96f01?auto=format&fit=crop&w=1000&q=85",
   },
   {
     name: "Forest",
     url: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1000&q=85",
   },
   {
-    name: "Green Nature",
-    url: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1000&q=85",
+    name: "Cars",
+    url: "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1000&q=85",
   },
   {
-    name: "Mountains",
-    url: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1000&q=85",
-  },
-  {
-    name: "Snow Mountain",
-    url: "https://images.unsplash.com/photo-1454496522488-7a8e488e8606?auto=format&fit=crop&w=1000&q=85",
-  },
-  {
-    name: "Lake",
-    url: "https://images.unsplash.com/photo-1439853949127-fa647821eba0?auto=format&fit=crop&w=1000&q=85",
-  },
-  {
-    name: "Sunset",
-    url: "https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=1000&q=85",
-  },
-  {
-    name: "Sunrise",
-    url: "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1000&q=85",
-  },
-  {
-    name: "Flowers",
-    url: "https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=1000&q=85",
-  },
-  {
-    name: "Pink Flowers",
-    url: "https://images.unsplash.com/photo-1495231916356-a86217efff12?auto=format&fit=crop&w=1000&q=85",
-  },
-  {
-    name: "Green Leaves",
-    url: "https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&fit=crop&w=1000&q=85",
-  },
-  {
-    name: "Grass",
-    url: "https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=1000&q=85",
+    name: "Hotel",
+    url: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1000&q=85",
   },
   {
     name: "City",
     url: "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=1000&q=85",
   },
   {
-    name: "New York",
-    url: "https://images.unsplash.com/photo-1485871981521-5b1fd3805eee?auto=format&fit=crop&w=1000&q=85",
+    name: "Mountains",
+    url: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1000&q=85",
   },
   {
-    name: "Modern City",
-    url: "https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=1000&q=85",
+    name: "Sunset",
+    url: "https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=1000&q=85",
+  },
+  {
+    name: "Lake",
+    url: "https://images.unsplash.com/photo-1439853949127-fa647821eba0?auto=format&fit=crop&w=1000&q=85",
   },
   {
     name: "Road",
     url: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1000&q=85",
-  },
-  {
-    name: "Desert",
-    url: "https://images.unsplash.com/photo-1509316785289-025f5b846b35?auto=format&fit=crop&w=1000&q=85",
-  },
-  {
-    name: "Room",
-    url: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1000&q=85",
-  },
-  {
-    name: "Modern Room",
-    url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1000&q=85",
-  },
-  {
-    name: "Office",
-    url: "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1000&q=85",
-  },
-  {
-    name: "Luxury",
-    url: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1000&q=85",
-  },
-  {
-    name: "Wood",
-    url: "https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=1000&q=85",
-  },
-  {
-    name: "Coffee",
-    url: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1000&q=85",
-  },
-  {
-    name: "Flowers Garden",
-    url: "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=1000&q=85",
-  },
-  {
-    name: "Palm Trees",
-    url: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1000&q=85",
-  },
-  {
-    name: "Waterfall",
-    url: "https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=1000&q=85",
-  },
-  {
-    name: "Autumn",
-    url: "https://images.unsplash.com/photo-1508780709619-79562169bc64?auto=format&fit=crop&w=1000&q=85",
-  },
-  {
-    name: "Night",
-    url: "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1000&q=85",
   },
 ];
 
@@ -164,29 +91,16 @@ const COLORS = [
   { name: "Black", value: "#000000" },
   { name: "Red", value: "#ff3b30" },
   { name: "Pink", value: "#ec1760" },
-  { name: "Hot Pink", value: "#ff1493" },
-  { name: "Rose", value: "#e91e63" },
   { name: "Purple", value: "#9c27b0" },
   { name: "Violet", value: "#673ab7" },
-  { name: "Deep Purple", value: "#512da8" },
   { name: "Blue", value: "#4169e1" },
-  { name: "Royal Blue", value: "#2962ff" },
-  { name: "Sky Blue", value: "#2196f3" },
-  { name: "Light Blue", value: "#03a9f4" },
-  { name: "Cyan", value: "#00bcd4" },
-  { name: "Teal", value: "#009688" },
+  { name: "Sky Blue", value: "#16a9e8" },
   { name: "Green", value: "#12a66a" },
-  { name: "Bright Green", value: "#20c55a" },
-  { name: "Lime", value: "#cddc39" },
   { name: "Yellow", value: "#ffd21c" },
-  { name: "Gold", value: "#ffc107" },
   { name: "Orange", value: "#ff7a18" },
-  { name: "Deep Orange", value: "#ff5722" },
-  { name: "Brown", value: "#795548" },
-  { name: "Beige", value: "#d8c3a5" },
   { name: "Gray", value: "#777777" },
-  { name: "Light Gray", value: "#d6d6d6" },
   { name: "Dark Gray", value: "#333333" },
+  { name: "Brown", value: "#795548" },
 ];
 
 /* =========================================================
@@ -194,6 +108,8 @@ const COLORS = [
 ========================================================= */
 
 function formatSize(bytes) {
+  if (!bytes) return "0 B";
+
   if (bytes < 1024) {
     return `${bytes} B`;
   }
@@ -209,16 +125,15 @@ function loadImage(src) {
   return new Promise((resolve, reject) => {
     const image = new Image();
 
-    image.crossOrigin = "anonymous";
-
     image.onload = () => resolve(image);
-    image.onerror = reject;
+    image.onerror = () => reject(new Error("Image could not be loaded."));
+
     image.src = src;
   });
 }
 
 /* =========================================================
-   COMPONENT
+   MAIN COMPONENT
 ========================================================= */
 
 function ImageBackground() {
@@ -234,18 +149,15 @@ function ImageBackground() {
   const [error, setError] = useState("");
 
   const [mode, setMode] = useState("background");
+  const [selectedBackground, setSelectedBackground] = useState(null);
+  const [selectedColor, setSelectedColor] = useState("transparent");
 
-  const [selectedBackground, setSelectedBackground] =
-    useState(null);
+  const [zoom, setZoom] = useState(100);
 
-  const [selectedColor, setSelectedColor] =
-    useState("transparent");
-
-  const currentFile =
-    files[selectedIndex] || null;
+  const currentFile = files[selectedIndex] || null;
 
   /* =======================================================
-     CURRENT FILE
+     CURRENT IMAGE
   ======================================================= */
 
   useEffect(() => {
@@ -259,10 +171,11 @@ function ImageBackground() {
 
     setOriginalUrl(url);
     setRemovedUrl("");
-
     setSelectedBackground(null);
     setSelectedColor("transparent");
     setMode("background");
+    setZoom(100);
+    setError("");
 
     return () => {
       URL.revokeObjectURL(url);
@@ -270,90 +183,16 @@ function ImageBackground() {
   }, [currentFile]);
 
   /* =======================================================
-     AUTOMATIC BACKGROUND REMOVAL
-     
-     IMPORTANT:
-     There is NO remove background button.
-     It starts automatically after upload.
+     CLEANUP REMOVED IMAGE URL
   ======================================================= */
 
   useEffect(() => {
-    if (!currentFile) {
-      return;
-    }
-
-    let cancelled = false;
-    let createdUrl = "";
-
-    async function autoRemoveBackground() {
-      try {
-        setProcessing(true);
-        setError("");
-
-        const module =
-          await import("@imgly/background-removal");
-
-        const removeBg =
-          module.removeBackground ||
-          module.default?.removeBackground ||
-          module.default;
-
-        if (typeof removeBg !== "function") {
-          throw new Error(
-            "Background removal engine could not be loaded."
-          );
-        }
-
-        const result = await removeBg(currentFile, {
-          output: {
-            format: "image/png",
-          },
-        });
-
-        if (cancelled) {
-          return;
-        }
-
-        const blob =
-          result instanceof Blob
-            ? result
-            : new Blob([result], {
-                type: "image/png",
-              });
-
-        createdUrl = URL.createObjectURL(blob);
-
-        setRemovedUrl((oldUrl) => {
-          if (oldUrl) {
-            URL.revokeObjectURL(oldUrl);
-          }
-
-          return createdUrl;
-        });
-      } catch (err) {
-        console.error(
-          "Automatic background removal failed:",
-          err
-        );
-
-        if (!cancelled) {
-          setError(
-            "Background removal could not be completed. Please try another image."
-          );
-        }
-      } finally {
-        if (!cancelled) {
-          setProcessing(false);
-        }
-      }
-    }
-
-    autoRemoveBackground();
-
     return () => {
-      cancelled = true;
+      if (removedUrl) {
+        URL.revokeObjectURL(removedUrl);
+      }
     };
-  }, [currentFile]);
+  }, [removedUrl]);
 
   /* =======================================================
      ADD FILES
@@ -362,8 +201,7 @@ function ImageBackground() {
   function addFiles(fileList) {
     setError("");
 
-    const incoming =
-      Array.from(fileList || []);
+    const incoming = Array.from(fileList || []);
 
     if (!incoming.length) {
       return;
@@ -373,10 +211,7 @@ function ImageBackground() {
 
     for (const file of incoming) {
       if (!file.type.startsWith("image/")) {
-        setError(
-          `${file.name} is not an image file.`
-        );
-
+        setError(`${file.name} is not an image file.`);
         continue;
       }
 
@@ -384,7 +219,6 @@ function ImageBackground() {
         setError(
           `${file.name} is larger than 5 MB. Maximum allowed size is 5 MB per image.`
         );
-
         continue;
       }
 
@@ -396,12 +230,11 @@ function ImageBackground() {
     }
 
     setFiles((current) => {
-      const updated = [
-        ...current,
-        ...validFiles,
-      ];
+      const wasEmpty = current.length === 0;
 
-      if (current.length === 0) {
+      const updated = [...current, ...validFiles];
+
+      if (wasEmpty) {
         setSelectedIndex(0);
       }
 
@@ -409,10 +242,27 @@ function ImageBackground() {
     });
   }
 
+  /* =======================================================
+     INPUT
+  ======================================================= */
+
   function handleInput(event) {
     addFiles(event.target.files);
 
     event.target.value = "";
+  }
+
+  /* =======================================================
+     DRAG & DROP
+  ======================================================= */
+
+  function handleDragOver(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (event.dataTransfer) {
+      event.dataTransfer.dropEffect = "copy";
+    }
   }
 
   function handleDrop(event) {
@@ -423,30 +273,23 @@ function ImageBackground() {
   }
 
   /* =======================================================
-     REMOVE FILE
+     REMOVE FILE FROM LIST
   ======================================================= */
 
   function removeFile(index) {
     setFiles((current) => {
-      const next =
-        current.filter(
-          (_, i) => i !== index
-        );
+      const next = current.filter((_, i) => i !== index);
 
       if (!next.length) {
         setSelectedIndex(0);
-      } else if (index < selectedIndex) {
-        setSelectedIndex(
-          Math.max(
-            0,
-            selectedIndex - 1
-          )
-        );
-      } else if (
-        selectedIndex >= next.length
-      ) {
-        setSelectedIndex(
-          next.length - 1
+        return next;
+      }
+
+      if (index < selectedIndex) {
+        setSelectedIndex((value) => Math.max(0, value - 1));
+      } else if (index === selectedIndex) {
+        setSelectedIndex((value) =>
+          Math.min(value, next.length - 1)
         );
       }
 
@@ -455,80 +298,130 @@ function ImageBackground() {
   }
 
   /* =======================================================
+     REMOVE BACKGROUND
+  ======================================================= */
+
+  async function removeBackground() {
+    if (!currentFile) {
+      setError("Please upload an image first.");
+      return;
+    }
+
+    try {
+      setProcessing(true);
+      setError("");
+
+      /*
+       * Package is loaded only when required.
+       *
+       * Install:
+       * npm install @imgly/background-removal
+       */
+
+      const module = await import("@imgly/background-removal");
+
+      const removeBg =
+        module.removeBackground ||
+        module.default?.removeBackground ||
+        module.default;
+
+      if (typeof removeBg !== "function") {
+        throw new Error(
+          "Background removal engine could not be loaded."
+        );
+      }
+
+      const result = await removeBg(currentFile, {
+        output: {
+          format: "image/png",
+        },
+      });
+
+      const blob =
+        result instanceof Blob
+          ? result
+          : new Blob([result], {
+              type: "image/png",
+            });
+
+      const url = URL.createObjectURL(blob);
+
+      setRemovedUrl((oldUrl) => {
+        if (oldUrl) {
+          URL.revokeObjectURL(oldUrl);
+        }
+
+        return url;
+      });
+    } catch (err) {
+      console.error(err);
+
+      setError(
+        "Background removal could not be completed. Please try another image."
+      );
+    } finally {
+      setProcessing(false);
+    }
+  }
+
+  /* =======================================================
      CREATE FINAL IMAGE
   ======================================================= */
 
   async function createFinalImage() {
     if (!currentFile) {
-      throw new Error(
-        "No image selected."
-      );
+      throw new Error("No image selected.");
     }
 
-    const source =
-      removedUrl || originalUrl;
+    const source = removedUrl || originalUrl;
 
     if (!source) {
-      throw new Error(
-        "Please upload an image."
-      );
+      throw new Error("Please upload an image.");
     }
 
-    const foreground =
-      await loadImage(source);
+    const foreground = await loadImage(source);
 
-    const canvas =
-      document.createElement("canvas");
+    const canvas = document.createElement("canvas");
 
     const maxDimension = 1800;
 
     let width =
-      foreground.naturalWidth ||
-      foreground.width;
+      foreground.naturalWidth || foreground.width;
 
     let height =
-      foreground.naturalHeight ||
-      foreground.height;
+      foreground.naturalHeight || foreground.height;
 
     if (
       width > maxDimension ||
       height > maxDimension
     ) {
-      const ratio =
-        Math.min(
-          maxDimension / width,
-          maxDimension / height
-        );
+      const ratio = Math.min(
+        maxDimension / width,
+        maxDimension / height
+      );
 
-      width =
-        Math.round(width * ratio);
-
-      height =
-        Math.round(height * ratio);
+      width = Math.round(width * ratio);
+      height = Math.round(height * ratio);
     }
 
     canvas.width = width;
     canvas.height = height;
 
-    const ctx =
-      canvas.getContext("2d");
+    const ctx = canvas.getContext("2d");
 
     if (!ctx) {
-      throw new Error(
-        "Canvas is not supported."
-      );
+      throw new Error("Canvas is not supported.");
     }
 
-    /* =====================================================
-       COLOR BACKGROUND
-    ===================================================== */
+    /*
+     * COLOR BACKGROUND
+     */
 
     if (
       mode === "color" &&
       selectedColor !== "transparent"
     ) {
-      ctx.fillStyle =
-        selectedColor;
+      ctx.fillStyle = selectedColor;
 
       ctx.fillRect(
         0,
@@ -538,24 +431,22 @@ function ImageBackground() {
       );
     }
 
-    /* =====================================================
-       IMAGE BACKGROUND
-    ===================================================== */
+    /*
+     * IMAGE BACKGROUND
+     */
 
     if (
       mode === "background" &&
       selectedBackground
     ) {
-      const bg =
-        await loadImage(
-          selectedBackground.url
-        );
+      const bg = await loadImage(
+        selectedBackground.url
+      );
 
-      const scale =
-        Math.max(
-          width / bg.naturalWidth,
-          height / bg.naturalHeight
-        );
+      const scale = Math.max(
+        width / bg.naturalWidth,
+        height / bg.naturalHeight
+      );
 
       const bgWidth =
         bg.naturalWidth * scale;
@@ -578,9 +469,9 @@ function ImageBackground() {
       );
     }
 
-    /* =====================================================
-       FOREGROUND
-    ===================================================== */
+    /*
+     * FOREGROUND
+     */
 
     ctx.drawImage(
       foreground,
@@ -590,27 +481,25 @@ function ImageBackground() {
       height
     );
 
-    return new Promise(
-      (resolve, reject) => {
-        canvas.toBlob(
-          (blob) => {
-            if (!blob) {
-              reject(
-                new Error(
-                  "Could not create image."
-                )
-              );
+    return new Promise((resolve, reject) => {
+      canvas.toBlob(
+        (blob) => {
+          if (!blob) {
+            reject(
+              new Error(
+                "Could not create image."
+              )
+            );
 
-              return;
-            }
+            return;
+          }
 
-            resolve(blob);
-          },
-          "image/png",
-          0.95
-        );
-      }
-    );
+          resolve(blob);
+        },
+        "image/png",
+        0.95
+      );
+    });
   }
 
   /* =======================================================
@@ -618,44 +507,20 @@ function ImageBackground() {
   ======================================================= */
 
   async function downloadImage() {
+    if (!removedUrl) {
+      setError(
+        "Please remove the background before downloading."
+      );
+
+      return;
+    }
+
     try {
       setError("");
 
-      if (!removedUrl) {
-        setError(
-          "Please wait for background removal to finish."
-        );
+      const blob = await createFinalImage();
 
-        return;
-      }
-
-      if (
-        mode === "background" &&
-        !selectedBackground
-      ) {
-        setError(
-          "Please select a background first."
-        );
-
-        return;
-      }
-
-      if (
-        mode === "color" &&
-        selectedColor === "transparent"
-      ) {
-        setError(
-          "Please select a color first."
-        );
-
-        return;
-      }
-
-      const blob =
-        await createFinalImage();
-
-      const url =
-        URL.createObjectURL(blob);
+      const url = URL.createObjectURL(blob);
 
       const link =
         document.createElement("a");
@@ -663,10 +528,8 @@ function ImageBackground() {
       const baseName =
         currentFile?.name
           ?.replace(/\.[^/.]+$/, "")
-          .replace(
-            /[^a-z0-9-_]/gi,
-            "-"
-          ) || "image";
+          .replace(/[^a-z0-9-_]/gi, "-") ||
+        "image";
 
       link.href = url;
 
@@ -683,1188 +546,1807 @@ function ImageBackground() {
         URL.revokeObjectURL(url);
       }, 1000);
     } catch (err) {
-      console.error(
-        "Download failed:",
-        err
-      );
+      console.error(err);
 
       setError(
-        "Could not create the final image. Please try again."
+        "Could not download the image."
       );
     }
   }
 
   /* =======================================================
-     BACKGROUND SELECT
+     PREVIEW STYLE
   ======================================================= */
 
-  function selectBackground(
-    background
-  ) {
-    setSelectedBackground(
-      background
-    );
-
-    setSelectedColor(
-      "transparent"
-    );
-
-    setMode("background");
-
-    setError("");
-  }
+  const previewStyle = useMemo(
+    () => ({
+      transform: `scale(${zoom / 100})`,
+      transformOrigin: "center",
+    }),
+    [zoom]
+  );
 
   /* =======================================================
-     COLOR SELECT
+     FINAL PREVIEW STYLE
   ======================================================= */
 
-  function selectColor(color) {
-    setSelectedColor(
-      color.value
-    );
+  const finalPreviewStyle = useMemo(() => {
+    if (
+      mode === "color" &&
+      selectedColor !== "transparent"
+    ) {
+      return {
+        backgroundColor: selectedColor,
+      };
+    }
 
-    setSelectedBackground(
-      null
-    );
+    if (
+      mode === "background" &&
+      selectedBackground
+    ) {
+      return {
+        backgroundImage: `url("${selectedBackground.url}")`,
+        backgroundPosition: "center",
+        backgroundSize: "cover",
+      };
+    }
 
-    setMode("color");
-
-    setError("");
-  }
+    return {};
+  }, [
+    mode,
+    selectedColor,
+    selectedBackground,
+  ]);
 
   /* =======================================================
      RENDER
   ======================================================= */
 
   return (
-    <section
-      className="hubconverter-image-background"
-      style={{
-        minHeight: "100vh",
-        width: "100%",
-        boxSizing: "border-box",
-        background:
-          "linear-gradient(135deg,#06121f 0%,#081b2b 45%,#03111d 100%)",
-        padding: "24px 20px",
-        color: "#fff",
-        fontFamily:
-          "Arial, Helvetica, sans-serif",
-      }}
-    >
-      {/* ===================================================
-          HEADER
-      =================================================== */}
+    <>
+      <style>{`
 
-      <div
-        style={{
-          width: "100%",
-          maxWidth: "1050px",
-          margin: "0 auto 18px",
-          textAlign: "center",
-        }}
-      >
-        <div
-          style={{
-            fontSize: "11px",
-            fontWeight: "800",
-            letterSpacing: "2px",
-            color: "#16d9ff",
-            marginBottom: "4px",
-          }}
-        >
-          HUBCONVERTER IMAGE TOOL
-        </div>
+        /* ==================================================
+           IMAGE BACKGROUND PAGE
+        ================================================== */
 
-        <h1
-          style={{
-            margin: 0,
-            fontSize:
-              "clamp(22px,3vw,32px)",
-            fontWeight: "800",
-          }}
-        >
-          Image Background
-        </h1>
+        .ibg-page {
+          width: 100%;
+          max-width: 1450px;
+          margin: 0 auto;
+          padding: 28px 22px 60px;
+          box-sizing: border-box;
+        }
 
-        <p
-          style={{
-            margin:
-              "5px 0 0",
-            color:
-              "#9db2c7",
-            fontSize: "13px",
-          }}
-        >
-          Remove background and add
-          a new background to your image
-        </p>
-      </div>
+        .ibg-page * {
+          box-sizing: border-box;
+        }
 
-      {/* ===================================================
-          MAIN COMPACT WORK AREA
+        /* ==================================================
+           HEADER
+        ================================================== */
 
-          This is intentionally much smaller.
-      =================================================== */}
+        .ibg-header {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          margin-bottom: 26px;
+        }
 
-      <div
-        style={{
-          width: "100%",
-          maxWidth: "1050px",
-          height:
-            "calc(100vh - 150px)",
-          minHeight: "560px",
-          maxHeight: "760px",
-          margin: "0 auto",
-          display: "grid",
-          gridTemplateColumns:
-            "260px minmax(0,1fr)",
-          gap: "14px",
-          boxSizing: "border-box",
-        }}
-      >
-        {/* =================================================
-            LEFT SIDEBAR
-        ================================================= */}
+        .ibg-header-icon {
+          width: 58px;
+          height: 58px;
+          flex: 0 0 58px;
+          border-radius: 16px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 30px;
+          background: rgba(59, 130, 246, 0.12);
+          border: 1px solid rgba(59, 130, 246, 0.18);
+        }
 
-        <aside
-          style={{
-            background:
-              "rgba(10,27,45,.96)",
-            border:
-              "1px solid rgba(0,221,255,.35)",
-            borderRadius:
-              "16px",
-            padding: "12px",
-            display: "flex",
-            flexDirection:
-              "column",
-            minHeight: 0,
-            boxSizing: "border-box",
-            boxShadow:
-              "0 10px 30px rgba(0,0,0,.25)",
-          }}
-        >
-          {/* UPLOAD / ADD MORE */}
+        .ibg-eyebrow {
+          font-size: 11px;
+          font-weight: 800;
+          letter-spacing: 1.5px;
+          opacity: 0.65;
+          margin-bottom: 4px;
+        }
 
-          <div
-            style={{
-              marginBottom:
-                "10px",
-            }}
-          >
-            <button
-              type="button"
-              onClick={() =>
-                inputRef.current?.click()
-              }
-              onDragOver={(event) => {
-                event.preventDefault();
-              }}
-              onDrop={handleDrop}
-              style={{
-                width: "100%",
-                border:
-                  "1px dashed #22cfff",
-                borderRadius:
-                  "10px",
-                padding:
-                  "11px 8px",
-                background:
-                  "rgba(22,207,255,.08)",
-                color: "#fff",
-                cursor: "pointer",
-                fontWeight: "700",
-                fontSize: "13px",
-              }}
-            >
-              {files.length
-                ? "＋ Add More Images"
-                : "⬆ Upload Image"}
-            </button>
+        .ibg-header h1 {
+          margin: 0;
+          font-size: clamp(25px, 3vw, 36px);
+          line-height: 1.15;
+        }
 
-            <input
-              ref={inputRef}
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-              multiple
-              hidden
-              onChange={handleInput}
-            />
+        .ibg-header p {
+          margin: 7px 0 0;
+          opacity: 0.68;
+          font-size: 14px;
+        }
 
-            <div
-              style={{
-                marginTop:
-                  "5px",
-                textAlign:
-                  "center",
-                fontSize:
-                  "10px",
-                color:
-                  "#718ba4",
-              }}
-            >
-              JPG · PNG · WEBP · Max 5 MB
-            </div>
+        /* ==================================================
+           MAIN LAYOUT
+        ================================================== */
+
+        .ibg-layout {
+          display: grid;
+          grid-template-columns: 340px minmax(0, 1fr);
+          gap: 22px;
+          align-items: start;
+        }
+
+        /* ==================================================
+           LEFT SIDEBAR
+        ================================================== */
+
+        .ibg-sidebar {
+          position: sticky;
+          top: 20px;
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .ibg-step {
+          position: relative;
+          background: rgba(255, 255, 255, 0.86);
+          border: 1px solid rgba(0, 0, 0, 0.08);
+          border-radius: 16px;
+          padding: 16px;
+          box-shadow: 0 5px 20px rgba(0, 0, 0, 0.04);
+        }
+
+        .ibg-step-title {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          margin-bottom: 12px;
+        }
+
+        .ibg-step-title strong {
+          font-size: 14px;
+        }
+
+        .ibg-number {
+          width: 30px;
+          height: 30px;
+          flex: 0 0 30px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: #111827;
+          color: white;
+          font-size: 12px;
+          font-weight: 800;
+        }
+
+        .ibg-step-text {
+          margin: 0 0 12px;
+          font-size: 12px;
+          line-height: 1.55;
+          opacity: 0.65;
+        }
+
+        /* ==================================================
+           UPLOAD
+        ================================================== */
+
+        .ibg-upload {
+          min-height: 190px;
+          border: 2px dashed rgba(59, 130, 246, 0.4);
+          border-radius: 13px;
+          padding: 18px 12px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          cursor: pointer;
+          background: rgba(59, 130, 246, 0.035);
+          transition: 0.2s ease;
+        }
+
+        .ibg-upload:hover {
+          border-color: rgba(59, 130, 246, 0.75);
+          background: rgba(59, 130, 246, 0.07);
+          transform: translateY(-1px);
+        }
+
+        .ibg-upload-icon {
+          font-size: 31px;
+          margin-bottom: 6px;
+        }
+
+        .ibg-upload h3 {
+          font-size: 13px;
+          margin: 2px 0 3px;
+        }
+
+        .ibg-upload p {
+          margin: 0 0 10px;
+          font-size: 11px;
+          opacity: 0.6;
+        }
+
+        .ibg-upload small {
+          margin-top: 9px;
+          font-size: 10px;
+          line-height: 1.5;
+          opacity: 0.55;
+        }
+
+        /* ==================================================
+           BUTTONS
+        ================================================== */
+
+        .ibg-blue-button,
+        .ibg-green-button,
+        .ibg-download-button,
+        .ibg-bottom-download {
+          border: none;
+          cursor: pointer;
+          font-weight: 800;
+          border-radius: 10px;
+          transition: 0.18s ease;
+        }
+
+        .ibg-blue-button {
+          padding: 10px 15px;
+          background: #2563eb;
+          color: white;
+          font-size: 12px;
+        }
+
+        .ibg-blue-button:hover {
+          transform: translateY(-1px);
+          filter: brightness(1.06);
+        }
+
+        .ibg-green-button {
+          width: 100%;
+          padding: 12px 14px;
+          background: #16a34a;
+          color: white;
+          font-size: 12px;
+        }
+
+        .ibg-green-button:hover:not(:disabled) {
+          transform: translateY(-1px);
+          filter: brightness(1.06);
+        }
+
+        .ibg-green-button:disabled {
+          cursor: not-allowed;
+          opacity: 0.45;
+        }
+
+        .ibg-download-button {
+          width: 100%;
+          padding: 12px 14px;
+          background: #111827;
+          color: white;
+          font-size: 12px;
+        }
+
+        .ibg-download-button:hover:not(:disabled) {
+          transform: translateY(-1px);
+        }
+
+        .ibg-download-button:disabled {
+          cursor: not-allowed;
+          opacity: 0.4;
+        }
+
+        /* ==================================================
+           BACKGROUND TABS
+        ================================================== */
+
+        .ibg-tabs {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 7px;
+          margin-bottom: 12px;
+        }
+
+        .ibg-tab {
+          border: 1px solid rgba(0, 0, 0, 0.1);
+          background: rgba(0, 0, 0, 0.025);
+          border-radius: 9px;
+          padding: 9px 6px;
+          cursor: pointer;
+          font-size: 11px;
+          font-weight: 800;
+          transition: 0.18s ease;
+        }
+
+        .ibg-tab.active {
+          background: #111827;
+          color: white;
+          border-color: #111827;
+        }
+
+        /* ==================================================
+           BACKGROUND GRID
+        ================================================== */
+
+        .ibg-background-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 7px;
+          max-height: 330px;
+          overflow-y: auto;
+          padding-right: 2px;
+        }
+
+        .ibg-background-item {
+          border: 2px solid transparent;
+          background: transparent;
+          padding: 3px;
+          border-radius: 9px;
+          cursor: pointer;
+          overflow: hidden;
+          transition: 0.18s ease;
+        }
+
+        .ibg-background-item:hover {
+          transform: translateY(-1px);
+        }
+
+        .ibg-background-item.selected {
+          border-color: #2563eb;
+          background: rgba(37, 99, 235, 0.08);
+        }
+
+        .ibg-background-item img {
+          display: block;
+          width: 100%;
+          aspect-ratio: 1.35;
+          object-fit: cover;
+          border-radius: 6px;
+        }
+
+        .ibg-background-item span {
+          display: block;
+          font-size: 9px;
+          font-weight: 700;
+          margin-top: 4px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        /* ==================================================
+           COLOR GRID
+        ================================================== */
+
+        .ibg-color-grid {
+          display: grid;
+          grid-template-columns: repeat(5, 1fr);
+          gap: 8px;
+          max-height: 300px;
+          overflow-y: auto;
+        }
+
+        .ibg-color-item {
+          border: 2px solid transparent;
+          background: transparent;
+          padding: 3px;
+          border-radius: 8px;
+          cursor: pointer;
+          text-align: center;
+        }
+
+        .ibg-color-item.selected {
+          border-color: #2563eb;
+          background: rgba(37, 99, 235, 0.08);
+        }
+
+        .ibg-color-circle {
+          width: 30px;
+          height: 30px;
+          margin: 0 auto;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 50%;
+          border: 1px solid rgba(0, 0, 0, 0.15);
+          font-size: 13px;
+          font-weight: 800;
+        }
+
+        .ibg-color-item small {
+          display: block;
+          margin-top: 4px;
+          font-size: 8px;
+          opacity: 0.65;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        /* ==================================================
+           WORKSPACE
+        ================================================== */
+
+        .ibg-workspace {
+          min-width: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+        }
+
+        .ibg-empty-workspace {
+          min-height: 620px;
+          border-radius: 18px;
+          border: 1px solid rgba(0, 0, 0, 0.08);
+          background: rgba(255, 255, 255, 0.75);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          padding: 30px;
+        }
+
+        .ibg-empty-icon {
+          width: 78px;
+          height: 78px;
+          border-radius: 22px;
+          background: rgba(59, 130, 246, 0.1);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 40px;
+          margin-bottom: 18px;
+        }
+
+        .ibg-empty-workspace h2 {
+          margin: 0 0 8px;
+          font-size: 22px;
+        }
+
+        .ibg-empty-workspace p {
+          margin: 0;
+          max-width: 450px;
+          line-height: 1.6;
+          font-size: 13px;
+          opacity: 0.65;
+        }
+
+        .ibg-empty-workspace span {
+          margin-top: 12px;
+          font-size: 11px;
+          opacity: 0.45;
+        }
+
+        /* ==================================================
+           PREVIEW CARD
+        ================================================== */
+
+        .ibg-preview-card,
+        .ibg-images-card {
+          border: 1px solid rgba(0, 0, 0, 0.08);
+          background: rgba(255, 255, 255, 0.85);
+          border-radius: 17px;
+          padding: 16px;
+          overflow: hidden;
+        }
+
+        .ibg-card-heading {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 10px;
+          margin-bottom: 12px;
+        }
+
+        .ibg-card-heading h2 {
+          margin: 0;
+          font-size: 14px;
+        }
+
+        .ibg-card-heading > span {
+          font-size: 10px;
+          opacity: 0.55;
+        }
+
+        /* ==================================================
+           ORIGINAL PREVIEW
+        ================================================== */
+
+        .ibg-original-preview {
+          min-height: 300px;
+          max-height: 570px;
+          border-radius: 13px;
+          background: #f1f5f9;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          overflow: hidden;
+          padding: 15px;
+        }
+
+        .ibg-original-preview img {
+          max-width: 100%;
+          max-height: 530px;
+          object-fit: contain;
+          border-radius: 8px;
+        }
+
+        /* ==================================================
+           TRANSPARENT PREVIEW
+        ================================================== */
+
+        .ibg-transparent-preview {
+          min-height: 300px;
+          max-height: 570px;
+          border-radius: 13px;
+          overflow: hidden;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 15px;
+
+          background-color: #f8fafc;
+
+          background-image:
+            linear-gradient(45deg, #e5e7eb 25%, transparent 25%),
+            linear-gradient(-45deg, #e5e7eb 25%, transparent 25%),
+            linear-gradient(45deg, transparent 75%, #e5e7eb 75%),
+            linear-gradient(-45deg, transparent 75%, #e5e7eb 75%);
+
+          background-size: 24px 24px;
+          background-position:
+            0 0,
+            0 12px,
+            12px -12px,
+            -12px 0;
+        }
+
+        .ibg-transparent-preview img {
+          max-width: 100%;
+          max-height: 530px;
+          object-fit: contain;
+        }
+
+        /* ==================================================
+           FINAL PREVIEW
+        ================================================== */
+
+        .ibg-final-preview {
+          position: relative;
+          min-height: 430px;
+          max-height: 650px;
+          border-radius: 13px;
+          overflow: hidden;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 20px;
+
+          background-color: #f8fafc;
+
+          background-image:
+            linear-gradient(45deg, #e5e7eb 25%, transparent 25%),
+            linear-gradient(-45deg, #e5e7eb 25%, transparent 25%),
+            linear-gradient(45deg, transparent 75%, #e5e7eb 75%),
+            linear-gradient(-45deg, transparent 75%, #e5e7eb 75%);
+
+          background-size: 24px 24px;
+          background-position:
+            0 0,
+            0 12px,
+            12px -12px,
+            -12px 0;
+        }
+
+        .ibg-final-preview img {
+          max-width: 100%;
+          max-height: 600px;
+          object-fit: contain;
+        }
+
+        /* ==================================================
+           PLACEHOLDER
+        ================================================== */
+
+        .ibg-placeholder {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          padding: 30px;
+        }
+
+        .ibg-placeholder span {
+          font-size: 38px;
+          margin-bottom: 10px;
+        }
+
+        .ibg-placeholder strong {
+          font-size: 15px;
+        }
+
+        .ibg-placeholder small {
+          margin-top: 5px;
+          font-size: 11px;
+          opacity: 0.55;
+        }
+
+        /* ==================================================
+           ZOOM
+        ================================================== */
+
+        .ibg-zoom {
+          display: flex;
+          align-items: center;
+          gap: 5px;
+        }
+
+        .ibg-zoom button {
+          width: 28px;
+          height: 28px;
+          border: 1px solid rgba(0, 0, 0, 0.1);
+          background: white;
+          border-radius: 7px;
+          cursor: pointer;
+          font-size: 16px;
+          line-height: 1;
+        }
+
+        .ibg-zoom span {
+          min-width: 42px;
+          text-align: center;
+          font-size: 10px;
+          font-weight: 800;
+        }
+
+        /* ==================================================
+           THUMBNAILS
+        ================================================== */
+
+        .ibg-thumbnail-row {
+          display: flex;
+          gap: 10px;
+          overflow-x: auto;
+          padding-bottom: 3px;
+        }
+
+        .ibg-thumbnail {
+          position: relative;
+          flex: 0 0 76px;
+          height: 76px;
+          border: 2px solid transparent;
+          border-radius: 10px;
+          overflow: hidden;
+          cursor: pointer;
+          background: #f1f5f9;
+        }
+
+        .ibg-thumbnail.selected {
+          border-color: #2563eb;
+        }
+
+        .ibg-thumbnail img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+        }
+
+        .ibg-remove-thumbnail {
+          position: absolute;
+          right: 3px;
+          top: 3px;
+          width: 20px;
+          height: 20px;
+          border: none;
+          border-radius: 50%;
+          background: rgba(0, 0, 0, 0.7);
+          color: white;
+          cursor: pointer;
+          font-size: 15px;
+          line-height: 18px;
+          padding: 0;
+        }
+
+        .ibg-add-more {
+          flex: 0 0 76px;
+          height: 76px;
+          border: 2px dashed rgba(0, 0, 0, 0.15);
+          border-radius: 10px;
+          background: transparent;
+          cursor: pointer;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 2px;
+        }
+
+        .ibg-add-more:hover {
+          border-color: #2563eb;
+          color: #2563eb;
+        }
+
+        .ibg-add-more span {
+          font-size: 24px;
+          line-height: 1;
+        }
+
+        .ibg-add-more small {
+          font-size: 9px;
+          font-weight: 700;
+        }
+
+        /* ==================================================
+           ERROR
+        ================================================== */
+
+        .ibg-error {
+          padding: 12px 14px;
+          border-radius: 10px;
+          background: rgba(239, 68, 68, 0.09);
+          border: 1px solid rgba(239, 68, 68, 0.18);
+          color: #b91c1c;
+          font-size: 12px;
+          line-height: 1.5;
+        }
+
+        /* ==================================================
+           FILE INFO
+        ================================================== */
+
+        .ibg-file-info {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 10px;
+          padding: 10px 13px;
+          border-radius: 10px;
+          background: rgba(0, 0, 0, 0.035);
+          font-size: 11px;
+        }
+
+        .ibg-file-info span:first-child {
+          min-width: 0;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .ibg-file-info span:last-child {
+          flex-shrink: 0;
+          opacity: 0.55;
+        }
+
+        /* ==================================================
+           BOTTOM DOWNLOAD
+        ================================================== */
+
+        .ibg-bottom-download {
+          width: 100%;
+          padding: 15px;
+          background: #2563eb;
+          color: white;
+          font-size: 14px;
+          box-shadow: 0 8px 20px rgba(37, 99, 235, 0.18);
+        }
+
+        .ibg-bottom-download:hover {
+          transform: translateY(-1px);
+          filter: brightness(1.05);
+        }
+
+        /* ==================================================
+           DARK MODE SUPPORT
+        ================================================== */
+
+        @media (prefers-color-scheme: dark) {
+
+          .ibg-step,
+          .ibg-preview-card,
+          .ibg-images-card,
+          .ibg-empty-workspace {
+            background: rgba(25, 25, 30, 0.88);
+            border-color: rgba(255, 255, 255, 0.09);
+          }
+
+          .ibg-tab {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.1);
+            color: inherit;
+          }
+
+          .ibg-tab.active {
+            background: #ffffff;
+            color: #111827;
+          }
+
+          .ibg-zoom button {
+            background: rgba(255, 255, 255, 0.08);
+            color: inherit;
+            border-color: rgba(255, 255, 255, 0.12);
+          }
+
+          .ibg-file-info {
+            background: rgba(255, 255, 255, 0.05);
+          }
+
+          .ibg-original-preview {
+            background: rgba(255, 255, 255, 0.05);
+          }
+        }
+
+        /* ==================================================
+           TABLET
+        ================================================== */
+
+        @media (max-width: 1050px) {
+
+          .ibg-layout {
+            grid-template-columns: 290px minmax(0, 1fr);
+          }
+
+          .ibg-background-grid {
+            grid-template-columns: repeat(2, 1fr);
+          }
+
+          .ibg-final-preview {
+            min-height: 380px;
+          }
+        }
+
+        /* ==================================================
+           MOBILE
+        ================================================== */
+
+        @media (max-width: 760px) {
+
+          .ibg-page {
+            padding: 18px 12px 40px;
+          }
+
+          .ibg-header {
+            align-items: flex-start;
+            margin-bottom: 18px;
+          }
+
+          .ibg-header-icon {
+            width: 48px;
+            height: 48px;
+            flex-basis: 48px;
+            border-radius: 13px;
+            font-size: 25px;
+          }
+
+          .ibg-header h1 {
+            font-size: 24px;
+          }
+
+          .ibg-header p {
+            font-size: 12px;
+          }
+
+          .ibg-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+          }
+
+          .ibg-sidebar {
+            position: static;
+            width: 100%;
+          }
+
+          .ibg-step {
+            padding: 13px;
+            border-radius: 13px;
+          }
+
+          .ibg-step-title {
+            margin-bottom: 9px;
+          }
+
+          .ibg-number {
+            width: 27px;
+            height: 27px;
+            flex-basis: 27px;
+            font-size: 11px;
+          }
+
+          .ibg-background-grid {
+            grid-template-columns: repeat(3, 1fr);
+            max-height: none;
+          }
+
+          .ibg-color-grid {
+            grid-template-columns: repeat(5, 1fr);
+            max-height: none;
+          }
+
+          .ibg-workspace {
+            width: 100%;
+          }
+
+          .ibg-empty-workspace {
+            min-height: 330px;
+            padding: 22px;
+          }
+
+          .ibg-original-preview,
+          .ibg-transparent-preview {
+            min-height: 250px;
+          }
+
+          .ibg-final-preview {
+            min-height: 330px;
+            max-height: none;
+          }
+
+          .ibg-preview-card,
+          .ibg-images-card {
+            padding: 12px;
+            border-radius: 13px;
+          }
+
+          .ibg-card-heading h2 {
+            font-size: 13px;
+          }
+
+          .ibg-bottom-download {
+            position: sticky;
+            bottom: 10px;
+            z-index: 10;
+          }
+        }
+
+        /* ==================================================
+           SMALL MOBILE
+        ================================================== */
+
+        @media (max-width: 430px) {
+
+          .ibg-page {
+            padding-left: 9px;
+            padding-right: 9px;
+          }
+
+          .ibg-header-icon {
+            width: 43px;
+            height: 43px;
+            flex-basis: 43px;
+            font-size: 22px;
+          }
+
+          .ibg-header h1 {
+            font-size: 21px;
+          }
+
+          .ibg-header p {
+            font-size: 11px;
+          }
+
+          .ibg-background-grid {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+          }
+
+          .ibg-color-grid {
+            grid-template-columns: repeat(5, 1fr);
+            gap: 5px;
+          }
+
+          .ibg-color-circle {
+            width: 27px;
+            height: 27px;
+          }
+
+          .ibg-final-preview {
+            min-height: 280px;
+            padding: 12px;
+          }
+
+          .ibg-original-preview,
+          .ibg-transparent-preview {
+            min-height: 220px;
+          }
+
+          .ibg-upload {
+            min-height: 165px;
+          }
+        }
+
+      `}</style>
+
+      <section className="ibg-page">
+
+        {/* ==================================================
+            HEADER
+        ================================================== */}
+
+        <header className="ibg-header">
+
+          <div className="ibg-header-icon">
+            🖼️
           </div>
 
-          {/* IMAGE LIST */}
+          <div>
+            <div className="ibg-eyebrow">
+              HUBCONVERTER · IMAGE TOOL
+            </div>
 
-          {files.length > 0 && (
-            <div
-              style={{
-                display: "flex",
-                gap: "6px",
-                overflowX:
-                  "auto",
-                paddingBottom:
-                  "7px",
-                marginBottom:
-                  "7px",
-              }}
-            >
-              {files.map(
-                (file, index) => {
-                  const tempUrl =
-                    URL.createObjectURL(
-                      file
-                    );
+            <h1>
+              Image Background
+            </h1>
 
-                  return (
-                    <div
-                      key={`${file.name}-${index}`}
-                      onClick={() =>
-                        setSelectedIndex(
-                          index
-                        )
-                      }
-                      style={{
-                        flex:
-                          "0 0 48px",
-                        width:
-                          "48px",
-                        height:
-                          "48px",
-                        borderRadius:
-                          "8px",
-                        overflow:
-                          "hidden",
-                        position:
-                          "relative",
-                        cursor:
-                          "pointer",
-                        border:
-                          index ===
-                          selectedIndex
-                            ? "2px solid #16d9ff"
-                            : "1px solid rgba(255,255,255,.2)",
-                      }}
-                    >
-                      <img
-                        src={tempUrl}
-                        alt={file.name}
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit:
-                            "cover",
-                          display:
-                            "block",
-                        }}
-                      />
+            <p>
+              Remove background and add a new background
+              to your image
+            </p>
+          </div>
 
-                      <button
-                        type="button"
-                        onClick={(event) => {
-                          event.stopPropagation();
+        </header>
 
-                          URL.revokeObjectURL(
-                            tempUrl
-                          );
+        {/* ==================================================
+            MAIN
+        ================================================== */}
 
-                          removeFile(
-                            index
-                          );
-                        }}
-                        style={{
-                          position:
-                            "absolute",
-                          top: "1px",
-                          right: "1px",
-                          width:
-                            "17px",
-                          height:
-                            "17px",
-                          padding: 0,
-                          border: 0,
-                          borderRadius:
-                            "50%",
-                          background:
-                            "rgba(0,0,0,.7)",
-                          color:
-                            "#fff",
-                          fontSize:
-                            "12px",
-                          lineHeight:
-                            "17px",
-                          cursor:
-                            "pointer",
-                        }}
-                      >
-                        ×
-                      </button>
-                    </div>
-                  );
+        <div className="ibg-layout">
+
+          {/* =================================================
+              LEFT WORKFLOW
+          ================================================= */}
+
+          <aside className="ibg-sidebar">
+
+            {/* ===============================================
+                STEP 1
+            =============================================== */}
+
+            <div className="ibg-step">
+
+              <div className="ibg-step-title">
+                <span className="ibg-number">
+                  1
+                </span>
+
+                <strong>
+                  Upload Image
+                </strong>
+              </div>
+
+              <div
+                className="ibg-upload"
+                onDragOver={handleDragOver}
+                onDrop={handleDrop}
+                onClick={() =>
+                  inputRef.current?.click()
                 }
-              )}
-            </div>
-          )}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(event) => {
+                  if (
+                    event.key === "Enter" ||
+                    event.key === " "
+                  ) {
+                    event.preventDefault();
 
-          {/* PROCESSING STATUS */}
-
-          {processing && (
-            <div
-              style={{
-                padding:
-                  "9px",
-                marginBottom:
-                  "8px",
-                borderRadius:
-                  "9px",
-                background:
-                  "rgba(34,197,94,.12)",
-                border:
-                  "1px solid rgba(34,197,94,.3)",
-                color:
-                  "#7df5a2",
-                fontSize:
-                  "11px",
-                textAlign:
-                  "center",
-              }}
-            >
-              ✨ Removing background...
-            </div>
-          )}
-
-          {removedUrl &&
-            !processing && (
-              <div
-                style={{
-                  padding:
-                    "7px",
-                  marginBottom:
-                    "8px",
-                  borderRadius:
-                    "9px",
-                  background:
-                    "rgba(34,197,94,.10)",
-                  color:
-                    "#65e58e",
-                  fontSize:
-                    "11px",
-                  textAlign:
-                    "center",
-                }}
-              >
-                ✓ Background removed
-              </div>
-            )}
-
-          {/* TABS */}
-
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns:
-                "1fr 1fr",
-              gap: "5px",
-              marginBottom:
-                "8px",
-            }}
-          >
-            <button
-              type="button"
-              onClick={() =>
-                setMode(
-                  "background"
-                )
-              }
-              style={{
-                border: "0",
-                borderRadius:
-                  "8px",
-                padding:
-                  "9px 4px",
-                cursor:
-                  "pointer",
-                fontWeight:
-                  "700",
-                fontSize:
-                  "11px",
-                color:
-                  mode ===
-                  "background"
-                    ? "#fff"
-                    : "#9db2c7",
-                background:
-                  mode ===
-                  "background"
-                    ? "linear-gradient(135deg,#09cfff,#18e0bb)"
-                    : "rgba(255,255,255,.06)",
-              }}
-            >
-              🖼 Background
-            </button>
-
-            <button
-              type="button"
-              onClick={() =>
-                setMode("color")
-              }
-              style={{
-                border: "0",
-                borderRadius:
-                  "8px",
-                padding:
-                  "9px 4px",
-                cursor:
-                  "pointer",
-                fontWeight:
-                  "700",
-                fontSize:
-                  "11px",
-                color:
-                  mode === "color"
-                    ? "#fff"
-                    : "#9db2c7",
-                background:
-                  mode === "color"
-                    ? "linear-gradient(135deg,#09cfff,#18e0bb)"
-                    : "rgba(255,255,255,.06)",
-              }}
-            >
-              🎨 Color
-            </button>
-          </div>
-
-          {/* =================================================
-              BACKGROUND GRID
-          ================================================= */}
-
-          {mode ===
-            "background" && (
-            <div
-              style={{
-                flex: 1,
-                minHeight: 0,
-                overflowY:
-                  "auto",
-                overflowX:
-                  "hidden",
-                paddingRight:
-                  "3px",
-              }}
-            >
-              <div
-                style={{
-                  display:
-                    "grid",
-                  gridTemplateColumns:
-                    "repeat(2, minmax(0,1fr))",
-                  gap: "6px",
-                }}
-              >
-                {BACKGROUNDS.map(
-                  (
-                    background
-                  ) => {
-                    const selected =
-                      selectedBackground?.name ===
-                      background.name;
-
-                    return (
-                      <button
-                        type="button"
-                        key={
-                          background.name
-                        }
-                        onClick={() =>
-                          selectBackground(
-                            background
-                          )
-                        }
-                        title={
-                          background.name
-                        }
-                        style={{
-                          border:
-                            selected
-                              ? "2px solid #16d9ff"
-                              : "1px solid rgba(255,255,255,.12)",
-                          padding:
-                            "2px",
-                          borderRadius:
-                            "9px",
-                          background:
-                            selected
-                              ? "rgba(22,217,255,.15)"
-                              : "rgba(255,255,255,.04)",
-                          cursor:
-                            "pointer",
-                          overflow:
-                            "hidden",
-                        }}
-                      >
-                        <img
-                          src={
-                            background.url
-                          }
-                          alt={
-                            background.name
-                          }
-                          loading="lazy"
-                          style={{
-                            width:
-                              "100%",
-                            height:
-                              "58px",
-                            objectFit:
-                              "cover",
-                            borderRadius:
-                              "6px",
-                            display:
-                              "block",
-                          }}
-                        />
-
-                        <div
-                          style={{
-                            fontSize:
-                              "8px",
-                            color:
-                              "#c7d7e7",
-                            padding:
-                              "3px 1px 2px",
-                            whiteSpace:
-                              "nowrap",
-                            overflow:
-                              "hidden",
-                            textOverflow:
-                              "ellipsis",
-                          }}
-                        >
-                          {
-                            background.name
-                          }
-                        </div>
-                      </button>
-                    );
+                    inputRef.current?.click();
                   }
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* =================================================
-              COLOR GRID
-          ================================================= */}
-
-          {mode ===
-            "color" && (
-            <div
-              style={{
-                flex: 1,
-                minHeight: 0,
-                overflowY:
-                  "auto",
-                paddingRight:
-                  "3px",
-              }}
-            >
-              <div
-                style={{
-                  display:
-                    "grid",
-                  gridTemplateColumns:
-                    "repeat(4, minmax(0,1fr))",
-                  gap: "6px",
                 }}
               >
-                {COLORS.map(
-                  (color) => {
-                    const selected =
-                      selectedColor ===
-                      color.value;
 
-                    return (
-                      <button
-                        type="button"
-                        key={
-                          color.name
-                        }
-                        onClick={() =>
-                          selectColor(
-                            color
-                          )
-                        }
-                        title={
-                          color.name
-                        }
-                        style={{
-                          border:
-                            selected
-                              ? "2px solid #16d9ff"
-                              : "1px solid rgba(255,255,255,.12)",
-                          borderRadius:
-                            "8px",
-                          padding:
-                            "3px",
-                          background:
-                            "rgba(255,255,255,.04)",
-                          cursor:
-                            "pointer",
-                        }}
-                      >
-                        <span
-                          style={{
-                            display:
-                              "block",
-                            width:
-                              "100%",
-                            aspectRatio:
-                              "1",
-                            borderRadius:
-                              "6px",
-                            background:
-                              color.value ===
-                              "transparent"
-                                ? "linear-gradient(45deg,#ddd 25%,#fff 25%,#fff 50%,#ddd 50%,#ddd 75%,#fff 75%)"
-                                : color.value,
-                            backgroundSize:
-                              "10px 10px",
-                            boxShadow:
-                              "inset 0 0 0 1px rgba(0,0,0,.12)",
-                          }}
-                        />
-
-                        <div
-                          style={{
-                            fontSize:
-                              "7px",
-                            color:
-                              "#b8c9d9",
-                            paddingTop:
-                              "3px",
-                            whiteSpace:
-                              "nowrap",
-                            overflow:
-                              "hidden",
-                            textOverflow:
-                              "ellipsis",
-                          }}
-                        >
-                          {
-                            color.name
-                          }
-                        </div>
-                      </button>
-                    );
-                  }
-                )}
-              </div>
-            </div>
-          )}
-        </aside>
-
-        {/* =================================================
-            RIGHT MAIN IMAGE AREA
-
-            Only ONE image area.
-            No long preview sections.
-        ================================================= */}
-
-        <main
-          style={{
-            minWidth: 0,
-            minHeight: 0,
-            background:
-              "rgba(8,22,37,.94)",
-            border:
-              "1px solid rgba(0,221,255,.25)",
-            borderRadius:
-              "16px",
-            padding:
-              "14px",
-            display:
-              "flex",
-            flexDirection:
-              "column",
-            boxSizing:
-              "border-box",
-          }}
-        >
-          {!currentFile ? (
-            /* ===============================================
-               INITIAL UPLOAD SCREEN
-            =============================================== */
-
-            <div
-              onDragOver={(event) => {
-                event.preventDefault();
-              }}
-              onDrop={handleDrop}
-              onClick={() =>
-                inputRef.current?.click()
-              }
-              style={{
-                flex: 1,
-                display:
-                  "flex",
-                alignItems:
-                  "center",
-                justifyContent:
-                  "center",
-                cursor:
-                  "pointer",
-                border:
-                  "1px dashed rgba(22,217,255,.5)",
-                borderRadius:
-                  "12px",
-                background:
-                  "rgba(255,255,255,.025)",
-              }}
-            >
-              <div
-                style={{
-                  textAlign:
-                    "center",
-                }}
-              >
-                <div
-                  style={{
-                    fontSize:
-                      "42px",
-                    marginBottom:
-                      "12px",
-                  }}
-                >
-                  🖼️
+                <div className="ibg-upload-icon">
+                  ☁️
                 </div>
 
-                <h2
-                  style={{
-                    margin:
-                      "0 0 7px",
-                    fontSize:
-                      "22px",
-                  }}
-                >
-                  Upload Image
-                </h2>
+                <h3>
+                  Drag & drop your files here
+                </h3>
 
-                <p
-                  style={{
-                    margin:
-                      "0",
-                    color:
-                      "#8ea6bd",
-                    fontSize:
-                      "13px",
-                  }}
-                >
-                  Drag & drop your
-                  image here
+                <p>
+                  or click to browse
                 </p>
 
                 <button
                   type="button"
+                  className="ibg-blue-button"
                   onClick={(event) => {
                     event.stopPropagation();
 
                     inputRef.current?.click();
                   }}
-                  style={{
-                    marginTop:
-                      "18px",
-                    border: 0,
-                    borderRadius:
-                      "10px",
-                    padding:
-                      "11px 28px",
-                    background:
-                      "linear-gradient(135deg,#087df0,#14d8bd)",
-                    color:
-                      "#fff",
-                    fontWeight:
-                      "800",
-                    cursor:
-                      "pointer",
-                    fontSize:
-                      "14px",
-                  }}
                 >
-                  Upload Image
+                  ⬆ Select Image
                 </button>
+
+                <small>
+                  JPG, PNG, WEBP
+                  <br />
+                  Maximum 5 MB per image
+                </small>
+
               </div>
+
+              <input
+                ref={inputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                multiple
+                hidden
+                onChange={handleInput}
+              />
+
             </div>
-          ) : (
-            /* ===============================================
-               IMAGE DISPLAY
 
-               ONLY ONE IMAGE AREA
-            =============================================== */
+            {/* ===============================================
+                STEP 2
+            =============================================== */}
 
-            <>
-              <div
-                style={{
-                  display:
-                    "flex",
-                  alignItems:
-                    "center",
-                  justifyContent:
-                    "space-between",
-                  marginBottom:
-                    "8px",
-                }}
+            <div className="ibg-step">
+
+              <div className="ibg-step-title">
+
+                <span className="ibg-number">
+                  2
+                </span>
+
+                <strong>
+                  Remove Background
+                </strong>
+
+              </div>
+
+              <p className="ibg-step-text">
+                Remove the original background
+                from your selected image.
+              </p>
+
+              <button
+                type="button"
+                className="ibg-green-button"
+                disabled={
+                  !currentFile ||
+                  processing
+                }
+                onClick={removeBackground}
               >
-                <div>
-                  <strong
-                    style={{
-                      fontSize:
-                        "13px",
-                    }}
-                  >
-                    {currentFile.name}
-                  </strong>
+                {processing
+                  ? "⏳ Removing Background..."
+                  : "✨ Remove Background"}
+              </button>
 
-                  <div
-                    style={{
-                      fontSize:
-                        "10px",
-                      color:
-                        "#7890a6",
-                      marginTop:
-                        "2px",
-                    }}
-                  >
-                    {formatSize(
-                      currentFile.size
-                    )}
-                  </div>
+            </div>
+
+            {/* ===============================================
+                STEP 3
+            =============================================== */}
+
+            <div className="ibg-step">
+
+              <div className="ibg-step-title">
+
+                <span className="ibg-number">
+                  3
+                </span>
+
+                <strong>
+                  Background
+                </strong>
+
+              </div>
+
+              <div className="ibg-tabs">
+
+                <button
+                  type="button"
+                  className={
+                    mode === "background"
+                      ? "ibg-tab active"
+                      : "ibg-tab"
+                  }
+                  onClick={() =>
+                    setMode("background")
+                  }
+                >
+                  🖼️ Background
+                </button>
+
+                <button
+                  type="button"
+                  className={
+                    mode === "color"
+                      ? "ibg-tab active"
+                      : "ibg-tab"
+                  }
+                  onClick={() =>
+                    setMode("color")
+                  }
+                >
+                  🎨 Color
+                </button>
+
+              </div>
+
+              {/* =============================================
+                  ALL BACKGROUNDS
+              ============================================= */}
+
+              {mode === "background" && (
+
+                <div className="ibg-background-grid">
+
+                  {BACKGROUNDS.map(
+                    (background) => (
+
+                      <button
+                        type="button"
+                        key={background.name}
+                        className={
+                          selectedBackground?.name ===
+                          background.name
+                            ? "ibg-background-item selected"
+                            : "ibg-background-item"
+                        }
+                        onClick={() => {
+                          setSelectedBackground(
+                            background
+                          );
+
+                          setSelectedColor(
+                            "transparent"
+                          );
+                        }}
+                      >
+
+                        <img
+                          src={background.url}
+                          alt={background.name}
+                          loading="lazy"
+                        />
+
+                        <span>
+                          {background.name}
+                        </span>
+
+                      </button>
+
+                    )
+                  )}
+
                 </div>
 
-                <span
-                  style={{
-                    fontSize:
-                      "10px",
-                    color:
-                      "#718ba4",
-                  }}
-                >
-                  {selectedIndex +
-                    1}{" "}
-                  /{" "}
-                  {files.length}
+              )}
+
+              {/* =============================================
+                  COLORS
+              ============================================= */}
+
+              {mode === "color" && (
+
+                <div className="ibg-color-grid">
+
+                  {COLORS.map((color) => (
+
+                    <button
+                      type="button"
+                      key={color.name}
+                      className={
+                        selectedColor === color.value
+                          ? "ibg-color-item selected"
+                          : "ibg-color-item"
+                      }
+                      onClick={() => {
+
+                        setSelectedColor(
+                          color.value
+                        );
+
+                        setSelectedBackground(
+                          null
+                        );
+
+                      }}
+                      title={color.name}
+                    >
+
+                      <span
+                        className="ibg-color-circle"
+                        style={{
+                          background:
+                            color.value ===
+                            "transparent"
+                              ? "white"
+                              : color.value,
+                        }}
+                      >
+                        {color.value ===
+                          "transparent" && "⊘"}
+                      </span>
+
+                      <small>
+                        {color.name}
+                      </small>
+
+                    </button>
+
+                  ))}
+
+                </div>
+
+              )}
+
+            </div>
+
+            {/* ===============================================
+                STEP 4
+            =============================================== */}
+
+            <div className="ibg-step">
+
+              <div className="ibg-step-title">
+
+                <span className="ibg-number">
+                  4
                 </span>
+
+                <strong>
+                  Preview
+                </strong>
+
               </div>
 
-              {/* IMAGE CANVAS */}
+              <p className="ibg-step-text">
+                Check your final image with
+                the selected background.
+              </p>
 
-              <div
-                style={{
-                  flex: 1,
-                  minHeight: 0,
-                  display:
-                    "flex",
-                  alignItems:
-                    "center",
-                  justifyContent:
-                    "center",
-                  borderRadius:
-                    "12px",
-                  overflow:
-                    "hidden",
-                  background:
-                    selectedBackground
-                      ? `url("${selectedBackground.url}") center / cover`
-                      : selectedColor !==
-                        "transparent"
-                      ? selectedColor
-                      : "#f4f6f8",
-                  position:
-                    "relative",
-                }}
+            </div>
+
+            {/* ===============================================
+                STEP 5
+            =============================================== */}
+
+            <div className="ibg-step">
+
+              <div className="ibg-step-title">
+
+                <span className="ibg-number">
+                  5
+                </span>
+
+                <strong>
+                  Download
+                </strong>
+
+              </div>
+
+              <p className="ibg-step-text">
+                Download your finished image
+                as a PNG file.
+              </p>
+
+              <button
+                type="button"
+                className="ibg-download-button"
+                disabled={!removedUrl}
+                onClick={downloadImage}
               >
-                {/* Removed foreground */}
+                ⬇ Download Image
+              </button>
 
-                {removedUrl ? (
-                  <img
-                    src={
-                      removedUrl
-                    }
-                    alt="Background removed"
-                    style={{
-                      maxWidth:
-                        "58%",
-                      maxHeight:
-                        "58%",
-                      width:
-                        "auto",
-                      height:
-                        "auto",
-                      objectFit:
-                        "contain",
-                      display:
-                        "block",
-                      filter:
-                        "drop-shadow(0 12px 18px rgba(0,0,0,.25))",
-                    }}
-                  />
-                ) : (
-                  <div
-                    style={{
-                      textAlign:
-                        "center",
-                      color:
-                        "#657b90",
-                    }}
-                  >
-                    <div
-                      style={{
-                        fontSize:
-                          "34px",
-                        marginBottom:
-                          "8px",
-                      }}
-                    >
-                      ✨
-                    </div>
+            </div>
 
-                    <strong>
-                      {processing
-                        ? "Removing background..."
-                        : "Processing image..."}
-                    </strong>
-                  </div>
-                )}
+          </aside>
 
-                {/* PROCESSING OVERLAY */}
+          {/* =================================================
+              RIGHT WORKSPACE
+          ================================================= */}
 
-                {processing && (
-                  <div
-                    style={{
-                      position:
-                        "absolute",
-                      inset: 0,
-                      display:
-                        "flex",
-                      alignItems:
-                        "flex-end",
-                      justifyContent:
-                        "center",
-                      padding:
-                        "18px",
-                      pointerEvents:
-                        "none",
-                    }}
-                  >
-                    <div
-                      style={{
-                        background:
-                          "rgba(3,15,27,.85)",
-                        padding:
-                          "8px 15px",
-                        borderRadius:
-                          "20px",
-                        fontSize:
-                          "11px",
-                        color:
-                          "#73e9ff",
-                      }}
-                    >
-                      ✨ Removing
-                      background...
-                    </div>
-                  </div>
-                )}
+          <main className="ibg-workspace">
+
+            {/* ===============================================
+                NO IMAGE
+            =============================================== */}
+
+            {!currentFile ? (
+
+              <div className="ibg-empty-workspace">
+
+                <div className="ibg-empty-icon">
+                  🖼️
+                </div>
+
+                <h2>
+                  Upload an image to get started
+                </h2>
+
+                <p>
+                  Drag and drop an image on the
+                  left side or click
+                  <strong> Select Image</strong>.
+                </p>
+
+                <span>
+                  JPG, PNG or WEBP · Maximum 5 MB
+                </span>
+
               </div>
 
-              {/* DOWNLOAD BUTTON */}
+            ) : (
 
-              {removedUrl &&
-                !processing &&
-                (selectedBackground ||
-                  (mode ===
-                    "color" &&
-                    selectedColor !==
-                      "transparent")) && (
+              <>
+
+                {/* =========================================
+                    ORIGINAL
+                ========================================= */}
+
+                <div className="ibg-preview-card">
+
+                  <div className="ibg-card-heading">
+
+                    <h2>
+                      Original Image
+                    </h2>
+
+                    <span>
+                      {selectedIndex + 1} /{" "}
+                      {files.length}
+                    </span>
+
+                  </div>
+
+                  <div className="ibg-original-preview">
+
+                    <img
+                      src={originalUrl}
+                      alt="Original"
+                    />
+
+                  </div>
+
+                </div>
+
+                {/* =========================================
+                    REMOVED BACKGROUND
+                ========================================= */}
+
+                <div className="ibg-preview-card">
+
+                  <div className="ibg-card-heading">
+
+                    <h2>
+                      Background Removed
+                    </h2>
+
+                    {!removedUrl && (
+                      <span>
+                        Not processed
+                      </span>
+                    )}
+
+                    {removedUrl && (
+                      <span>
+                        Ready
+                      </span>
+                    )}
+
+                  </div>
+
+                  <div className="ibg-transparent-preview">
+
+                    {removedUrl ? (
+
+                      <img
+                        src={removedUrl}
+                        alt="Background removed"
+                        style={previewStyle}
+                      />
+
+                    ) : (
+
+                      <div className="ibg-placeholder">
+
+                        <span>
+                          ✨
+                        </span>
+
+                        <strong>
+                          Remove the background
+                        </strong>
+
+                        <small>
+                          Click "Remove Background"
+                          on the left.
+                        </small>
+
+                      </div>
+
+                    )}
+
+                  </div>
+
+                </div>
+
+                {/* =========================================
+                    FINAL PREVIEW
+                ========================================= */}
+
+                <div className="ibg-preview-card">
+
+                  <div className="ibg-card-heading">
+
+                    <h2>
+                      Final Preview
+                    </h2>
+
+                    <div className="ibg-zoom">
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setZoom((value) =>
+                            Math.max(
+                              50,
+                              value - 10
+                            )
+                          )
+                        }
+                      >
+                        −
+                      </button>
+
+                      <span>
+                        {zoom}%
+                      </span>
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setZoom((value) =>
+                            Math.min(
+                              150,
+                              value + 10
+                            )
+                          )
+                        }
+                      >
+                        +
+                      </button>
+
+                    </div>
+
+                  </div>
+
+                  <div
+                    className="ibg-final-preview"
+                    style={
+                      removedUrl
+                        ? finalPreviewStyle
+                        : {}
+                    }
+                  >
+
+                    {removedUrl ? (
+
+                      <img
+                        src={removedUrl}
+                        alt="Final preview"
+                        style={previewStyle}
+                      />
+
+                    ) : (
+
+                      <div className="ibg-placeholder">
+
+                        <span>
+                          🖼️
+                        </span>
+
+                        <strong>
+                          Your final image will
+                          appear here
+                        </strong>
+
+                        <small>
+                          Remove the background
+                          and choose a background.
+                        </small>
+
+                      </div>
+
+                    )}
+
+                  </div>
+
+                </div>
+
+              </>
+
+            )}
+
+            {/* =================================================
+                YOUR IMAGES
+            ================================================= */}
+
+            {files.length > 0 && (
+
+              <div className="ibg-images-card">
+
+                <div className="ibg-card-heading">
+
+                  <h2>
+                    Your Images ({files.length})
+                  </h2>
+
+                </div>
+
+                <div className="ibg-thumbnail-row">
+
+                  {files.map(
+                    (file, index) => {
+
+                      const thumbnailUrl =
+                        URL.createObjectURL(file);
+
+                      return (
+                        <Thumbnail
+                          key={`${file.name}-${index}`}
+                          file={file}
+                          url={thumbnailUrl}
+                          selected={
+                            index === selectedIndex
+                          }
+                          onClick={() =>
+                            setSelectedIndex(index)
+                          }
+                          onRemove={() =>
+                            removeFile(index)
+                          }
+                        />
+                      );
+                    }
+                  )}
+
+                  {/* =========================================
+                      ONLY ONE ADD MORE BUTTON
+                  ========================================= */}
+
                   <button
                     type="button"
-                    onClick={
-                      downloadImage
+                    className="ibg-add-more"
+                    onClick={() =>
+                      inputRef.current?.click()
                     }
-                    style={{
-                      width:
-                        "100%",
-                      marginTop:
-                        "10px",
-                      border: 0,
-                      borderRadius:
-                        "10px",
-                      padding:
-                        "11px",
-                      background:
-                        "linear-gradient(135deg,#08cfff,#15d7b5)",
-                      color:
-                        "#fff",
-                      fontWeight:
-                        "800",
-                      fontSize:
-                        "13px",
-                      cursor:
-                        "pointer",
-                      boxShadow:
-                        "0 5px 18px rgba(0,210,255,.2)",
-                    }}
                   >
-                    ⬇ Download Image
+                    <span>
+                      +
+                    </span>
+
+                    <small>
+                      Add More
+                    </small>
                   </button>
-                )}
 
-              {/* SELECT BACKGROUND MESSAGE */}
+                </div>
 
-              {removedUrl &&
-                !selectedBackground &&
-                (selectedColor ===
-                  "transparent" ||
-                  mode ===
-                    "background") && (
-                  <div
-                    style={{
-                      marginTop:
-                        "9px",
-                      textAlign:
-                        "center",
-                      color:
-                        "#8098ad",
-                      fontSize:
-                        "11px",
-                    }}
-                  >
-                    ← Select a
-                    background or
-                    color from the
-                    left sidebar
-                  </div>
-                )}
-            </>
-          )}
-        </main>
-      </div>
+              </div>
 
-      {/* ===================================================
-          ERROR
-      =================================================== */}
+            )}
 
-      {error && (
-        <div
-          style={{
-            width: "100%",
-            maxWidth: "1050px",
-            margin:
-              "10px auto 0",
-            padding:
-              "9px 12px",
-            boxSizing:
-              "border-box",
-            borderRadius:
-              "9px",
-            background:
-              "rgba(239,68,68,.12)",
-            border:
-              "1px solid rgba(239,68,68,.3)",
-            color:
-              "#ff9c9c",
-            fontSize:
-              "11px",
-            textAlign:
-              "center",
-          }}
-        >
-          ⚠ {error}
+            {/* =================================================
+                ERROR
+            ================================================= */}
+
+            {error && (
+
+              <div className="ibg-error">
+                ⚠ {error}
+              </div>
+
+            )}
+
+            {/* =================================================
+                FILE INFORMATION
+            ================================================= */}
+
+            {currentFile && (
+
+              <div className="ibg-file-info">
+
+                <span>
+                  📄 {currentFile.name}
+                </span>
+
+                <span>
+                  {formatSize(
+                    currentFile.size
+                  )}
+                </span>
+
+              </div>
+
+            )}
+
+            {/* =================================================
+                BOTTOM DOWNLOAD
+            ================================================= */}
+
+            {removedUrl && (
+
+              <button
+                type="button"
+                className="ibg-bottom-download"
+                onClick={downloadImage}
+              >
+                ⬇ Download Final Image
+              </button>
+
+            )}
+
+          </main>
+
         </div>
-      )}
 
-      {/* ===================================================
-          MOBILE RESPONSIVE CSS
-      =================================================== */}
+      </section>
+    </>
+  );
+}
 
-      <style>{`
-        .hubconverter-image-background * {
-          box-sizing: border-box;
-        }
+/* ===========================================================
+   THUMBNAIL COMPONENT
 
-        .hubconverter-image-background
-        button {
-          transition:
-            transform .15s ease,
-            opacity .15s ease,
-            border-color .15s ease;
-        }
+   This avoids creating a new object URL every render without
+   cleanup.
+=========================================================== */
 
-        .hubconverter-image-background
-        button:hover {
-          transform: translateY(-1px);
-        }
+function Thumbnail({
+  file,
+  url,
+  selected,
+  onClick,
+  onRemove,
+}) {
+  useEffect(() => {
+    return () => {
+      URL.revokeObjectURL(url);
+    };
+  }, [url]);
 
-        .hubconverter-image-background
-        aside::-webkit-scrollbar,
-        .hubconverter-image-background
-        main::-webkit-scrollbar {
-          width: 6px;
-        }
+  return (
+    <div
+      className={
+        selected
+          ? "ibg-thumbnail selected"
+          : "ibg-thumbnail"
+      }
+      onClick={onClick}
+    >
 
-        .hubconverter-image-background
-        aside::-webkit-scrollbar-thumb,
-        .hubconverter-image-background
-        main::-webkit-scrollbar-thumb {
-          background: rgba(22,217,255,.35);
-          border-radius: 20px;
-        }
+      <img
+        src={url}
+        alt={file.name}
+      />
 
-        @media (max-width: 800px) {
-          .hubconverter-image-background {
-            padding: 12px !important;
-          }
+      <button
+        type="button"
+        className="ibg-remove-thumbnail"
+        onClick={(event) => {
+          event.stopPropagation();
+          onRemove();
+        }}
+        aria-label={`Remove ${file.name}`}
+        title="Remove image"
+      >
+        ×
+      </button>
 
-          .hubconverter-image-background > div:nth-of-type(2) {
-            grid-template-columns: 190px minmax(0,1fr) !important;
-            gap: 9px !important;
-            height: calc(100vh - 120px) !important;
-            min-height: 500px !important;
-          }
-        }
-
-        @media (max-width: 600px) {
-          .hubconverter-image-background > div:nth-of-type(2) {
-            grid-template-columns: 1fr !important;
-            grid-template-rows: 220px minmax(0,1fr) !important;
-            height: calc(100vh - 110px) !important;
-            min-height: 0 !important;
-          }
-
-          .hubconverter-image-background
-          aside {
-            min-height: 0 !important;
-          }
-
-          .hubconverter-image-background
-          main {
-            min-height: 0 !important;
-          }
-        }
-      `}</style>
-    </section>
+    </div>
   );
 }
 
