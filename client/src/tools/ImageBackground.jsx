@@ -192,9 +192,9 @@ export default function Background({ onImageSelect }) {
           width: 100%;
           min-height: 100vh;
           display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 30px;
+          align-items: flex-start;
+justify-content: center;
+         padding: 35px 20px 20px;
           box-sizing: border-box;
 
           background:
@@ -331,48 +331,43 @@ height: min(390px, 65vh);
         }
 
         .select-image-button {
-          position: relative;
-          z-index: 3;
+  width: 360px;
+  max-width: 75%;
+  height: 62px;
 
-          border: none;
-          outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-          min-width: 400px;
+  padding: 0;
+  margin: 0;
 
-          padding: 19px 48px;
+  border: none;
+  border-radius: 16px;
 
-          border-radius: 18px;
+  background: linear-gradient(
+    135deg,
+    #657586,
+    #8796a5
+  );
 
-          background:
-            linear-gradient(
-              180deg,
-              #8795a3 0%,
-              #65727e 100%
-            );
+  color: #ffffff;
 
-          color: white;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1;
 
-          font-size: 27px;
-          font-weight: 700;
+  cursor: pointer;
 
-          letter-spacing: -0.3px;
+  box-shadow:
+    0 8px 20px rgba(70, 90, 110, 0.22);
 
-          cursor: pointer;
+  position: relative;
+  z-index: 5;
 
-          box-shadow:
-            0 12px 28px rgba(80,105,125,0.3),
-            inset 0 1px 0 rgba(255,255,255,0.3);
+  transition: 0.2s ease;
+}
 
-          border: 2px solid rgba(65,75,85,0.55);
-
-          text-shadow:
-            0 2px 2px rgba(0,0,0,0.35);
-
-          transition:
-            transform 0.18s ease,
-            box-shadow 0.18s ease,
-            filter 0.18s ease;
-        }
 
         .select-image-button:hover {
           transform: translateY(-2px);
@@ -396,7 +391,7 @@ height: min(390px, 65vh);
 
           font-size: 39px;
 
-          line-height: 1.2;
+        line-height: 1;
 
           color: #50687f;
 
