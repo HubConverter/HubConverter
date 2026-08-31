@@ -248,8 +248,8 @@ export default function Background({ onImageSelect }) {
         }
 
         .background-upload-card {
-         width: min(600px, 82vw);
-height: min(410px, 65vh);
+         width: min(580px, 82vw);
+height: min(390px, 65vh);
 
           display: flex;
           flex-direction: column;
