@@ -1374,7 +1374,7 @@ const jpgTools = [
   description: "Compress image files for smaller sizes and faster loading.",
  id: "image-compressor",
 },
-  
+ 
   {
     icon: "🖼️",
     title: "Image Background",
