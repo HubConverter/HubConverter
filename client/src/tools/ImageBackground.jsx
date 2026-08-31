@@ -188,7 +188,7 @@ export default function Background({ onImageSelect }) {
       </div>
 
       <style>{`
-        .background-upload-page {
+       
        .background-upload-page {
   width: 100%;
   height: calc(100vh - 66px);
