@@ -17,6 +17,7 @@ import DeletePdfPages from "./tools/DeletePdfPages.jsx";
 import EditPdf from "./tools/EditPdf.jsx";
 import TranslatePdf from "./tools/TranslatePdf.jsx";
 import ImageCompressor from "./tools/ImageCompressor.jsx";
+import ImageBackground from "./tools/ImageBackground.jsx";
 
 
 
@@ -1220,7 +1221,36 @@ if (selectedTool === "image-compressor") {
     </div>
   );
 }
-  
+  if (selectedTool === "image-background") {
+  return (
+    <div>
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "20px 24px 0",
+        }}
+      >
+        <button
+          onClick={() => setSelectedTool(null)}
+          style={{
+            border: "none",
+            background: "transparent",
+            color: "inherit",
+            fontSize: "15px",
+            fontWeight: "600",
+            cursor: "pointer",
+            padding: "10px 0",
+          }}
+        >
+          ← Back to Tools
+        </button>
+      </div>
+
+      <ImageBackground />
+    </div>
+  );
+}
  // =========================
 // TOOLS HOME
 // =========================
@@ -1344,6 +1374,13 @@ const jpgTools = [
   description: "Compress image files for smaller sizes and faster loading.",
  id: "image-compressor",
 },
+  {
+  id: "image-background",
+  name: "Image Background",
+  description: "Remove and replace image backgrounds",
+  icon: "🖼️",
+  category: "Image",
+}
   {
     icon: "📐",
     title: "Image Resizer",
