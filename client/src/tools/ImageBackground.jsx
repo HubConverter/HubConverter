@@ -106,9 +106,9 @@ export default function Background({ onImageSelect }) {
         {/* Upload Icon */}
         <div className="upload-cloud-icon">
           <svg
-            width="78"
-            height="78"
-            viewBox="0 0 78 78"
+            width="50"
+            height="50"
+            viewBox="0 0 50 50"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
