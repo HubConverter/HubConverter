@@ -1374,14 +1374,13 @@ const jpgTools = [
   description: "Compress image files for smaller sizes and faster loading.",
  id: "image-compressor",
 },
+  
   {
-  title: "image-background",
+    icon: "🖼️",
+    title: "Image Background",
+    description: "Remove and replace image backgrounds.",
     id: "image-background",
-  name: "Image Background",
-  description: "Remove and replace image backgrounds",
-  icon: "🖼️",
-
-},
+  },
 
   {
     icon: "📐",
@@ -1493,14 +1492,12 @@ const toolsToShow = toolsForCategory.filter((tool) => {
 
   {[
     {
-  {
-  title: "image-background",
+   {
+    icon: "🖼️",
+    title: "Image Background",
+    description: "Remove and replace image backgrounds.",
     id: "image-background",
-  name: "Image Background",
-  description: "Remove and replace image backgrounds",
-  icon: "🖼️",
-
-},
+  },
     {
       icon: "📄",
       title: "JPG to PDF",
