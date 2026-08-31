@@ -106,9 +106,9 @@ export default function Background({ onImageSelect }) {
         {/* Upload Icon */}
         <div className="upload-cloud-icon">
           <svg
-            width="50"
-            height="50"
-            viewBox="0 0 50 50"
+            width="78"
+            height="78"
+            viewBox="0 0 78 78"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
@@ -248,8 +248,8 @@ export default function Background({ onImageSelect }) {
         }
 
         .background-upload-card {
-          width: min(760px, 92vw);
-          min-height: 560px;
+         width: min(620px, 82vw);
+height: min(430px, 65vh);
 
           display: flex;
           flex-direction: column;
