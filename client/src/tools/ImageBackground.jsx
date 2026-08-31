@@ -1,1430 +1,1871 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { removeBackground } from "@imgly/background-removal";
+import React, { useEffect, useRef, useState } from "react";
+
+/*
+===========================================================
+ HUBCONVERTER - IMAGE BACKGROUND TOOL
+===========================================================
+
+FLOW
+
+1. Upload image / Drag & Drop
+2. Background removes automatically
+3. Select Background OR Color from LEFT sidebar
+4. Download button appears
+5. Download final PNG
+
+DESIGN
+
+- Compact screen
+- Approximately 50% smaller than previous large layout
+- Background / Color sidebar on LEFT
+- No separate preview sections
+- No Remove Background button
+- Multiple images can be added
+===========================================================
+*/
+
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
 /* =========================================================
-   IMAGE BACKGROUND TOOL
-   ========================================================= */
+   BACKGROUNDS
+   More backgrounds added
+========================================================= */
 
 const BACKGROUNDS = [
-  // Nature
   {
-    id: "forest",
-    name: "Forest",
-    url: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=900&q=85",
-  },
-  {
-    id: "mountains",
-    name: "Mountains",
-    url: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=900&q=85",
-  },
-  {
-    id: "lake-mountains",
-    name: "Mountain Lake",
-    url: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=900&q=85",
-  },
-  {
-    id: "waterfall",
-    name: "Waterfall",
-    url: "https://images.unsplash.com/photo-1433086966358-54859d0ed716?auto=format&fit=crop&w=900&q=85",
-  },
-  {
-    id: "green-nature",
-    name: "Green Nature",
-    url: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=900&q=85",
-  },
-  {
-    id: "tropical",
-    name: "Tropical",
-    url: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=85",
-  },
-
-  // Beaches
-  {
-    id: "beach",
     name: "Beach",
-    url: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=85",
+    url: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1000&q=85",
   },
   {
-    id: "ocean",
     name: "Ocean",
-    url: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=900&q=85",
+    url: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1000&q=85",
   },
   {
-    id: "blue-water",
-    name: "Blue Water",
-    url: "https://images.unsplash.com/photo-1505881502353-a1986add3762?auto=format&fit=crop&w=900&q=85",
+    name: "Tropical",
+    url: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1000&q=85",
   },
-
-  // Sky / Sunset
   {
-    id: "sunset",
+    name: "Forest",
+    url: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1000&q=85",
+  },
+  {
+    name: "Green Nature",
+    url: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1000&q=85",
+  },
+  {
+    name: "Mountains",
+    url: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1000&q=85",
+  },
+  {
+    name: "Snow Mountain",
+    url: "https://images.unsplash.com/photo-1454496522488-7a8e488e8606?auto=format&fit=crop&w=1000&q=85",
+  },
+  {
+    name: "Lake",
+    url: "https://images.unsplash.com/photo-1439853949127-fa647821eba0?auto=format&fit=crop&w=1000&q=85",
+  },
+  {
     name: "Sunset",
-    url: "https://images.unsplash.com/photo-1472120435266-53107fd0c44a?auto=format&fit=crop&w=900&q=85",
+    url: "https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=1000&q=85",
   },
   {
-    id: "sunrise",
     name: "Sunrise",
-    url: "https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=900&q=85",
+    url: "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1000&q=85",
   },
   {
-    id: "clouds",
-    name: "Clouds",
-    url: "https://images.unsplash.com/photo-1534088568595-a066f410bcda?auto=format&fit=crop&w=900&q=85",
-  },
-  {
-    id: "night-sky",
-    name: "Night Sky",
-    url: "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=900&q=85",
-  },
-  {
-    id: "stars",
-    name: "Stars",
-    url: "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=900&q=85",
-  },
-
-  // City
-  {
-    id: "city",
-    name: "City",
-    url: "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=900&q=85",
-  },
-  {
-    id: "city-night",
-    name: "City Night",
-    url: "https://images.unsplash.com/photo-1514565131-fce0801e5785?auto=format&fit=crop&w=900&q=85",
-  },
-  {
-    id: "downtown",
-    name: "Downtown",
-    url: "https://images.unsplash.com/photo-1444723121867-7a241cacace9?auto=format&fit=crop&w=900&q=85",
-  },
-
-  // Office / Interior
-  {
-    id: "office",
-    name: "Office",
-    url: "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=85",
-  },
-  {
-    id: "modern-office",
-    name: "Modern Office",
-    url: "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=900&q=85",
-  },
-  {
-    id: "interior",
-    name: "Interior",
-    url: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=900&q=85",
-  },
-  {
-    id: "living-room",
-    name: "Living Room",
-    url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=900&q=85",
-  },
-
-  // Wood / Marble / Studio
-  {
-    id: "wood",
-    name: "Wood",
-    url: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=900&q=85",
-  },
-  {
-    id: "dark-wood",
-    name: "Dark Wood",
-    url: "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=900&q=85",
-  },
-  {
-    id: "marble",
-    name: "Marble",
-    url: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=900&q=85",
-  },
-  {
-    id: "white-studio",
-    name: "White Studio",
-    url: "https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?auto=format&fit=crop&w=900&q=85",
-  },
-  {
-    id: "concrete",
-    name: "Concrete",
-    url: "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=900&q=85",
-  },
-
-  // Flowers
-  {
-    id: "flowers",
     name: "Flowers",
-    url: "https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=900&q=85",
+    url: "https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=1000&q=85",
   },
   {
-    id: "pink-flowers",
     name: "Pink Flowers",
-    url: "https://images.unsplash.com/photo-1492447166138-50c3889fccb1?auto=format&fit=crop&w=900&q=85",
+    url: "https://images.unsplash.com/photo-1495231916356-a86217efff12?auto=format&fit=crop&w=1000&q=85",
   },
   {
-    id: "garden",
-    name: "Garden",
-    url: "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=900&q=85",
-  },
-
-  // Abstract / Colorful
-  {
-    id: "gradient",
-    name: "Gradient",
-    url: "https://images.unsplash.com/photo-1557682250-33bd709cbe85?auto=format&fit=crop&w=900&q=85",
+    name: "Green Leaves",
+    url: "https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&fit=crop&w=1000&q=85",
   },
   {
-    id: "purple",
-    name: "Purple",
-    url: "https://images.unsplash.com/photo-1557682260-96773eb01377?auto=format&fit=crop&w=900&q=85",
+    name: "Grass",
+    url: "https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=1000&q=85",
   },
   {
-    id: "blue",
-    name: "Blue",
-    url: "https://images.unsplash.com/photo-1557682257-2f9c37a3a5f0?auto=format&fit=crop&w=900&q=85",
+    name: "City",
+    url: "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=1000&q=85",
   },
   {
-    id: "pink",
-    name: "Pink",
-    url: "https://images.unsplash.com/photo-1557682224-5b8590cd9ec5?auto=format&fit=crop&w=900&q=85",
-  },
-
-  // Travel
-  {
-    id: "desert",
-    name: "Desert",
-    url: "https://images.unsplash.com/photo-1509316785289-025f5b846b35?auto=format&fit=crop&w=900&q=85",
+    name: "New York",
+    url: "https://images.unsplash.com/photo-1485871981521-5b1fd3805eee?auto=format&fit=crop&w=1000&q=85",
   },
   {
-    id: "road",
+    name: "Modern City",
+    url: "https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=1000&q=85",
+  },
+  {
     name: "Road",
-    url: "https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&w=900&q=85",
+    url: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1000&q=85",
   },
   {
-    id: "autumn",
+    name: "Desert",
+    url: "https://images.unsplash.com/photo-1509316785289-025f5b846b35?auto=format&fit=crop&w=1000&q=85",
+  },
+  {
+    name: "Room",
+    url: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1000&q=85",
+  },
+  {
+    name: "Modern Room",
+    url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1000&q=85",
+  },
+  {
+    name: "Office",
+    url: "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1000&q=85",
+  },
+  {
+    name: "Luxury",
+    url: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1000&q=85",
+  },
+  {
+    name: "Wood",
+    url: "https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=1000&q=85",
+  },
+  {
+    name: "Coffee",
+    url: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1000&q=85",
+  },
+  {
+    name: "Flowers Garden",
+    url: "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=1000&q=85",
+  },
+  {
+    name: "Palm Trees",
+    url: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1000&q=85",
+  },
+  {
+    name: "Waterfall",
+    url: "https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=1000&q=85",
+  },
+  {
     name: "Autumn",
-    url: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=900&q=85",
+    url: "https://images.unsplash.com/photo-1508780709619-79562169bc64?auto=format&fit=crop&w=1000&q=85",
+  },
+  {
+    name: "Night",
+    url: "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1000&q=85",
   },
 ];
 
 /* =========================================================
    COLORS
-   ========================================================= */
+========================================================= */
 
 const COLORS = [
-  "#ffffff",
-  "#f5f5f5",
-  "#eeeeee",
-  "#dfe6e9",
-  "#b2bec3",
-  "#636e72",
-
-  "#000000",
-  "#111827",
-  "#1e293b",
-  "#334155",
-  "#475569",
-
-  "#ef4444",
-  "#f97316",
-  "#f59e0b",
-  "#eab308",
-  "#84cc16",
-  "#22c55e",
-  "#10b981",
-  "#14b8a6",
-
-  "#06b6d4",
-  "#0ea5e9",
-  "#3b82f6",
-  "#6366f1",
-  "#8b5cf6",
-  "#a855f7",
-  "#d946ef",
-
-  "#ec4899",
-  "#f43f5e",
-
-  "#fecaca",
-  "#fed7aa",
-  "#fef08a",
-  "#d9f99d",
-  "#bbf7d0",
-  "#a5f3fc",
-  "#bfdbfe",
-  "#ddd6fe",
-  "#fbcfe8",
+  { name: "None", value: "transparent" },
+  { name: "White", value: "#ffffff" },
+  { name: "Black", value: "#000000" },
+  { name: "Red", value: "#ff3b30" },
+  { name: "Pink", value: "#ec1760" },
+  { name: "Hot Pink", value: "#ff1493" },
+  { name: "Rose", value: "#e91e63" },
+  { name: "Purple", value: "#9c27b0" },
+  { name: "Violet", value: "#673ab7" },
+  { name: "Deep Purple", value: "#512da8" },
+  { name: "Blue", value: "#4169e1" },
+  { name: "Royal Blue", value: "#2962ff" },
+  { name: "Sky Blue", value: "#2196f3" },
+  { name: "Light Blue", value: "#03a9f4" },
+  { name: "Cyan", value: "#00bcd4" },
+  { name: "Teal", value: "#009688" },
+  { name: "Green", value: "#12a66a" },
+  { name: "Bright Green", value: "#20c55a" },
+  { name: "Lime", value: "#cddc39" },
+  { name: "Yellow", value: "#ffd21c" },
+  { name: "Gold", value: "#ffc107" },
+  { name: "Orange", value: "#ff7a18" },
+  { name: "Deep Orange", value: "#ff5722" },
+  { name: "Brown", value: "#795548" },
+  { name: "Beige", value: "#d8c3a5" },
+  { name: "Gray", value: "#777777" },
+  { name: "Light Gray", value: "#d6d6d6" },
+  { name: "Dark Gray", value: "#333333" },
 ];
 
 /* =========================================================
+   HELPERS
+========================================================= */
+
+function formatSize(bytes) {
+  if (bytes < 1024) {
+    return `${bytes} B`;
+  }
+
+  if (bytes < 1024 * 1024) {
+    return `${(bytes / 1024).toFixed(1)} KB`;
+  }
+
+  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+}
+
+function loadImage(src) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+
+    image.crossOrigin = "anonymous";
+
+    image.onload = () => resolve(image);
+    image.onerror = reject;
+    image.src = src;
+  });
+}
+
+/* =========================================================
    COMPONENT
-   ========================================================= */
+========================================================= */
 
-export default function ImageBackground() {
-  const fileInputRef = useRef(null);
-  const canvasRef = useRef(null);
+function ImageBackground() {
+  const inputRef = useRef(null);
 
-  const [originalFile, setOriginalFile] = useState(null);
+  const [files, setFiles] = useState([]);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
   const [originalUrl, setOriginalUrl] = useState("");
-
   const [removedUrl, setRemovedUrl] = useState("");
-  const [selectedBackground, setSelectedBackground] = useState(null);
 
-  const [activeTab, setActiveTab] = useState("image");
-
-  const [isRemoving, setIsRemoving] = useState(false);
-  const [isDownloading, setIsDownloading] = useState(false);
-
+  const [processing, setProcessing] = useState(false);
   const [error, setError] = useState("");
-  const [dragActive, setDragActive] = useState(false);
 
-  /* ---------------------------------------------------------
-     PRELOAD BACKGROUNDS
-     --------------------------------------------------------- */
+  const [mode, setMode] = useState("background");
 
-  useEffect(() => {
-    BACKGROUNDS.forEach((background) => {
-      const img = new Image();
-      img.crossOrigin = "anonymous";
-      img.src = background.url;
-    });
-  }, []);
+  const [selectedBackground, setSelectedBackground] =
+    useState(null);
 
-  /* ---------------------------------------------------------
-     CLEANUP URLS
-     --------------------------------------------------------- */
+  const [selectedColor, setSelectedColor] =
+    useState("transparent");
+
+  const currentFile =
+    files[selectedIndex] || null;
+
+  /* =======================================================
+     CURRENT FILE
+  ======================================================= */
 
   useEffect(() => {
-    return () => {
-      if (originalUrl) URL.revokeObjectURL(originalUrl);
-      if (removedUrl) URL.revokeObjectURL(removedUrl);
-    };
-  }, [originalUrl, removedUrl]);
-
-  /* ---------------------------------------------------------
-     HANDLE FILE
-     --------------------------------------------------------- */
-
-  const handleFile = async (file) => {
-    if (!file) return;
-
-    setError("");
-
-    if (!file.type.startsWith("image/")) {
-      setError("Please select a JPG, PNG or WEBP image.");
+    if (!currentFile) {
+      setOriginalUrl("");
+      setRemovedUrl("");
       return;
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-      setError("Maximum image size is 5 MB.");
-      return;
-    }
+    const url = URL.createObjectURL(currentFile);
 
-    if (originalUrl) {
-      URL.revokeObjectURL(originalUrl);
-    }
-
-    if (removedUrl) {
-      URL.revokeObjectURL(removedUrl);
-    }
-
-    const url = URL.createObjectURL(file);
-
-    setOriginalFile(file);
     setOriginalUrl(url);
     setRemovedUrl("");
+
     setSelectedBackground(null);
-  };
+    setSelectedColor("transparent");
+    setMode("background");
 
-  /* ---------------------------------------------------------
-     INPUT
-     --------------------------------------------------------- */
-
-  const handleInputChange = (event) => {
-    const file = event.target.files?.[0];
-
-    if (file) {
-      handleFile(file);
-    }
-
-    event.target.value = "";
-  };
-
-  /* ---------------------------------------------------------
-     DRAG & DROP
-     --------------------------------------------------------- */
-
-  const handleDrop = (event) => {
-    event.preventDefault();
-    setDragActive(false);
-
-    const file = event.dataTransfer.files?.[0];
-
-    if (file) {
-      handleFile(file);
-    }
-  };
-
-  const handleDragOver = (event) => {
-    event.preventDefault();
-    setDragActive(true);
-  };
-
-  const handleDragLeave = () => {
-    setDragActive(false);
-  };
-
-  /* ---------------------------------------------------------
-     REMOVE BACKGROUND
-     --------------------------------------------------------- */
-
-  const handleRemoveBackground = async () => {
-    if (!originalFile) return;
-
-    try {
-      setError("");
-      setIsRemoving(true);
-
-      const result = await removeBackground(originalFile, {
-        output: {
-          format: "image/png",
-        },
-      });
-
-      const resultUrl = URL.createObjectURL(result);
-
-      setRemovedUrl(resultUrl);
-    } catch (err) {
-      console.error(err);
-      setError(
-        "Unable to remove the background. Please try another image."
-      );
-    } finally {
-      setIsRemoving(false);
-    }
-  };
-
-  /* ---------------------------------------------------------
-     SELECT BACKGROUND
-     --------------------------------------------------------- */
-
-  const chooseImageBackground = (background) => {
-    if (!removedUrl) return;
-
-    setSelectedBackground({
-      type: "image",
-      value: background.url,
-      name: background.name,
-    });
-  };
-
-  const chooseColor = (color) => {
-    if (!removedUrl) return;
-
-    setSelectedBackground({
-      type: "color",
-      value: color,
-      name: "Color",
-    });
-  };
-
-  /* ---------------------------------------------------------
-     PREVIEW BACKGROUND STYLE
-     --------------------------------------------------------- */
-
-  const previewStyle = useMemo(() => {
-    if (!selectedBackground) {
-      return {};
-    }
-
-    if (selectedBackground.type === "color") {
-      return {
-        background: selectedBackground.value,
-      };
-    }
-
-    return {
-      backgroundImage: `url("${selectedBackground.value}")`,
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-      backgroundRepeat: "no-repeat",
+    return () => {
+      URL.revokeObjectURL(url);
     };
-  }, [selectedBackground]);
+  }, [currentFile]);
 
-  /* ---------------------------------------------------------
-     DOWNLOAD
-     --------------------------------------------------------- */
+  /* =======================================================
+     AUTOMATIC BACKGROUND REMOVAL
+     
+     IMPORTANT:
+     There is NO remove background button.
+     It starts automatically after upload.
+  ======================================================= */
 
-  const downloadImage = async () => {
-    if (!removedUrl || !selectedBackground) return;
+  useEffect(() => {
+    if (!currentFile) {
+      return;
+    }
 
-    try {
-      setIsDownloading(true);
-      setError("");
+    let cancelled = false;
+    let createdUrl = "";
 
-      const canvas = canvasRef.current;
+    async function autoRemoveBackground() {
+      try {
+        setProcessing(true);
+        setError("");
 
-      const subject = new Image();
-      subject.crossOrigin = "anonymous";
+        const module =
+          await import("@imgly/background-removal");
 
-      await new Promise((resolve, reject) => {
-        subject.onload = resolve;
-        subject.onerror = reject;
-        subject.src = removedUrl;
-      });
+        const removeBg =
+          module.removeBackground ||
+          module.default?.removeBackground ||
+          module.default;
 
-      const width = subject.naturalWidth || subject.width;
-      const height = subject.naturalHeight || subject.height;
+        if (typeof removeBg !== "function") {
+          throw new Error(
+            "Background removal engine could not be loaded."
+          );
+        }
 
-      canvas.width = width;
-      canvas.height = height;
-
-      const ctx = canvas.getContext("2d");
-
-      if (selectedBackground.type === "color") {
-        ctx.fillStyle = selectedBackground.value;
-        ctx.fillRect(0, 0, width, height);
-      } else {
-        const background = new Image();
-        background.crossOrigin = "anonymous";
-
-        await new Promise((resolve, reject) => {
-          background.onload = resolve;
-          background.onerror = reject;
-          background.src = selectedBackground.value;
+        const result = await removeBg(currentFile, {
+          output: {
+            format: "image/png",
+          },
         });
 
-        /* Cover background */
+        if (cancelled) {
+          return;
+        }
 
-        const scale = Math.max(
-          width / background.naturalWidth,
-          height / background.naturalHeight
+        const blob =
+          result instanceof Blob
+            ? result
+            : new Blob([result], {
+                type: "image/png",
+              });
+
+        createdUrl = URL.createObjectURL(blob);
+
+        setRemovedUrl((oldUrl) => {
+          if (oldUrl) {
+            URL.revokeObjectURL(oldUrl);
+          }
+
+          return createdUrl;
+        });
+      } catch (err) {
+        console.error(
+          "Automatic background removal failed:",
+          err
         );
 
-        const bgWidth = background.naturalWidth * scale;
-        const bgHeight = background.naturalHeight * scale;
+        if (!cancelled) {
+          setError(
+            "Background removal could not be completed. Please try another image."
+          );
+        }
+      } finally {
+        if (!cancelled) {
+          setProcessing(false);
+        }
+      }
+    }
 
-        const bgX = (width - bgWidth) / 2;
-        const bgY = (height - bgHeight) / 2;
+    autoRemoveBackground();
 
-        ctx.drawImage(
-          background,
-          bgX,
-          bgY,
-          bgWidth,
-          bgHeight
+    return () => {
+      cancelled = true;
+    };
+  }, [currentFile]);
+
+  /* =======================================================
+     ADD FILES
+  ======================================================= */
+
+  function addFiles(fileList) {
+    setError("");
+
+    const incoming =
+      Array.from(fileList || []);
+
+    if (!incoming.length) {
+      return;
+    }
+
+    const validFiles = [];
+
+    for (const file of incoming) {
+      if (!file.type.startsWith("image/")) {
+        setError(
+          `${file.name} is not an image file.`
+        );
+
+        continue;
+      }
+
+      if (file.size > MAX_FILE_SIZE) {
+        setError(
+          `${file.name} is larger than 5 MB. Maximum allowed size is 5 MB per image.`
+        );
+
+        continue;
+      }
+
+      validFiles.push(file);
+    }
+
+    if (!validFiles.length) {
+      return;
+    }
+
+    setFiles((current) => {
+      const updated = [
+        ...current,
+        ...validFiles,
+      ];
+
+      if (current.length === 0) {
+        setSelectedIndex(0);
+      }
+
+      return updated;
+    });
+  }
+
+  function handleInput(event) {
+    addFiles(event.target.files);
+
+    event.target.value = "";
+  }
+
+  function handleDrop(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    addFiles(event.dataTransfer.files);
+  }
+
+  /* =======================================================
+     REMOVE FILE
+  ======================================================= */
+
+  function removeFile(index) {
+    setFiles((current) => {
+      const next =
+        current.filter(
+          (_, i) => i !== index
+        );
+
+      if (!next.length) {
+        setSelectedIndex(0);
+      } else if (index < selectedIndex) {
+        setSelectedIndex(
+          Math.max(
+            0,
+            selectedIndex - 1
+          )
+        );
+      } else if (
+        selectedIndex >= next.length
+      ) {
+        setSelectedIndex(
+          next.length - 1
         );
       }
 
-      /* Draw removed subject */
+      return next;
+    });
+  }
 
-      ctx.drawImage(subject, 0, 0, width, height);
+  /* =======================================================
+     CREATE FINAL IMAGE
+  ======================================================= */
 
-      const finalUrl = canvas.toDataURL("image/png", 1);
+  async function createFinalImage() {
+    if (!currentFile) {
+      throw new Error(
+        "No image selected."
+      );
+    }
 
-      const link = document.createElement("a");
+    const source =
+      removedUrl || originalUrl;
 
-      link.href = finalUrl;
-      link.download = "HubConverter-Background-Removed.png";
+    if (!source) {
+      throw new Error(
+        "Please upload an image."
+      );
+    }
+
+    const foreground =
+      await loadImage(source);
+
+    const canvas =
+      document.createElement("canvas");
+
+    const maxDimension = 1800;
+
+    let width =
+      foreground.naturalWidth ||
+      foreground.width;
+
+    let height =
+      foreground.naturalHeight ||
+      foreground.height;
+
+    if (
+      width > maxDimension ||
+      height > maxDimension
+    ) {
+      const ratio =
+        Math.min(
+          maxDimension / width,
+          maxDimension / height
+        );
+
+      width =
+        Math.round(width * ratio);
+
+      height =
+        Math.round(height * ratio);
+    }
+
+    canvas.width = width;
+    canvas.height = height;
+
+    const ctx =
+      canvas.getContext("2d");
+
+    if (!ctx) {
+      throw new Error(
+        "Canvas is not supported."
+      );
+    }
+
+    /* =====================================================
+       COLOR BACKGROUND
+    ===================================================== */
+
+    if (
+      mode === "color" &&
+      selectedColor !== "transparent"
+    ) {
+      ctx.fillStyle =
+        selectedColor;
+
+      ctx.fillRect(
+        0,
+        0,
+        width,
+        height
+      );
+    }
+
+    /* =====================================================
+       IMAGE BACKGROUND
+    ===================================================== */
+
+    if (
+      mode === "background" &&
+      selectedBackground
+    ) {
+      const bg =
+        await loadImage(
+          selectedBackground.url
+        );
+
+      const scale =
+        Math.max(
+          width / bg.naturalWidth,
+          height / bg.naturalHeight
+        );
+
+      const bgWidth =
+        bg.naturalWidth * scale;
+
+      const bgHeight =
+        bg.naturalHeight * scale;
+
+      const bgX =
+        (width - bgWidth) / 2;
+
+      const bgY =
+        (height - bgHeight) / 2;
+
+      ctx.drawImage(
+        bg,
+        bgX,
+        bgY,
+        bgWidth,
+        bgHeight
+      );
+    }
+
+    /* =====================================================
+       FOREGROUND
+    ===================================================== */
+
+    ctx.drawImage(
+      foreground,
+      0,
+      0,
+      width,
+      height
+    );
+
+    return new Promise(
+      (resolve, reject) => {
+        canvas.toBlob(
+          (blob) => {
+            if (!blob) {
+              reject(
+                new Error(
+                  "Could not create image."
+                )
+              );
+
+              return;
+            }
+
+            resolve(blob);
+          },
+          "image/png",
+          0.95
+        );
+      }
+    );
+  }
+
+  /* =======================================================
+     DOWNLOAD
+  ======================================================= */
+
+  async function downloadImage() {
+    try {
+      setError("");
+
+      if (!removedUrl) {
+        setError(
+          "Please wait for background removal to finish."
+        );
+
+        return;
+      }
+
+      if (
+        mode === "background" &&
+        !selectedBackground
+      ) {
+        setError(
+          "Please select a background first."
+        );
+
+        return;
+      }
+
+      if (
+        mode === "color" &&
+        selectedColor === "transparent"
+      ) {
+        setError(
+          "Please select a color first."
+        );
+
+        return;
+      }
+
+      const blob =
+        await createFinalImage();
+
+      const url =
+        URL.createObjectURL(blob);
+
+      const link =
+        document.createElement("a");
+
+      const baseName =
+        currentFile?.name
+          ?.replace(/\.[^/.]+$/, "")
+          .replace(
+            /[^a-z0-9-_]/gi,
+            "-"
+          ) || "image";
+
+      link.href = url;
+
+      link.download =
+        `${baseName}-background.png`;
 
       document.body.appendChild(link);
+
       link.click();
-      document.body.removeChild(link);
+
+      link.remove();
+
+      setTimeout(() => {
+        URL.revokeObjectURL(url);
+      }, 1000);
     } catch (err) {
-      console.error(err);
-      setError(
-        "Download failed. Please try another background."
+      console.error(
+        "Download failed:",
+        err
       );
-    } finally {
-      setIsDownloading(false);
+
+      setError(
+        "Could not create the final image. Please try again."
+      );
     }
-  };
+  }
 
-  /* ---------------------------------------------------------
-     START OVER
-     --------------------------------------------------------- */
+  /* =======================================================
+     BACKGROUND SELECT
+  ======================================================= */
 
-  const startOver = () => {
-    if (originalUrl) {
-      URL.revokeObjectURL(originalUrl);
-    }
+  function selectBackground(
+    background
+  ) {
+    setSelectedBackground(
+      background
+    );
 
-    if (removedUrl) {
-      URL.revokeObjectURL(removedUrl);
-    }
+    setSelectedColor(
+      "transparent"
+    );
 
-    setOriginalFile(null);
-    setOriginalUrl("");
-    setRemovedUrl("");
-    setSelectedBackground(null);
+    setMode("background");
+
     setError("");
-    setActiveTab("image");
-  };
+  }
 
-  /* =========================================================
+  /* =======================================================
+     COLOR SELECT
+  ======================================================= */
+
+  function selectColor(color) {
+    setSelectedColor(
+      color.value
+    );
+
+    setSelectedBackground(
+      null
+    );
+
+    setMode("color");
+
+    setError("");
+  }
+
+  /* =======================================================
      RENDER
-     ========================================================= */
+  ======================================================= */
 
   return (
-    <div className="hub-image-bg-tool">
+    <section
+      className="hubconverter-image-background"
+      style={{
+        minHeight: "100vh",
+        width: "100%",
+        boxSizing: "border-box",
+        background:
+          "linear-gradient(135deg,#06121f 0%,#081b2b 45%,#03111d 100%)",
+        padding: "24px 20px",
+        color: "#fff",
+        fontFamily:
+          "Arial, Helvetica, sans-serif",
+      }}
+    >
+      {/* ===================================================
+          HEADER
+      =================================================== */}
+
+      <div
+        style={{
+          width: "100%",
+          maxWidth: "1050px",
+          margin: "0 auto 18px",
+          textAlign: "center",
+        }}
+      >
+        <div
+          style={{
+            fontSize: "11px",
+            fontWeight: "800",
+            letterSpacing: "2px",
+            color: "#16d9ff",
+            marginBottom: "4px",
+          }}
+        >
+          HUBCONVERTER IMAGE TOOL
+        </div>
+
+        <h1
+          style={{
+            margin: 0,
+            fontSize:
+              "clamp(22px,3vw,32px)",
+            fontWeight: "800",
+          }}
+        >
+          Image Background
+        </h1>
+
+        <p
+          style={{
+            margin:
+              "5px 0 0",
+            color:
+              "#9db2c7",
+            fontSize: "13px",
+          }}
+        >
+          Remove background and add
+          a new background to your image
+        </p>
+      </div>
+
+      {/* ===================================================
+          MAIN COMPACT WORK AREA
+
+          This is intentionally much smaller.
+      =================================================== */}
+
+      <div
+        style={{
+          width: "100%",
+          maxWidth: "1050px",
+          height:
+            "calc(100vh - 150px)",
+          minHeight: "560px",
+          maxHeight: "760px",
+          margin: "0 auto",
+          display: "grid",
+          gridTemplateColumns:
+            "260px minmax(0,1fr)",
+          gap: "14px",
+          boxSizing: "border-box",
+        }}
+      >
+        {/* =================================================
+            LEFT SIDEBAR
+        ================================================= */}
+
+        <aside
+          style={{
+            background:
+              "rgba(10,27,45,.96)",
+            border:
+              "1px solid rgba(0,221,255,.35)",
+            borderRadius:
+              "16px",
+            padding: "12px",
+            display: "flex",
+            flexDirection:
+              "column",
+            minHeight: 0,
+            boxSizing: "border-box",
+            boxShadow:
+              "0 10px 30px rgba(0,0,0,.25)",
+          }}
+        >
+          {/* UPLOAD / ADD MORE */}
+
+          <div
+            style={{
+              marginBottom:
+                "10px",
+            }}
+          >
+            <button
+              type="button"
+              onClick={() =>
+                inputRef.current?.click()
+              }
+              onDragOver={(event) => {
+                event.preventDefault();
+              }}
+              onDrop={handleDrop}
+              style={{
+                width: "100%",
+                border:
+                  "1px dashed #22cfff",
+                borderRadius:
+                  "10px",
+                padding:
+                  "11px 8px",
+                background:
+                  "rgba(22,207,255,.08)",
+                color: "#fff",
+                cursor: "pointer",
+                fontWeight: "700",
+                fontSize: "13px",
+              }}
+            >
+              {files.length
+                ? "＋ Add More Images"
+                : "⬆ Upload Image"}
+            </button>
+
+            <input
+              ref={inputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              multiple
+              hidden
+              onChange={handleInput}
+            />
+
+            <div
+              style={{
+                marginTop:
+                  "5px",
+                textAlign:
+                  "center",
+                fontSize:
+                  "10px",
+                color:
+                  "#718ba4",
+              }}
+            >
+              JPG · PNG · WEBP · Max 5 MB
+            </div>
+          </div>
+
+          {/* IMAGE LIST */}
+
+          {files.length > 0 && (
+            <div
+              style={{
+                display: "flex",
+                gap: "6px",
+                overflowX:
+                  "auto",
+                paddingBottom:
+                  "7px",
+                marginBottom:
+                  "7px",
+              }}
+            >
+              {files.map(
+                (file, index) => {
+                  const tempUrl =
+                    URL.createObjectURL(
+                      file
+                    );
+
+                  return (
+                    <div
+                      key={`${file.name}-${index}`}
+                      onClick={() =>
+                        setSelectedIndex(
+                          index
+                        )
+                      }
+                      style={{
+                        flex:
+                          "0 0 48px",
+                        width:
+                          "48px",
+                        height:
+                          "48px",
+                        borderRadius:
+                          "8px",
+                        overflow:
+                          "hidden",
+                        position:
+                          "relative",
+                        cursor:
+                          "pointer",
+                        border:
+                          index ===
+                          selectedIndex
+                            ? "2px solid #16d9ff"
+                            : "1px solid rgba(255,255,255,.2)",
+                      }}
+                    >
+                      <img
+                        src={tempUrl}
+                        alt={file.name}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit:
+                            "cover",
+                          display:
+                            "block",
+                        }}
+                      />
+
+                      <button
+                        type="button"
+                        onClick={(event) => {
+                          event.stopPropagation();
+
+                          URL.revokeObjectURL(
+                            tempUrl
+                          );
+
+                          removeFile(
+                            index
+                          );
+                        }}
+                        style={{
+                          position:
+                            "absolute",
+                          top: "1px",
+                          right: "1px",
+                          width:
+                            "17px",
+                          height:
+                            "17px",
+                          padding: 0,
+                          border: 0,
+                          borderRadius:
+                            "50%",
+                          background:
+                            "rgba(0,0,0,.7)",
+                          color:
+                            "#fff",
+                          fontSize:
+                            "12px",
+                          lineHeight:
+                            "17px",
+                          cursor:
+                            "pointer",
+                        }}
+                      >
+                        ×
+                      </button>
+                    </div>
+                  );
+                }
+              )}
+            </div>
+          )}
+
+          {/* PROCESSING STATUS */}
+
+          {processing && (
+            <div
+              style={{
+                padding:
+                  "9px",
+                marginBottom:
+                  "8px",
+                borderRadius:
+                  "9px",
+                background:
+                  "rgba(34,197,94,.12)",
+                border:
+                  "1px solid rgba(34,197,94,.3)",
+                color:
+                  "#7df5a2",
+                fontSize:
+                  "11px",
+                textAlign:
+                  "center",
+              }}
+            >
+              ✨ Removing background...
+            </div>
+          )}
+
+          {removedUrl &&
+            !processing && (
+              <div
+                style={{
+                  padding:
+                    "7px",
+                  marginBottom:
+                    "8px",
+                  borderRadius:
+                    "9px",
+                  background:
+                    "rgba(34,197,94,.10)",
+                  color:
+                    "#65e58e",
+                  fontSize:
+                    "11px",
+                  textAlign:
+                    "center",
+                }}
+              >
+                ✓ Background removed
+              </div>
+            )}
+
+          {/* TABS */}
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns:
+                "1fr 1fr",
+              gap: "5px",
+              marginBottom:
+                "8px",
+            }}
+          >
+            <button
+              type="button"
+              onClick={() =>
+                setMode(
+                  "background"
+                )
+              }
+              style={{
+                border: "0",
+                borderRadius:
+                  "8px",
+                padding:
+                  "9px 4px",
+                cursor:
+                  "pointer",
+                fontWeight:
+                  "700",
+                fontSize:
+                  "11px",
+                color:
+                  mode ===
+                  "background"
+                    ? "#fff"
+                    : "#9db2c7",
+                background:
+                  mode ===
+                  "background"
+                    ? "linear-gradient(135deg,#09cfff,#18e0bb)"
+                    : "rgba(255,255,255,.06)",
+              }}
+            >
+              🖼 Background
+            </button>
+
+            <button
+              type="button"
+              onClick={() =>
+                setMode("color")
+              }
+              style={{
+                border: "0",
+                borderRadius:
+                  "8px",
+                padding:
+                  "9px 4px",
+                cursor:
+                  "pointer",
+                fontWeight:
+                  "700",
+                fontSize:
+                  "11px",
+                color:
+                  mode === "color"
+                    ? "#fff"
+                    : "#9db2c7",
+                background:
+                  mode === "color"
+                    ? "linear-gradient(135deg,#09cfff,#18e0bb)"
+                    : "rgba(255,255,255,.06)",
+              }}
+            >
+              🎨 Color
+            </button>
+          </div>
+
+          {/* =================================================
+              BACKGROUND GRID
+          ================================================= */}
+
+          {mode ===
+            "background" && (
+            <div
+              style={{
+                flex: 1,
+                minHeight: 0,
+                overflowY:
+                  "auto",
+                overflowX:
+                  "hidden",
+                paddingRight:
+                  "3px",
+              }}
+            >
+              <div
+                style={{
+                  display:
+                    "grid",
+                  gridTemplateColumns:
+                    "repeat(2, minmax(0,1fr))",
+                  gap: "6px",
+                }}
+              >
+                {BACKGROUNDS.map(
+                  (
+                    background
+                  ) => {
+                    const selected =
+                      selectedBackground?.name ===
+                      background.name;
+
+                    return (
+                      <button
+                        type="button"
+                        key={
+                          background.name
+                        }
+                        onClick={() =>
+                          selectBackground(
+                            background
+                          )
+                        }
+                        title={
+                          background.name
+                        }
+                        style={{
+                          border:
+                            selected
+                              ? "2px solid #16d9ff"
+                              : "1px solid rgba(255,255,255,.12)",
+                          padding:
+                            "2px",
+                          borderRadius:
+                            "9px",
+                          background:
+                            selected
+                              ? "rgba(22,217,255,.15)"
+                              : "rgba(255,255,255,.04)",
+                          cursor:
+                            "pointer",
+                          overflow:
+                            "hidden",
+                        }}
+                      >
+                        <img
+                          src={
+                            background.url
+                          }
+                          alt={
+                            background.name
+                          }
+                          loading="lazy"
+                          style={{
+                            width:
+                              "100%",
+                            height:
+                              "58px",
+                            objectFit:
+                              "cover",
+                            borderRadius:
+                              "6px",
+                            display:
+                              "block",
+                          }}
+                        />
+
+                        <div
+                          style={{
+                            fontSize:
+                              "8px",
+                            color:
+                              "#c7d7e7",
+                            padding:
+                              "3px 1px 2px",
+                            whiteSpace:
+                              "nowrap",
+                            overflow:
+                              "hidden",
+                            textOverflow:
+                              "ellipsis",
+                          }}
+                        >
+                          {
+                            background.name
+                          }
+                        </div>
+                      </button>
+                    );
+                  }
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* =================================================
+              COLOR GRID
+          ================================================= */}
+
+          {mode ===
+            "color" && (
+            <div
+              style={{
+                flex: 1,
+                minHeight: 0,
+                overflowY:
+                  "auto",
+                paddingRight:
+                  "3px",
+              }}
+            >
+              <div
+                style={{
+                  display:
+                    "grid",
+                  gridTemplateColumns:
+                    "repeat(4, minmax(0,1fr))",
+                  gap: "6px",
+                }}
+              >
+                {COLORS.map(
+                  (color) => {
+                    const selected =
+                      selectedColor ===
+                      color.value;
+
+                    return (
+                      <button
+                        type="button"
+                        key={
+                          color.name
+                        }
+                        onClick={() =>
+                          selectColor(
+                            color
+                          )
+                        }
+                        title={
+                          color.name
+                        }
+                        style={{
+                          border:
+                            selected
+                              ? "2px solid #16d9ff"
+                              : "1px solid rgba(255,255,255,.12)",
+                          borderRadius:
+                            "8px",
+                          padding:
+                            "3px",
+                          background:
+                            "rgba(255,255,255,.04)",
+                          cursor:
+                            "pointer",
+                        }}
+                      >
+                        <span
+                          style={{
+                            display:
+                              "block",
+                            width:
+                              "100%",
+                            aspectRatio:
+                              "1",
+                            borderRadius:
+                              "6px",
+                            background:
+                              color.value ===
+                              "transparent"
+                                ? "linear-gradient(45deg,#ddd 25%,#fff 25%,#fff 50%,#ddd 50%,#ddd 75%,#fff 75%)"
+                                : color.value,
+                            backgroundSize:
+                              "10px 10px",
+                            boxShadow:
+                              "inset 0 0 0 1px rgba(0,0,0,.12)",
+                          }}
+                        />
+
+                        <div
+                          style={{
+                            fontSize:
+                              "7px",
+                            color:
+                              "#b8c9d9",
+                            paddingTop:
+                              "3px",
+                            whiteSpace:
+                              "nowrap",
+                            overflow:
+                              "hidden",
+                            textOverflow:
+                              "ellipsis",
+                          }}
+                        >
+                          {
+                            color.name
+                          }
+                        </div>
+                      </button>
+                    );
+                  }
+                )}
+              </div>
+            </div>
+          )}
+        </aside>
+
+        {/* =================================================
+            RIGHT MAIN IMAGE AREA
+
+            Only ONE image area.
+            No long preview sections.
+        ================================================= */}
+
+        <main
+          style={{
+            minWidth: 0,
+            minHeight: 0,
+            background:
+              "rgba(8,22,37,.94)",
+            border:
+              "1px solid rgba(0,221,255,.25)",
+            borderRadius:
+              "16px",
+            padding:
+              "14px",
+            display:
+              "flex",
+            flexDirection:
+              "column",
+            boxSizing:
+              "border-box",
+          }}
+        >
+          {!currentFile ? (
+            /* ===============================================
+               INITIAL UPLOAD SCREEN
+            =============================================== */
+
+            <div
+              onDragOver={(event) => {
+                event.preventDefault();
+              }}
+              onDrop={handleDrop}
+              onClick={() =>
+                inputRef.current?.click()
+              }
+              style={{
+                flex: 1,
+                display:
+                  "flex",
+                alignItems:
+                  "center",
+                justifyContent:
+                  "center",
+                cursor:
+                  "pointer",
+                border:
+                  "1px dashed rgba(22,217,255,.5)",
+                borderRadius:
+                  "12px",
+                background:
+                  "rgba(255,255,255,.025)",
+              }}
+            >
+              <div
+                style={{
+                  textAlign:
+                    "center",
+                }}
+              >
+                <div
+                  style={{
+                    fontSize:
+                      "42px",
+                    marginBottom:
+                      "12px",
+                  }}
+                >
+                  🖼️
+                </div>
+
+                <h2
+                  style={{
+                    margin:
+                      "0 0 7px",
+                    fontSize:
+                      "22px",
+                  }}
+                >
+                  Upload Image
+                </h2>
+
+                <p
+                  style={{
+                    margin:
+                      "0",
+                    color:
+                      "#8ea6bd",
+                    fontSize:
+                      "13px",
+                  }}
+                >
+                  Drag & drop your
+                  image here
+                </p>
+
+                <button
+                  type="button"
+                  onClick={(event) => {
+                    event.stopPropagation();
+
+                    inputRef.current?.click();
+                  }}
+                  style={{
+                    marginTop:
+                      "18px",
+                    border: 0,
+                    borderRadius:
+                      "10px",
+                    padding:
+                      "11px 28px",
+                    background:
+                      "linear-gradient(135deg,#087df0,#14d8bd)",
+                    color:
+                      "#fff",
+                    fontWeight:
+                      "800",
+                    cursor:
+                      "pointer",
+                    fontSize:
+                      "14px",
+                  }}
+                >
+                  Upload Image
+                </button>
+              </div>
+            </div>
+          ) : (
+            /* ===============================================
+               IMAGE DISPLAY
+
+               ONLY ONE IMAGE AREA
+            =============================================== */
+
+            <>
+              <div
+                style={{
+                  display:
+                    "flex",
+                  alignItems:
+                    "center",
+                  justifyContent:
+                    "space-between",
+                  marginBottom:
+                    "8px",
+                }}
+              >
+                <div>
+                  <strong
+                    style={{
+                      fontSize:
+                        "13px",
+                    }}
+                  >
+                    {currentFile.name}
+                  </strong>
+
+                  <div
+                    style={{
+                      fontSize:
+                        "10px",
+                      color:
+                        "#7890a6",
+                      marginTop:
+                        "2px",
+                    }}
+                  >
+                    {formatSize(
+                      currentFile.size
+                    )}
+                  </div>
+                </div>
+
+                <span
+                  style={{
+                    fontSize:
+                      "10px",
+                    color:
+                      "#718ba4",
+                  }}
+                >
+                  {selectedIndex +
+                    1}{" "}
+                  /{" "}
+                  {files.length}
+                </span>
+              </div>
+
+              {/* IMAGE CANVAS */}
+
+              <div
+                style={{
+                  flex: 1,
+                  minHeight: 0,
+                  display:
+                    "flex",
+                  alignItems:
+                    "center",
+                  justifyContent:
+                    "center",
+                  borderRadius:
+                    "12px",
+                  overflow:
+                    "hidden",
+                  background:
+                    selectedBackground
+                      ? `url("${selectedBackground.url}") center / cover`
+                      : selectedColor !==
+                        "transparent"
+                      ? selectedColor
+                      : "#f4f6f8",
+                  position:
+                    "relative",
+                }}
+              >
+                {/* Removed foreground */}
+
+                {removedUrl ? (
+                  <img
+                    src={
+                      removedUrl
+                    }
+                    alt="Background removed"
+                    style={{
+                      maxWidth:
+                        "58%",
+                      maxHeight:
+                        "58%",
+                      width:
+                        "auto",
+                      height:
+                        "auto",
+                      objectFit:
+                        "contain",
+                      display:
+                        "block",
+                      filter:
+                        "drop-shadow(0 12px 18px rgba(0,0,0,.25))",
+                    }}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      textAlign:
+                        "center",
+                      color:
+                        "#657b90",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontSize:
+                          "34px",
+                        marginBottom:
+                          "8px",
+                      }}
+                    >
+                      ✨
+                    </div>
+
+                    <strong>
+                      {processing
+                        ? "Removing background..."
+                        : "Processing image..."}
+                    </strong>
+                  </div>
+                )}
+
+                {/* PROCESSING OVERLAY */}
+
+                {processing && (
+                  <div
+                    style={{
+                      position:
+                        "absolute",
+                      inset: 0,
+                      display:
+                        "flex",
+                      alignItems:
+                        "flex-end",
+                      justifyContent:
+                        "center",
+                      padding:
+                        "18px",
+                      pointerEvents:
+                        "none",
+                    }}
+                  >
+                    <div
+                      style={{
+                        background:
+                          "rgba(3,15,27,.85)",
+                        padding:
+                          "8px 15px",
+                        borderRadius:
+                          "20px",
+                        fontSize:
+                          "11px",
+                        color:
+                          "#73e9ff",
+                      }}
+                    >
+                      ✨ Removing
+                      background...
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* DOWNLOAD BUTTON */}
+
+              {removedUrl &&
+                !processing &&
+                (selectedBackground ||
+                  (mode ===
+                    "color" &&
+                    selectedColor !==
+                      "transparent")) && (
+                  <button
+                    type="button"
+                    onClick={
+                      downloadImage
+                    }
+                    style={{
+                      width:
+                        "100%",
+                      marginTop:
+                        "10px",
+                      border: 0,
+                      borderRadius:
+                        "10px",
+                      padding:
+                        "11px",
+                      background:
+                        "linear-gradient(135deg,#08cfff,#15d7b5)",
+                      color:
+                        "#fff",
+                      fontWeight:
+                        "800",
+                      fontSize:
+                        "13px",
+                      cursor:
+                        "pointer",
+                      boxShadow:
+                        "0 5px 18px rgba(0,210,255,.2)",
+                    }}
+                  >
+                    ⬇ Download Image
+                  </button>
+                )}
+
+              {/* SELECT BACKGROUND MESSAGE */}
+
+              {removedUrl &&
+                !selectedBackground &&
+                (selectedColor ===
+                  "transparent" ||
+                  mode ===
+                    "background") && (
+                  <div
+                    style={{
+                      marginTop:
+                        "9px",
+                      textAlign:
+                        "center",
+                      color:
+                        "#8098ad",
+                      fontSize:
+                        "11px",
+                    }}
+                  >
+                    ← Select a
+                    background or
+                    color from the
+                    left sidebar
+                  </div>
+                )}
+            </>
+          )}
+        </main>
+      </div>
+
+      {/* ===================================================
+          ERROR
+      =================================================== */}
+
+      {error && (
+        <div
+          style={{
+            width: "100%",
+            maxWidth: "1050px",
+            margin:
+              "10px auto 0",
+            padding:
+              "9px 12px",
+            boxSizing:
+              "border-box",
+            borderRadius:
+              "9px",
+            background:
+              "rgba(239,68,68,.12)",
+            border:
+              "1px solid rgba(239,68,68,.3)",
+            color:
+              "#ff9c9c",
+            fontSize:
+              "11px",
+            textAlign:
+              "center",
+          }}
+        >
+          ⚠ {error}
+        </div>
+      )}
+
+      {/* ===================================================
+          MOBILE RESPONSIVE CSS
+      =================================================== */}
 
       <style>{`
-        * {
+        .hubconverter-image-background * {
           box-sizing: border-box;
         }
 
-        .hub-image-bg-tool {
-          width: 100%;
-          min-height: calc(100vh - 80px);
-          padding: 22px;
-          display: flex;
-          gap: 20px;
-          background:
-            radial-gradient(
-              circle at top left,
-              rgba(0, 210, 255, 0.12),
-              transparent 35%
-            ),
-            linear-gradient(
-              135deg,
-              #061522,
-              #07111f 55%,
-              #031019
-            );
-          color: #fff;
-        }
-
-        /* ============================================
-           LEFT SIDEBAR
-           ============================================ */
-
-        .hub-bg-sidebar {
-          width: 285px;
-          min-width: 285px;
-          height: calc(100vh - 124px);
-          max-height: 850px;
-          border: 1px solid rgba(0, 220, 255, 0.32);
-          border-radius: 18px;
-          background: rgba(7, 20, 34, 0.96);
-          box-shadow:
-            0 15px 50px rgba(0, 0, 0, 0.35),
-            inset 0 1px 0 rgba(255,255,255,0.04);
-          display: flex;
-          flex-direction: column;
-          overflow: hidden;
-        }
-
-        /* ============================================
-           TABS
-           ============================================ */
-
-        .hub-bg-tabs {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          padding: 10px;
-          gap: 7px;
-          border-bottom: 1px solid rgba(255,255,255,0.08);
-        }
-
-        .hub-bg-tab {
-          height: 48px;
-          border: 0;
-          border-radius: 11px;
-          background: transparent;
-          color: #aebccc;
-          font-size: 14px;
-          font-weight: 700;
-          cursor: pointer;
-          transition: 0.2s ease;
-        }
-
-        .hub-bg-tab:hover {
-          background: rgba(255,255,255,0.06);
-          color: #fff;
-        }
-
-        .hub-bg-tab.active {
-          background: #fff;
-          color: #087cf2;
-          box-shadow: 0 5px 18px rgba(0,0,0,0.18);
-        }
-
-        /* ============================================
-           SIDEBAR TITLE
-           ============================================ */
-
-        .hub-bg-sidebar-title {
-          padding: 12px 14px 8px;
-          font-size: 12px;
-          color: #8fa5ba;
-        }
-
-        /* ============================================
-           GALLERY
-           ============================================ */
-
-        .hub-bg-gallery {
-          flex: 1;
-          min-height: 0;
-          overflow-y: auto;
-          padding: 8px 12px 12px;
-          scrollbar-width: thin;
-          scrollbar-color: #4e657a transparent;
-        }
-
-        .hub-bg-gallery::-webkit-scrollbar {
-          width: 7px;
-        }
-
-        .hub-bg-gallery::-webkit-scrollbar-track {
-          background: transparent;
-        }
-
-        .hub-bg-gallery::-webkit-scrollbar-thumb {
-          background: #42576b;
-          border-radius: 20px;
-        }
-
-        .hub-bg-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 8px;
-        }
-
-        .hub-bg-thumb {
-          position: relative;
-          width: 100%;
-          aspect-ratio: 1 / 1;
-          border: 2px solid transparent;
-          padding: 0;
-          border-radius: 11px;
-          overflow: hidden;
-          cursor: pointer;
-          background: #152333;
+        .hubconverter-image-background
+        button {
           transition:
-            transform 0.18s ease,
-            border-color 0.18s ease,
-            box-shadow 0.18s ease;
+            transform .15s ease,
+            opacity .15s ease,
+            border-color .15s ease;
         }
 
-        .hub-bg-thumb:hover {
-          transform: translateY(-2px);
-          border-color: #16d9ff;
-          box-shadow: 0 5px 18px rgba(0, 210, 255, 0.2);
-        }
-
-        .hub-bg-thumb.selected {
-          border-color: #00eaff;
-          box-shadow:
-            0 0 0 2px rgba(0,234,255,0.2),
-            0 5px 20px rgba(0,234,255,0.3);
-        }
-
-        .hub-bg-thumb img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          display: block;
-        }
-
-        .hub-bg-color {
-          width: 100%;
-          height: 100%;
-          border-radius: 9px;
-        }
-
-        /* ============================================
-           COLOR GRID
-           ============================================ */
-
-        .hub-color-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 9px;
-        }
-
-        .hub-color-thumb {
-          aspect-ratio: 1 / 1;
-          border-radius: 11px;
-          border: 2px solid rgba(255,255,255,0.1);
-          cursor: pointer;
-          transition: 0.18s ease;
-          box-shadow:
-            inset 0 0 0 1px rgba(0,0,0,0.08);
-        }
-
-        .hub-color-thumb:hover {
-          transform: scale(1.04);
-          border-color: #00eaff;
-        }
-
-        .hub-color-thumb.selected {
-          border-color: #00eaff;
-          box-shadow:
-            0 0 0 2px rgba(0,234,255,0.25),
-            0 5px 20px rgba(0,234,255,0.2);
-        }
-
-        /* ============================================
-           SIDEBAR ACTIONS
-           ============================================ */
-
-        .hub-bg-actions {
-          padding: 10px 12px 12px;
-          border-top: 1px solid rgba(255,255,255,0.08);
-          background: rgba(4, 13, 23, 0.85);
-        }
-
-        .hub-bg-download {
-          width: 100%;
-          min-height: 45px;
-          border: 0;
-          border-radius: 10px;
-          background:
-            linear-gradient(
-              90deg,
-              #00c6ff,
-              #3478f6,
-              #00e0b5
-            );
-          color: #fff;
-          font-size: 14px;
-          font-weight: 800;
-          cursor: pointer;
-          box-shadow: 0 7px 20px rgba(0, 174, 255, 0.2);
-          transition: 0.2s ease;
-        }
-
-        .hub-bg-download:hover:not(:disabled) {
+        .hubconverter-image-background
+        button:hover {
           transform: translateY(-1px);
-          box-shadow: 0 10px 25px rgba(0, 174, 255, 0.32);
         }
 
-        .hub-bg-download:disabled {
-          opacity: 0.4;
-          cursor: not-allowed;
+        .hubconverter-image-background
+        aside::-webkit-scrollbar,
+        .hubconverter-image-background
+        main::-webkit-scrollbar {
+          width: 6px;
         }
 
-        .hub-bg-reset {
-          width: 100%;
-          margin-top: 7px;
-          min-height: 40px;
-          border-radius: 10px;
-          border: 1px solid rgba(255,255,255,0.14);
-          background: transparent;
-          color: #c5d1dd;
-          font-weight: 700;
-          cursor: pointer;
-        }
-
-        .hub-bg-reset:hover {
-          background: rgba(255,255,255,0.06);
-          color: #fff;
-        }
-
-        /* ============================================
-           RIGHT PREVIEW
-           ============================================ */
-
-        .hub-bg-main {
-          flex: 1;
-          min-width: 0;
-          height: calc(100vh - 124px);
-          max-height: 850px;
-          display: flex;
-          align-items: stretch;
-          justify-content: center;
-        }
-
-        .hub-bg-preview {
-          width: 100%;
-          height: 100%;
-          min-height: 480px;
-          position: relative;
+        .hubconverter-image-background
+        aside::-webkit-scrollbar-thumb,
+        .hubconverter-image-background
+        main::-webkit-scrollbar-thumb {
+          background: rgba(22,217,255,.35);
           border-radius: 20px;
-          overflow: hidden;
-          background:
-            linear-gradient(
-              135deg,
-              #f3f6f9,
-              #dfe7ee
-            );
-          border: 1px solid rgba(255,255,255,0.15);
-          box-shadow:
-            0 20px 55px rgba(0,0,0,0.3);
-          display: flex;
-          align-items: center;
-          justify-content: center;
         }
 
-        /* ============================================
-           EMPTY UPLOAD
-           ============================================ */
-
-        .hub-upload-box {
-          width: min(620px, 85%);
-          min-height: 380px;
-          border: 2px dashed #74a8ff;
-          border-radius: 18px;
-          background: rgba(255,255,255,0.65);
-          color: #40556b;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          text-align: center;
-          cursor: pointer;
-          transition: 0.2s ease;
-        }
-
-        .hub-upload-box:hover,
-        .hub-upload-box.drag {
-          border-color: #1677ff;
-          background: rgba(255,255,255,0.85);
-          transform: scale(1.01);
-        }
-
-        .hub-upload-icon {
-          font-size: 54px;
-          margin-bottom: 18px;
-        }
-
-        .hub-upload-title {
-          font-size: 27px;
-          font-weight: 800;
-          color: #23384e;
-        }
-
-        .hub-upload-subtitle {
-          margin-top: 10px;
-          font-size: 16px;
-          color: #63798e;
-        }
-
-        .hub-select-btn {
-          margin-top: 24px;
-          padding: 13px 28px;
-          border: 0;
-          border-radius: 10px;
-          background: #1769e8;
-          color: white;
-          font-size: 16px;
-          font-weight: 800;
-          cursor: pointer;
-        }
-
-        .hub-upload-info {
-          margin-top: 15px;
-          font-size: 12px;
-          color: #8093a6;
-        }
-
-        /* ============================================
-           IMAGE PREVIEW
-           ============================================ */
-
-        .hub-subject-preview {
-          position: relative;
-          width: 100%;
-          height: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 35px;
-          overflow: hidden;
-        }
-
-        .hub-subject-preview.checker {
-          background-color: #fff;
-          background-image:
-            linear-gradient(45deg, #eef1f4 25%, transparent 25%),
-            linear-gradient(-45deg, #eef1f4 25%, transparent 25%),
-            linear-gradient(45deg, transparent 75%, #eef1f4 75%),
-            linear-gradient(-45deg, transparent 75%, #eef1f4 75%);
-          background-size: 30px 30px;
-          background-position:
-            0 0,
-            0 15px,
-            15px -15px,
-            -15px 0;
-        }
-
-        .hub-subject-preview img {
-          max-width: 90%;
-          max-height: 90%;
-          width: auto;
-          height: auto;
-          object-fit: contain;
-          display: block;
-        }
-
-        .hub-original-preview {
-          max-width: 90%;
-          max-height: 90%;
-          object-fit: contain;
-          border-radius: 8px;
-        }
-
-        /* ============================================
-           REMOVE BUTTON
-           ============================================ */
-
-        .hub-remove-panel {
-          position: absolute;
-          left: 22px;
-          bottom: 22px;
-          padding: 12px;
-          border-radius: 13px;
-          background: rgba(4, 15, 27, 0.92);
-          border: 1px solid rgba(0,220,255,0.28);
-          box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-
-        .hub-remove-btn {
-          min-width: 205px;
-          min-height: 44px;
-          padding: 0 18px;
-          border: 0;
-          border-radius: 9px;
-          background: #14a94b;
-          color: #fff;
-          font-weight: 800;
-          cursor: pointer;
-        }
-
-        .hub-remove-btn:hover:not(:disabled) {
-          background: #12bd51;
-        }
-
-        .hub-remove-btn:disabled {
-          opacity: 0.6;
-          cursor: wait;
-        }
-
-        /* ============================================
-           STATUS
-           ============================================ */
-
-        .hub-status {
-          position: absolute;
-          top: 18px;
-          left: 50%;
-          transform: translateX(-50%);
-          padding: 10px 17px;
-          border-radius: 20px;
-          background: rgba(4, 15, 27, 0.88);
-          color: #fff;
-          font-size: 13px;
-          font-weight: 700;
-          z-index: 5;
-          white-space: nowrap;
-        }
-
-        .hub-error {
-          position: absolute;
-          left: 50%;
-          bottom: 18px;
-          transform: translateX(-50%);
-          max-width: 90%;
-          padding: 10px 15px;
-          border-radius: 9px;
-          background: #9f1239;
-          color: #fff;
-          font-size: 13px;
-          font-weight: 700;
-          z-index: 10;
-        }
-
-        /* ============================================
-           HIDDEN CANVAS
-           ============================================ */
-
-        .hub-hidden-canvas {
-          display: none;
-        }
-
-        /* ============================================
-           MOBILE
-           ============================================ */
-
-        @media (max-width: 900px) {
-          .hub-image-bg-tool {
-            flex-direction: column;
-            padding: 12px;
-            min-height: auto;
+        @media (max-width: 800px) {
+          .hubconverter-image-background {
+            padding: 12px !important;
           }
 
-          .hub-bg-sidebar {
-            width: 100%;
-            min-width: 0;
-            height: 280px;
-            max-height: 280px;
-            order: 2;
-          }
-
-          .hub-bg-main {
-            width: 100%;
-            height: 65vh;
-            min-height: 430px;
-            order: 1;
-          }
-
-          .hub-bg-preview {
-            min-height: 430px;
-          }
-
-          .hub-bg-grid {
-            grid-template-columns: repeat(5, 1fr);
-          }
-
-          .hub-color-grid {
-            grid-template-columns: repeat(7, 1fr);
+          .hubconverter-image-background > div:nth-of-type(2) {
+            grid-template-columns: 190px minmax(0,1fr) !important;
+            gap: 9px !important;
+            height: calc(100vh - 120px) !important;
+            min-height: 500px !important;
           }
         }
 
         @media (max-width: 600px) {
-          .hub-bg-main {
-            height: 55vh;
-            min-height: 350px;
+          .hubconverter-image-background > div:nth-of-type(2) {
+            grid-template-columns: 1fr !important;
+            grid-template-rows: 220px minmax(0,1fr) !important;
+            height: calc(100vh - 110px) !important;
+            min-height: 0 !important;
           }
 
-          .hub-bg-preview {
-            min-height: 350px;
-            border-radius: 14px;
+          .hubconverter-image-background
+          aside {
+            min-height: 0 !important;
           }
 
-          .hub-bg-sidebar {
-            height: 270px;
-            max-height: 270px;
-          }
-
-          .hub-bg-grid {
-            grid-template-columns: repeat(4, 1fr);
-          }
-
-          .hub-color-grid {
-            grid-template-columns: repeat(6, 1fr);
-          }
-
-          .hub-upload-box {
-            min-height: 280px;
-          }
-
-          .hub-upload-title {
-            font-size: 21px;
-          }
-
-          .hub-upload-icon {
-            font-size: 42px;
-          }
-
-          .hub-subject-preview {
-            padding: 15px;
-          }
-
-          .hub-remove-panel {
-            left: 12px;
-            right: 12px;
-            bottom: 12px;
-          }
-
-          .hub-remove-btn {
-            width: 100%;
+          .hubconverter-image-background
+          main {
+            min-height: 0 !important;
           }
         }
       `}</style>
-
-      {/* =====================================================
-          LEFT SIDEBAR
-      ===================================================== */}
-
-      <aside className="hub-bg-sidebar">
-
-        {/* TABS */}
-
-        <div className="hub-bg-tabs">
-
-          <button
-            type="button"
-            className={`hub-bg-tab ${
-              activeTab === "image" ? "active" : ""
-            }`}
-            onClick={() => setActiveTab("image")}
-            disabled={!removedUrl}
-          >
-            🖼️ Image Background
-          </button>
-
-          <button
-            type="button"
-            className={`hub-bg-tab ${
-              activeTab === "color" ? "active" : ""
-            }`}
-            onClick={() => setActiveTab("color")}
-            disabled={!removedUrl}
-          >
-            🎨 Color
-          </button>
-
-        </div>
-
-        {!removedUrl && (
-          <div className="hub-bg-sidebar-title">
-            Remove the background first
-          </div>
-        )}
-
-        {/* GALLERY */}
-
-        <div className="hub-bg-gallery">
-
-          {activeTab === "image" && (
-            <div className="hub-bg-grid">
-
-              {BACKGROUNDS.map((background) => (
-                <button
-                  key={background.id}
-                  type="button"
-                  title={background.name}
-                  className={`hub-bg-thumb ${
-                    selectedBackground?.value === background.url
-                      ? "selected"
-                      : ""
-                  }`}
-                  onClick={() =>
-                    chooseImageBackground(background)
-                  }
-                  disabled={!removedUrl}
-                >
-                  <img
-                    src={background.url}
-                    alt={background.name}
-                    loading="lazy"
-                  />
-                </button>
-              ))}
-
-            </div>
-          )}
-
-          {activeTab === "color" && (
-            <div className="hub-color-grid">
-
-              {COLORS.map((color) => (
-                <button
-                  key={color}
-                  type="button"
-                  title={color}
-                  className={`hub-color-thumb ${
-                    selectedBackground?.value === color
-                      ? "selected"
-                      : ""
-                  }`}
-                  style={{
-                    background: color,
-                  }}
-                  onClick={() => chooseColor(color)}
-                  disabled={!removedUrl}
-                />
-              ))}
-
-            </div>
-          )}
-
-        </div>
-
-        {/* ACTIONS */}
-
-        <div className="hub-bg-actions">
-
-          <button
-            type="button"
-            className="hub-bg-download"
-            onClick={downloadImage}
-            disabled={!selectedBackground || isDownloading}
-          >
-            {isDownloading
-              ? "Preparing Image..."
-              : "⬇ Download Image"}
-          </button>
-
-          <button
-            type="button"
-            className="hub-bg-reset"
-            onClick={startOver}
-          >
-            ↻ Start Over
-          </button>
-
-        </div>
-
-      </aside>
-
-      {/* =====================================================
-          RIGHT MAIN AREA
-      ===================================================== */}
-
-      <main className="hub-bg-main">
-
-        <div
-          className="hub-bg-preview"
-          style={
-            selectedBackground
-              ? previewStyle
-              : undefined
-          }
-        >
-
-          {/* ===============================================
-              NO IMAGE
-          =============================================== */}
-
-          {!originalUrl && (
-            <div
-              className={`hub-upload-box ${
-                dragActive ? "drag" : ""
-              }`}
-              onDrop={handleDrop}
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onClick={() =>
-                fileInputRef.current?.click()
-              }
-            >
-
-              <div className="hub-upload-icon">
-                🖼️
-              </div>
-
-              <div className="hub-upload-title">
-                Upload Image
-              </div>
-
-              <div className="hub-upload-subtitle">
-                or drop a file
-              </div>
-
-              <button
-                type="button"
-                className="hub-select-btn"
-                onClick={(event) => {
-                  event.stopPropagation();
-                  fileInputRef.current?.click();
-                }}
-              >
-                Upload Image
-              </button>
-
-              <div className="hub-upload-info">
-                JPG, PNG, WEBP · Maximum 5 MB
-              </div>
-
-            </div>
-          )}
-
-          {/* ===============================================
-              ORIGINAL IMAGE
-          =============================================== */}
-
-          {originalUrl && !removedUrl && (
-            <>
-              <div className="hub-subject-preview checker">
-
-                <img
-                  src={originalUrl}
-                  alt="Original"
-                  className="hub-original-preview"
-                />
-
-              </div>
-
-              <div className="hub-remove-panel">
-
-                <button
-                  type="button"
-                  className="hub-remove-btn"
-                  onClick={handleRemoveBackground}
-                  disabled={isRemoving}
-                >
-                  {isRemoving
-                    ? "✨ Removing Background..."
-                    : "✨ Remove Background"}
-                </button>
-
-              </div>
-            </>
-          )}
-
-          {/* ===============================================
-              REMOVED BACKGROUND / FINAL PREVIEW
-          =============================================== */}
-
-          {removedUrl && (
-            <div
-              className="hub-subject-preview"
-              style={
-                selectedBackground
-                  ? {}
-                  : {
-                      backgroundColor: "#f4f7fa",
-                      backgroundImage:
-                        "linear-gradient(45deg,#e8edf1 25%,transparent 25%),linear-gradient(-45deg,#e8edf1 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#e8edf1 75%),linear-gradient(-45deg,transparent 75%,#e8edf1 75%)",
-                      backgroundSize: "28px 28px",
-                      backgroundPosition:
-                        "0 0,0 14px,14px -14px,-14px 0",
-                    }
-              }
-            >
-
-              <img
-                src={removedUrl}
-                alt="Background removed"
-              />
-
-              {!selectedBackground && (
-                <div className="hub-status">
-                  Select a background from the left
-                </div>
-              )}
-
-            </div>
-          )}
-
-          {/* STATUS */}
-
-          {isRemoving && (
-            <div className="hub-status">
-              ✨ Removing background... Please wait
-            </div>
-          )}
-
-          {/* ERROR */}
-
-          {error && (
-            <div className="hub-error">
-              {error}
-            </div>
-          )}
-
-        </div>
-
-      </main>
-
-      {/* HIDDEN INPUT */}
-
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/jpeg,image/png,image/webp"
-        onChange={handleInputChange}
-        style={{ display: "none" }}
-      />
-
-      {/* HIDDEN CANVAS */}
-
-      <canvas
-        ref={canvasRef}
-        className="hub-hidden-canvas"
-      />
-
-    </div>
+    </section>
   );
 }
+
+export default ImageBackground;
