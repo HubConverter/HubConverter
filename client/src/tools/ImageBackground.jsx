@@ -189,37 +189,23 @@ export default function Background({ onImageSelect }) {
 
       <style>{`
         .background-upload-page {
-          width: 100%;
-          min-height: 100vh;
-          display: flex;
-          align-items: flex-start;
-justify-content: center;
-         padding: 35px 20px 20px;
-          box-sizing: border-box;
+       .background-upload-page {
+  width: 100%;
+  height: calc(100vh - 66px);
+  min-height: 0;
 
-          background:
-            radial-gradient(
-              circle at 20% 20%,
-              rgba(255,255,255,0.95),
-              rgba(235,240,245,0.8) 35%,
-              transparent 65%
-            ),
-            radial-gradient(
-              circle at 85% 75%,
-              rgba(255,255,255,0.9),
-              rgba(224,231,238,0.7) 40%,
-              transparent 70%
-            ),
-            linear-gradient(
-              135deg,
-              #eef3f7 0%,
-              #ffffff 45%,
-              #e9eef2 100%
-            );
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
 
-          position: relative;
-          overflow: hidden;
-        }
+  padding: 28px 20px 20px;
+  box-sizing: border-box;
+
+  background: transparent;
+
+  position: relative;
+  overflow: hidden;
+}
 
         .background-upload-page::before {
           content: "";
@@ -248,40 +234,32 @@ justify-content: center;
         }
 
         .background-upload-card {
-         width: min(580px, 82vw);
-height: min(390px, 65vh);
+  width: min(620px, 82vw);
+  height: min(430px, calc(100vh - 140px));
 
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
+  max-height: calc(100vh - 140px);
 
-          padding: 55px 45px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
-          box-sizing: border-box;
+  padding: 24px;
 
-          position: relative;
-          z-index: 2;
+  box-sizing: border-box;
 
-          border-radius: 28px;
+  position: relative;
+  z-index: 2;
 
-          background: rgba(255,255,255,0.64);
+  border-radius: 24px;
 
-          border: 1px solid rgba(255,255,255,0.9);
+  background: #ffffff;
 
-          box-shadow:
-            0 25px 70px rgba(60,75,90,0.16),
-            inset 0 1px 0 rgba(255,255,255,0.95);
+  border: 1px solid rgba(255, 255, 255, 0.95);
 
-          backdrop-filter: blur(20px);
-          -webkit-backdrop-filter: blur(20px);
-
-          transition:
-            transform 0.2s ease,
-            border-color 0.2s ease,
-            box-shadow 0.2s ease;
-        }
-
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.14);
+}
         .background-upload-card::before {
           content: "";
           position: absolute;
