@@ -1375,7 +1375,8 @@ const jpgTools = [
  id: "image-compressor",
 },
   {
-  id: "image-background",
+  title: "image-background",
+    id: "image-background",
   name: "Image Background",
   description: "Remove and replace image backgrounds",
   icon: "🖼️",
@@ -1492,7 +1493,9 @@ const toolsToShow = toolsForCategory.filter((tool) => {
 
   {[
     {
-  id: "image-background",
+  {
+  title: "image-background",
+    id: "image-background",
   name: "Image Background",
   description: "Remove and replace image backgrounds",
   icon: "🖼️",
