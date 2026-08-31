@@ -1380,7 +1380,8 @@ const jpgTools = [
   description: "Remove and replace image backgrounds",
   icon: "🖼️",
   category: "Image",
-}
+},
+
   {
     icon: "📐",
     title: "Image Resizer",
