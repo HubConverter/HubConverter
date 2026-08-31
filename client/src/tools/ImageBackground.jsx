@@ -408,8 +408,8 @@ export default function ImageBackground() {
           onDragOver={(event) => event.preventDefault()}
           onDrop={handleDrop}
         >
-          <button type="button" className="ibg-start-upload" onClick={() => inputRef.current?.click()}>
-            Upload Image
+          <button type="button" className="ibg-start-select" onClick={() => inputRef.current?.click()}>
+            Select Image
           </button>
           <div className="ibg-start-drop">or drop a file,</div>
           <button type="button" className="ibg-start-paste" onClick={handleUrlUpload}>
