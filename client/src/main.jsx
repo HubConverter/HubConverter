@@ -1379,7 +1379,7 @@ const jpgTools = [
   name: "Image Background",
   description: "Remove and replace image backgrounds",
   icon: "🖼️",
-  category: "Image",
+
 },
 
   {
@@ -1492,12 +1492,12 @@ const toolsToShow = toolsForCategory.filter((tool) => {
 
   {[
     {
-      icon: "🖼️",
-      title: "Image Background",
-      description: "Isolate subjects and create transparency.",
-      id: null,
-    },
+  id: "image-background",
+  name: "Image Background",
+  description: "Remove and replace image backgrounds",
+  icon: "🖼️",
 
+},
     {
       icon: "📄",
       title: "JPG to PDF",
