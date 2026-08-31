@@ -9,17 +9,18 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@imgly/background-removal": "^1.7.0",
     "@vitejs/plugin-react": "^4.3.4",
-    "vite": "^6.0.11",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "docx": "^9.7.1",
     "jspdf": "^3.0.4",
     "jspdf-autotable": "^5.0.8",
-    "xlsx": "^0.18.5",
-"mammoth": "^1.9.1",
-    "pdfjs-dist": "^5.4.149",
-"jszip": "^3.10.1",
+    "jszip": "^3.10.1",
+    "mammoth": "^1.9.1",
     "pdf-lib": "^1.17.1",
-    "docx": "^9.7.1"
+    "pdfjs-dist": "^5.4.149",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "vite": "^6.0.11",
+    "xlsx": "^0.18.5"
   }
 }
