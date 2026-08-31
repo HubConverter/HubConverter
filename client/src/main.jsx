@@ -1491,7 +1491,7 @@ const toolsToShow = toolsForCategory.filter((tool) => {
    <section className="featured-tools">
 
   {[
-    {
+    
    {
     icon: "🖼️",
     title: "Image Background",
