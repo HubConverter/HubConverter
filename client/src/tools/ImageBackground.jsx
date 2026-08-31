@@ -1,665 +1,2394 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { removeBackground as removeBgFromImage } from "@imgly/background-removal";
+
+/*
+===========================================================
+ HUBCONVERTER - IMAGE BACKGROUND
+===========================================================
+
+FLOW
+
+1. First screen:
+   - Select Image
+   - Drag & Drop
+   - Paste image / URL
+
+2. After image upload:
+   - Original image
+   - Background is removed automatically
+   - Small left sidebar
+   - Background / Color
+   - None option
+   - Background images
+   - Download
+
+3. Multiple images:
+   - First image can be selected
+   - Add More Images button appears only after upload
+
+===========================================================
+*/
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
+/* =========================================================
+   BACKGROUNDS
+========================================================= */
+
 const BACKGROUNDS = [
-  { id: "none", name: "None", type: "none" },
-  { id: "beach", name: "Beach", url: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=85" },
-  { id: "ocean", name: "Ocean", url: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=85" },
-  { id: "sunset", name: "Sunset", url: "https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=900&q=85" },
-  { id: "forest", name: "Forest", url: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=900&q=85" },
-  { id: "green-nature", name: "Green Nature", url: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=900&q=85" },
-  { id: "mountains", name: "Mountains", url: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=900&q=85" },
-  { id: "lake", name: "Lake", url: "https://images.unsplash.com/photo-1439853949127-fa647821eba0?auto=format&fit=crop&w=900&q=85" },
-  { id: "waterfall", name: "Waterfall", url: "https://images.unsplash.com/photo-1433086966358-54859d0ed716?auto=format&fit=crop&w=900&q=85" },
-  { id: "desert", name: "Desert", url: "https://images.unsplash.com/photo-1509316785289-025f5b846b35?auto=format&fit=crop&w=900&q=85" },
-  { id: "desert-sunset", name: "Desert Sunset", url: "https://images.unsplash.com/photo-1473580044384-7ba9967e16a0?auto=format&fit=crop&w=900&q=85" },
-  { id: "city", name: "City", url: "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=900&q=85" },
-  { id: "city-night", name: "City Night", url: "https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=900&q=85" },
-  { id: "office", name: "Office", url: "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=85" },
-  { id: "modern-office", name: "Modern Office", url: "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=900&q=85" },
-  { id: "home", name: "Home", url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=900&q=85" },
-  { id: "wood", name: "Wood", url: "https://images.unsplash.com/photo-1531058020387-3be344556be6?auto=format&fit=crop&w=900&q=85" },
-  { id: "flowers", name: "Flowers", url: "https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=900&q=85" },
-  { id: "pink-flowers", name: "Pink Flowers", url: "https://images.unsplash.com/photo-1526047932273-341f2a7631f9?auto=format&fit=crop&w=900&q=85" },
-  { id: "sky", name: "Sky", url: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=900&q=85" },
-  { id: "clouds", name: "Clouds", url: "https://images.unsplash.com/photo-1499346030926-9a72daac6c63?auto=format&fit=crop&w=900&q=85" },
-  { id: "snow", name: "Snow", url: "https://images.unsplash.com/photo-1517299321609-52687d1bc55a?auto=format&fit=crop&w=900&q=85" },
-  { id: "river", name: "River", url: "https://images.unsplash.com/photo-1437482078695-73f5ca6c96e2?auto=format&fit=crop&w=900&q=85" },
-  { id: "road", name: "Road", url: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=900&q=85" },
-  { id: "architecture", name: "Architecture", url: "https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&w=900&q=85" },
-  { id: "coffee", name: "Cafe", url: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=900&q=85" },
-  { id: "marble", name: "Marble", url: "https://images.unsplash.com/photo-1604079628040-94301bb21b91?auto=format&fit=crop&w=900&q=85" },
-  { id: "gold", name: "Golden", url: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=900&q=85" },
+  {
+    name: "None",
+    url: null,
+    none: true,
+  },
+  {
+    name: "Beach",
+    url: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1000&q=85",
+  },
+  {
+    name: "Ocean",
+    url: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1000&q=85",
+  },
+  {
+    name: "Forest",
+    url: "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1000&q=85",
+  },
+  {
+    name: "Green Nature",
+    url: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1000&q=85",
+  },
+  {
+    name: "Mountains",
+    url: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1000&q=85",
+  },
+  {
+    name: "Lake",
+    url: "https://images.unsplash.com/photo-1439853949127-fa647821eba0?auto=format&fit=crop&w=1000&q=85",
+  },
+  {
+    name: "Sunset",
+    url: "https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?auto=format&fit=crop&w=1000&q=85",
+  },
+  {
+    name: "Tropical",
+    url: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1000&q=85",
+  },
+  {
+    name: "City",
+    url: "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=1000&q=85",
+  },
+  {
+    name: "Road",
+    url: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1000&q=85",
+  },
+  {
+    name: "Garden",
+    url: "https://images.unsplash.com/photo-1558904541-efa843a96f01?auto=format&fit=crop&w=1000&q=85",
+  },
+  {
+    name: "Hotel",
+    url: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1000&q=85",
+  },
+  {
+    name: "Desert",
+    url: "https://images.unsplash.com/photo-1509316785289-025f5b846b35?auto=format&fit=crop&w=1000&q=85",
+  },
+  {
+    name: "Flowers",
+    url: "https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=1000&q=85",
+  },
+  {
+    name: "Snow",
+    url: "https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=1000&q=85",
+  },
+  {
+    name: "Architecture",
+    url: "https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&w=1000&q=85",
+  },
+  {
+    name: "Office",
+    url: "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1000&q=85",
+  },
 ];
 
+/* =========================================================
+   COLORS
+========================================================= */
+
 const COLORS = [
-  { id: "none", name: "None", value: "transparent", type: "none" },
-  { id: "white", name: "White", value: "#ffffff" },
-  { id: "black", name: "Black", value: "#111111" },
-  { id: "red", name: "Red", value: "#ff3b30" },
-  { id: "orange", name: "Orange", value: "#ff7a18" },
-  { id: "peach", name: "Peach", value: "#ffad8a" },
-  { id: "yellow", name: "Yellow", value: "#ffd21f" },
-  { id: "lime", name: "Lime", value: "#cce329" },
-  { id: "green", name: "Green", value: "#35ae50" },
-  { id: "mint", name: "Mint", value: "#2fd6a1" },
-  { id: "teal", name: "Teal", value: "#079b8e" },
-  { id: "cyan", name: "Cyan", value: "#12b5c7" },
-  { id: "sky", name: "Sky Blue", value: "#08a8e8" },
-  { id: "blue", name: "Blue", value: "#4255bd" },
-  { id: "light-blue", name: "Light Blue", value: "#2397e9" },
-  { id: "purple", name: "Purple", value: "#6a3dbb" },
-  { id: "violet", name: "Violet", value: "#7b35c8" },
-  { id: "magenta", name: "Magenta", value: "#a528b6" },
-  { id: "pink", name: "Pink", value: "#ed1764" },
-  { id: "rose", name: "Rose", value: "#ef476f" },
-  { id: "brown", name: "Brown", value: "#875437" },
-  { id: "beige", name: "Beige", value: "#ded3bd" },
-  { id: "gray", name: "Gray", value: "#8b929b" },
-  { id: "light-gray", name: "Light Gray", value: "#e4e7eb" },
-  { id: "navy", name: "Navy", value: "#172b4d" },
+  {
+    name: "None",
+    value: "transparent",
+    none: true,
+  },
+  {
+    name: "Rainbow",
+    value: "rainbow",
+    rainbow: true,
+  },
+  {
+    name: "White",
+    value: "#ffffff",
+  },
+  {
+    name: "Red",
+    value: "#ff3b30",
+  },
+  {
+    name: "Pink",
+    value: "#ec1760",
+  },
+  {
+    name: "Purple",
+    value: "#9c27b0",
+  },
+  {
+    name: "Violet",
+    value: "#673ab7",
+  },
+  {
+    name: "Blue",
+    value: "#4169e1",
+  },
+  {
+    name: "Sky Blue",
+    value: "#2196f3",
+  },
+  {
+    name: "Cyan",
+    value: "#00acc1",
+  },
+  {
+    name: "Teal",
+    value: "#009688",
+  },
+  {
+    name: "Green",
+    value: "#4caf50",
+  },
+  {
+    name: "Light Green",
+    value: "#8bc34a",
+  },
+  {
+    name: "Lime",
+    value: "#cddc39",
+  },
+  {
+    name: "Yellow",
+    value: "#ffd21c",
+  },
+  {
+    name: "Orange",
+    value: "#ff7a18",
+  },
+  {
+    name: "Brown",
+    value: "#795548",
+  },
+  {
+    name: "Gray",
+    value: "#777777",
+  },
+  {
+    name: "Dark Gray",
+    value: "#333333",
+  },
+  {
+    name: "Black",
+    value: "#000000",
+  },
 ];
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function formatSize(bytes) {
+  if (!bytes) return "0 B";
+
+  if (bytes < 1024) {
+    return `${bytes} B`;
+  }
+
+  if (bytes < 1024 * 1024) {
+    return `${(bytes / 1024).toFixed(1)} KB`;
+  }
+
+  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+}
 
 function loadImage(src) {
   return new Promise((resolve, reject) => {
     const image = new Image();
-    if (/^https?:\/\//i.test(src)) image.crossOrigin = "anonymous";
+
     image.onload = () => resolve(image);
-    image.onerror = () => reject(new Error("Image could not be loaded."));
+
+    image.onerror = () => {
+      reject(new Error("Image could not be loaded."));
+    };
+
     image.src = src;
   });
 }
 
-async function trimTransparentPixels(blob) {
-  const sourceUrl = URL.createObjectURL(blob);
-  try {
-    const image = await loadImage(sourceUrl);
-    const canvas = document.createElement("canvas");
-    canvas.width = image.naturalWidth || image.width;
-    canvas.height = image.naturalHeight || image.height;
-    const ctx = canvas.getContext("2d", { willReadFrequently: true });
-    ctx.drawImage(image, 0, 0);
-    const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+/* =========================================================
+   COMPONENT
+========================================================= */
 
-    let minX = canvas.width;
-    let minY = canvas.height;
-    let maxX = -1;
-    let maxY = -1;
-
-    for (let y = 0; y < canvas.height; y += 1) {
-      for (let x = 0; x < canvas.width; x += 1) {
-        if (data[(y * canvas.width + x) * 4 + 3] > 8) {
-          minX = Math.min(minX, x);
-          minY = Math.min(minY, y);
-          maxX = Math.max(maxX, x);
-          maxY = Math.max(maxY, y);
-        }
-      }
-    }
-
-    if (maxX < 0 || maxY < 0) {
-      return { url: sourceUrl, width: canvas.width, height: canvas.height };
-    }
-
-    const padding = Math.round(Math.min(canvas.width, canvas.height) * 0.015);
-    minX = Math.max(0, minX - padding);
-    minY = Math.max(0, minY - padding);
-    maxX = Math.min(canvas.width - 1, maxX + padding);
-    maxY = Math.min(canvas.height - 1, maxY + padding);
-
-    const width = maxX - minX + 1;
-    const height = maxY - minY + 1;
-    const cropped = document.createElement("canvas");
-    cropped.width = width;
-    cropped.height = height;
-    cropped.getContext("2d").drawImage(image, minX, minY, width, height, 0, 0, width, height);
-
-    const croppedBlob = await new Promise((resolve) => cropped.toBlob(resolve, "image/png"));
-    if (!croppedBlob) return { url: sourceUrl, width: canvas.width, height: canvas.height };
-
-    URL.revokeObjectURL(sourceUrl);
-    return { url: URL.createObjectURL(croppedBlob), width, height };
-  } catch (error) {
-    return { url: sourceUrl, width: 1, height: 1 };
-  }
-}
-
-function fitCover(ctx, image, width, height) {
-  const imageRatio = image.naturalWidth / image.naturalHeight;
-  const targetRatio = width / height;
-  let drawWidth;
-  let drawHeight;
-  let drawX;
-  let drawY;
-
-  if (imageRatio > targetRatio) {
-    drawHeight = height;
-    drawWidth = height * imageRatio;
-    drawX = (width - drawWidth) / 2;
-    drawY = 0;
-  } else {
-    drawWidth = width;
-    drawHeight = width / imageRatio;
-    drawX = 0;
-    drawY = (height - drawHeight) / 2;
-  }
-
-  ctx.drawImage(image, drawX, drawY, drawWidth, drawHeight);
-}
-
-function formatSize(bytes) {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
-}
-
-export default function ImageBackground() {
+function ImageBackground() {
   const inputRef = useRef(null);
-  const canvasRef = useRef(null);
 
   const [files, setFiles] = useState([]);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [mode, setMode] = useState("background");
-  const [selectedBackground, setSelectedBackground] = useState("none");
-  const [selectedColor, setSelectedColor] = useState("none");
-  const [selectionMade, setSelectionMade] = useState(false);
-  const [search, setSearch] = useState("");
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  const [originalUrl, setOriginalUrl] = useState("");
+  const [removedUrl, setRemovedUrl] = useState("");
+
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState("");
 
-  const activeFile = files[activeIndex] || null;
+  const [mode, setMode] = useState("background");
 
-  const filteredBackgrounds = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    return q ? BACKGROUNDS.filter((item) => item.name.toLowerCase().includes(q)) : BACKGROUNDS;
-  }, [search]);
+  const [selectedBackground, setSelectedBackground] =
+    useState(BACKGROUNDS[0]);
 
-  const filteredColors = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    return q ? COLORS.filter((item) => item.name.toLowerCase().includes(q)) : COLORS;
-  }, [search]);
+  const [selectedColor, setSelectedColor] =
+    useState("transparent");
 
-  const processFile = async (file, id) => {
-    setFiles((prev) => prev.map((item) => item.id === id ? { ...item, status: "processing" } : item));
-    try {
-      const result = await removeBgFromImage(file);
-      const trimmed = await trimTransparentPixels(result);
-      setFiles((prev) => prev.map((item) => item.id === id ? {
-        ...item,
-        removedUrl: trimmed.url,
-        subjectWidth: trimmed.width,
-        subjectHeight: trimmed.height,
-        status: "done",
-      } : item));
-    } catch (err) {
-      console.error(err);
-      setFiles((prev) => prev.map((item) => item.id === id ? {
-        ...item,
-        status: "error",
-        error: "Background removal failed. Please try another image.",
-      } : item));
-    }
-  };
+  const [zoom, setZoom] = useState(100);
 
-  const handleFiles = async (fileList) => {
-    const incoming = Array.from(fileList || []);
-    const valid = incoming.filter((file) => {
-      const typeOk = ["image/jpeg", "image/png", "image/webp"].includes(file.type);
-      return typeOk && file.size <= MAX_FILE_SIZE;
-    });
+  const [dragActive, setDragActive] = useState(false);
 
-    if (!valid.length) {
-      setError("Please select JPG, PNG or WEBP images up to 5 MB.");
+  const currentFile = files[selectedIndex] || null;
+
+  /* =======================================================
+     CURRENT IMAGE
+  ======================================================= */
+
+  useEffect(() => {
+    if (!currentFile) {
+      setOriginalUrl("");
+      setRemovedUrl("");
       return;
     }
 
+    const url = URL.createObjectURL(currentFile);
+
+    setOriginalUrl(url);
+    setRemovedUrl("");
+
+    setSelectedBackground(BACKGROUNDS[0]);
+    setSelectedColor("transparent");
+    setMode("background");
+    setZoom(100);
     setError("");
-    const startIndex = files.length;
-    const newItems = valid.map((file) => ({
-      id: `${file.name}-${file.lastModified}-${Math.random()}`,
-      file,
-      originalUrl: URL.createObjectURL(file),
-      removedUrl: "",
-      subjectWidth: 0,
-      subjectHeight: 0,
-      status: "waiting",
-      error: "",
-    }));
 
-    setFiles((prev) => [...prev, ...newItems]);
-    setActiveIndex(startIndex);
-    setSelectedBackground("none");
-    setSelectedColor("none");
-    setSelectionMade(false);
+    return () => {
+      URL.revokeObjectURL(url);
+    };
+  }, [currentFile]);
 
-    for (const item of newItems) {
-      setProcessing(true);
-      await processFile(item.file, item.id);
-    }
-    setProcessing(false);
-  };
-
-  const handleInput = (event) => {
-    handleFiles(event.target.files);
-    event.target.value = "";
-  };
-
-  const handleDrop = (event) => {
-    event.preventDefault();
-    handleFiles(event.dataTransfer.files);
-  };
-
-  const handleUrlUpload = async () => {
-    const url = window.prompt("Paste an image URL:");
-    if (!url) return;
-
-    try {
-      const response = await fetch(url);
-      if (!response.ok) throw new Error("Unable to download image.");
-      const blob = await response.blob();
-      if (!blob.type.startsWith("image/")) throw new Error("URL is not an image.");
-      if (blob.size > MAX_FILE_SIZE) throw new Error("Image must be 5 MB or smaller.");
-      const extension = blob.type === "image/png" ? "png" : blob.type === "image/webp" ? "webp" : "jpg";
-      const file = new File([blob], `image-from-url.${extension}`, { type: blob.type });
-      await handleFiles([file]);
-    } catch (err) {
-      console.error(err);
-      setError("Could not load that image URL. Please use a direct image URL.");
-    }
-  };
-
-  const handlePaste = (event) => {
-    const image = Array.from(event.clipboardData?.files || []).find((file) => file.type.startsWith("image/"));
-    if (image) handleFiles([image]);
-  };
+  /* =======================================================
+     AUTO REMOVE BACKGROUND
+  ======================================================= */
 
   useEffect(() => {
-    window.addEventListener("paste", handlePaste);
-    return () => window.removeEventListener("paste", handlePaste);
-  });
+    if (!currentFile) return;
 
-  const removeFile = (index) => {
-    setFiles((prev) => {
-      const item = prev[index];
-      if (item?.originalUrl) URL.revokeObjectURL(item.originalUrl);
-      if (item?.removedUrl) URL.revokeObjectURL(item.removedUrl);
-      return prev.filter((_, i) => i !== index);
-    });
-    setActiveIndex((prev) => Math.max(0, index < prev ? prev - 1 : index === prev ? prev - 1 : prev));
-  };
-
-  const chooseBackground = (id) => {
-    setSelectedBackground(id);
-    setSelectedColor("none");
-    setSelectionMade(true);
-  };
-
-  const chooseColor = (id) => {
-    setSelectedColor(id);
-    setSelectedBackground("none");
-    setSelectionMade(true);
-  };
-
-  const chooseNone = () => {
-    setSelectedBackground("none");
-    setSelectedColor("none");
-    setSelectionMade(true);
-  };
-
-  const drawFinalCanvas = async () => {
-    if (!activeFile?.removedUrl) throw new Error("Image is not ready.");
-
-    const subject = await loadImage(activeFile.removedUrl);
-    let width = activeFile.subjectWidth || subject.naturalWidth;
-    let height = activeFile.subjectHeight || subject.naturalHeight;
-
-    const maxSize = 2400;
-    const scale = Math.min(1, maxSize / width, maxSize / height);
-    width = Math.max(1, Math.round(width * scale));
-    height = Math.max(1, Math.round(height * scale));
-
-    const canvas = document.createElement("canvas");
-    canvas.width = width;
-    canvas.height = height;
-    const ctx = canvas.getContext("2d");
-
-    if (selectedColor !== "none") {
-      const color = COLORS.find((item) => item.id === selectedColor);
-      if (color) {
-        ctx.fillStyle = color.value;
-        ctx.fillRect(0, 0, width, height);
-      }
-    } else if (selectedBackground !== "none") {
-      const bg = BACKGROUNDS.find((item) => item.id === selectedBackground);
-      if (bg?.url) {
-        const image = await loadImage(bg.url);
-        fitCover(ctx, image, width, height);
-      }
-    }
-
-    ctx.drawImage(subject, 0, 0, width, height);
-    return canvas;
-  };
-
-  useEffect(() => {
     let cancelled = false;
-    const render = async () => {
-      if (!canvasRef.current || !activeFile?.removedUrl) return;
+
+    async function autoRemove() {
       try {
-        const result = await drawFinalCanvas();
+        setProcessing(true);
+        setError("");
+
+        const module = await import("@imgly/background-removal");
+
+        const removeBg =
+          module.removeBackground ||
+          module.default?.removeBackground ||
+          module.default;
+
+        if (typeof removeBg !== "function") {
+          throw new Error(
+            "Background removal engine could not be loaded."
+          );
+        }
+
+        const result = await removeBg(currentFile, {
+          output: {
+            format: "image/png",
+          },
+        });
+
         if (cancelled) return;
-        const target = canvasRef.current;
-        target.width = result.width;
-        target.height = result.height;
-        target.getContext("2d").drawImage(result, 0, 0);
+
+        const blob =
+          result instanceof Blob
+            ? result
+            : new Blob([result], {
+                type: "image/png",
+              });
+
+        const url = URL.createObjectURL(blob);
+
+        setRemovedUrl((oldUrl) => {
+          if (oldUrl) {
+            URL.revokeObjectURL(oldUrl);
+          }
+
+          return url;
+        });
       } catch (err) {
         console.error(err);
+
+        if (!cancelled) {
+          setError(
+            "Background removal could not be completed. You can still select another image."
+          );
+        }
+      } finally {
+        if (!cancelled) {
+          setProcessing(false);
+        }
+      }
+    }
+
+    autoRemove();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [currentFile]);
+
+  /* =======================================================
+     CLEANUP REMOVED IMAGE
+  ======================================================= */
+
+  useEffect(() => {
+    return () => {
+      if (removedUrl) {
+        URL.revokeObjectURL(removedUrl);
       }
     };
-    render();
-    return () => { cancelled = true; };
-  }, [activeFile?.removedUrl, activeFile?.subjectWidth, activeFile?.subjectHeight, selectedBackground, selectedColor]);
+  }, [removedUrl]);
 
-  const downloadImage = async () => {
-    try {
-      if (!activeFile?.removedUrl) return;
-      const canvas = await drawFinalCanvas();
-      canvas.toBlob((blob) => {
-        if (!blob) {
-          setError("Could not create the download.");
-          return;
-        }
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        const name = activeFile.file.name.replace(/\.[^/.]+$/, "").replace(/[^a-z0-9-_ ]/gi, "").trim() || "image";
-        link.href = url;
-        link.download = `HubConverter-${name}-background.png`;
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        setTimeout(() => URL.revokeObjectURL(url), 1000);
-      }, "image/png");
-    } catch (err) {
-      console.error(err);
-      setError("Download failed. Please try again.");
+  /* =======================================================
+     ADD FILES
+  ======================================================= */
+
+  function addFiles(fileList) {
+    setError("");
+
+    const incoming = Array.from(fileList || []);
+
+    if (!incoming.length) return;
+
+    const validFiles = [];
+
+    for (const file of incoming) {
+      if (!file.type.startsWith("image/")) {
+        setError(`${file.name} is not an image file.`);
+        continue;
+      }
+
+      if (file.size > MAX_FILE_SIZE) {
+        setError(
+          `${file.name} is larger than 5 MB. Maximum allowed size is 5 MB.`
+        );
+        continue;
+      }
+
+      validFiles.push(file);
     }
-  };
 
-  const previewRatio = activeFile?.subjectWidth && activeFile?.subjectHeight
-    ? activeFile.subjectWidth / activeFile.subjectHeight
-    : 1;
+    if (!validFiles.length) return;
 
-  if (!activeFile) {
-    return (
-      <section className="ibg-root ibg-start-root">
-        <style>{styles}</style>
-        <input
-          ref={inputRef}
-          type="file"
-          accept="image/jpeg,image/png,image/webp"
-          multiple
-          hidden
-          onChange={handleInput}
-        />
-        <div
-          className="ibg-start-card"
-          onDragOver={(event) => event.preventDefault()}
-          onDrop={handleDrop}
-        >
-          <button type="button" className="ibg-start-select" onClick={() => inputRef.current?.click()}>
-            Select Image
-          </button>
-          <div className="ibg-start-drop">or drop a file,</div>
-          <button type="button" className="ibg-start-paste" onClick={handleUrlUpload}>
-            paste image or URL
-          </button>
-          {error && <div className="ibg-start-error">{error}</div>}
-        </div>
-      </section>
+    setFiles((current) => {
+      const wasEmpty = current.length === 0;
+
+      const updated = [
+        ...current,
+        ...validFiles,
+      ];
+
+      if (wasEmpty) {
+        setSelectedIndex(0);
+      }
+
+      return updated;
+    });
+  }
+
+  /* =======================================================
+     FILE INPUT
+  ======================================================= */
+
+  function handleInput(event) {
+    addFiles(event.target.files);
+
+    event.target.value = "";
+  }
+
+  /* =======================================================
+     DRAG OVER
+  ======================================================= */
+
+  function handleDragOver(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    setDragActive(true);
+
+    if (event.dataTransfer) {
+      event.dataTransfer.dropEffect = "copy";
+    }
+  }
+
+  /* =======================================================
+     DRAG LEAVE
+  ======================================================= */
+
+  function handleDragLeave(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    setDragActive(false);
+  }
+
+  /* =======================================================
+     DROP
+  ======================================================= */
+
+  function handleDrop(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    setDragActive(false);
+
+    addFiles(event.dataTransfer.files);
+  }
+
+  /* =======================================================
+     REMOVE FILE
+  ======================================================= */
+
+  function removeFile(index) {
+    setFiles((current) => {
+      const next = current.filter(
+        (_, i) => i !== index
+      );
+
+      if (!next.length) {
+        setSelectedIndex(0);
+        return next;
+      }
+
+      if (index < selectedIndex) {
+        setSelectedIndex((value) =>
+          Math.max(0, value - 1)
+        );
+      } else if (index === selectedIndex) {
+        setSelectedIndex((value) =>
+          Math.min(value, next.length - 1)
+        );
+      }
+
+      return next;
+    });
+  }
+
+  /* =======================================================
+     CREATE FINAL IMAGE
+  ======================================================= */
+
+  async function createFinalImage() {
+    if (!currentFile) {
+      throw new Error("No image selected.");
+    }
+
+    const source = removedUrl || originalUrl;
+
+    if (!source) {
+      throw new Error("Please upload an image.");
+    }
+
+    const foreground = await loadImage(source);
+
+    let width =
+      foreground.naturalWidth ||
+      foreground.width;
+
+    let height =
+      foreground.naturalHeight ||
+      foreground.height;
+
+    const maxDimension = 2400;
+
+    if (
+      width > maxDimension ||
+      height > maxDimension
+    ) {
+      const ratio = Math.min(
+        maxDimension / width,
+        maxDimension / height
+      );
+
+      width = Math.round(width * ratio);
+      height = Math.round(height * ratio);
+    }
+
+    const canvas = document.createElement("canvas");
+
+    canvas.width = width;
+    canvas.height = height;
+
+    const ctx = canvas.getContext("2d");
+
+    if (!ctx) {
+      throw new Error(
+        "Canvas is not supported."
+      );
+    }
+
+    /* =====================================================
+       COLOR BACKGROUND
+    ===================================================== */
+
+    if (
+      mode === "color" &&
+      selectedColor !== "transparent"
+    ) {
+      if (selectedColor === "rainbow") {
+        const gradient =
+          ctx.createLinearGradient(
+            0,
+            0,
+            width,
+            height
+          );
+
+        gradient.addColorStop(
+          0,
+          "#ff0000"
+        );
+
+        gradient.addColorStop(
+          0.2,
+          "#ff00a8"
+        );
+
+        gradient.addColorStop(
+          0.4,
+          "#8a2be2"
+        );
+
+        gradient.addColorStop(
+          0.6,
+          "#008cff"
+        );
+
+        gradient.addColorStop(
+          0.8,
+          "#00e676"
+        );
+
+        gradient.addColorStop(
+          1,
+          "#ffff00"
+        );
+
+        ctx.fillStyle = gradient;
+      } else {
+        ctx.fillStyle = selectedColor;
+      }
+
+      ctx.fillRect(
+        0,
+        0,
+        width,
+        height
+      );
+    }
+
+    /* =====================================================
+       IMAGE BACKGROUND
+
+       IMPORTANT:
+       Background is fitted to the EXACT SAME
+       WIDTH/HEIGHT as the original image.
+    ===================================================== */
+
+    if (
+      mode === "background" &&
+      selectedBackground &&
+      selectedBackground.url
+    ) {
+      const bg = await loadImage(
+        selectedBackground.url
+      );
+
+      const scale = Math.max(
+        width / bg.naturalWidth,
+        height / bg.naturalHeight
+      );
+
+      const bgWidth =
+        bg.naturalWidth * scale;
+
+      const bgHeight =
+        bg.naturalHeight * scale;
+
+      const bgX =
+        (width - bgWidth) / 2;
+
+      const bgY =
+        (height - bgHeight) / 2;
+
+      ctx.drawImage(
+        bg,
+        bgX,
+        bgY,
+        bgWidth,
+        bgHeight
+      );
+    }
+
+    /* =====================================================
+       FOREGROUND
+
+       ORIGINAL IMAGE SIZE
+    ===================================================== */
+
+    ctx.drawImage(
+      foreground,
+      0,
+      0,
+      width,
+      height
+    );
+
+    return new Promise(
+      (resolve, reject) => {
+        canvas.toBlob(
+          (blob) => {
+            if (!blob) {
+              reject(
+                new Error(
+                  "Could not create image."
+                )
+              );
+
+              return;
+            }
+
+            resolve(blob);
+          },
+          "image/png",
+          0.95
+        );
+      }
     );
   }
 
+  /* =======================================================
+     DOWNLOAD
+  ======================================================= */
+
+  async function downloadImage() {
+    if (!removedUrl) {
+      setError(
+        "Please wait for background removal to finish."
+      );
+
+      return;
+    }
+
+    try {
+      setError("");
+
+      const blob =
+        await createFinalImage();
+
+      const url =
+        URL.createObjectURL(blob);
+
+      const link =
+        document.createElement("a");
+
+      const baseName =
+        currentFile?.name
+          ?.replace(/\.[^/.]+$/, "")
+          .replace(
+            /[^a-z0-9-_]/gi,
+            "-"
+          ) ||
+        "image";
+
+      link.href = url;
+
+      link.download =
+        `${baseName}-background.png`;
+
+      document.body.appendChild(link);
+
+      link.click();
+
+      link.remove();
+
+      setTimeout(() => {
+        URL.revokeObjectURL(url);
+      }, 1000);
+    } catch (err) {
+      console.error(err);
+
+      setError(
+        "Could not download the image."
+      );
+    }
+  }
+
+  /* =======================================================
+     PREVIEW STYLE
+  ======================================================= */
+
+  const previewStyle = useMemo(
+    () => ({
+      transform:
+        `scale(${zoom / 100})`,
+      transformOrigin:
+        "center center",
+    }),
+    [zoom]
+  );
+
+  /* =======================================================
+     BACKGROUND PREVIEW
+  ======================================================= */
+
+  const finalPreviewStyle =
+    useMemo(() => {
+      if (
+        mode === "color" &&
+        selectedColor !== "transparent"
+      ) {
+        if (
+          selectedColor === "rainbow"
+        ) {
+          return {
+            background:
+              "linear-gradient(135deg,#ff0000,#ff00a8,#7b2cff,#0099ff,#00e676,#ffff00)",
+          };
+        }
+
+        return {
+          backgroundColor:
+            selectedColor,
+        };
+      }
+
+      if (
+        mode === "background" &&
+        selectedBackground?.url
+      ) {
+        return {
+          backgroundImage:
+            `url("${selectedBackground.url}")`,
+          backgroundPosition:
+            "center",
+          backgroundSize:
+            "cover",
+          backgroundRepeat:
+            "no-repeat",
+        };
+      }
+
+      return {};
+    }, [
+      mode,
+      selectedColor,
+      selectedBackground,
+    ]);
+
+  /* =======================================================
+     RENDER
+  ======================================================= */
+
   return (
-    <section className="ibg-root">
-      <style>{styles}</style>
+    <>
+      <style>{`
 
-      <div className="ibg-shell">
-        <header className="ibg-header">
-          <div className="ibg-eyebrow">HUBCONVERTER · IMAGE TOOL</div>
-          <h1>Image Background</h1>
-          <p>Remove background and add a new background to your image</p>
-        </header>
+        * {
+          box-sizing: border-box;
+        }
 
-        <div className="ibg-editor">
-          <aside className="ibg-sidebar">
-            <div className="ibg-upload-top">
-              <button type="button" className="ibg-add-images" onClick={() => inputRef.current?.click()}>
-                + Add More Images
-              </button>
-              <input
-                ref={inputRef}
-                type="file"
-                accept="image/jpeg,image/png,image/webp"
-                multiple
-                hidden
-                onChange={handleInput}
-              />
-              <small>JPG · PNG · WEBP · Max 5 MB</small>
+        /* =====================================================
+           GLOBAL PAGE
+        ===================================================== */
+
+        .ibg-page {
+          width: 100%;
+          min-height: 100vh;
+          margin: 0;
+          padding: 12px 18px 22px;
+          background:
+            linear-gradient(
+              135deg,
+              #f8fafc 0%,
+              #eef2f7 100%
+            );
+          color: #172033;
+        }
+
+        /* =====================================================
+           FIRST UPLOAD SCREEN
+        ===================================================== */
+
+        .ibg-upload-screen {
+          width: 100%;
+          min-height: calc(100vh - 34px);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 15px;
+        }
+
+        .ibg-upload-hero {
+          width: min(760px, 92vw);
+          min-height: min(610px, 86vh);
+          border-radius: 30px;
+          background: #ffffff;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          padding: 35px 25px;
+          box-shadow:
+            0 20px 70px rgba(15, 23, 42, 0.10);
+          position: relative;
+          overflow: hidden;
+        }
+
+        .ibg-upload-hero.drag-active {
+          outline:
+            4px solid rgba(
+              37,
+              99,
+              235,
+              0.22
+            );
+          background: #f8fbff;
+        }
+
+        /* =====================================================
+           COLORFUL CAMERA GRAPHIC
+        ===================================================== */
+
+        .ibg-camera-art {
+          width: min(380px, 62vw);
+          height: 235px;
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 18px;
+        }
+
+        .ibg-camera-ring {
+          width: 215px;
+          height: 215px;
+          border-radius: 50%;
+          position: relative;
+          background:
+            conic-gradient(
+              from 20deg,
+              #00c6ff,
+              #0072ff,
+              #7b2cff,
+              #ff00b8,
+              #ff4b2b,
+              #ffd400,
+              #00e676,
+              #00c6ff
+            );
+          box-shadow:
+            0 18px 45px
+            rgba(91, 75, 255, 0.22);
+          transform: rotate(-8deg);
+        }
+
+        .ibg-camera-ring::before {
+          content: "";
+          position: absolute;
+          inset: 42px;
+          background: #ffffff;
+          border-radius: 50%;
+          box-shadow:
+            inset 0 0 0 2px
+            rgba(255,255,255,0.8);
+        }
+
+        .ibg-camera-ring::after {
+          content: "";
+          position: absolute;
+          width: 92px;
+          height: 92px;
+          left: 61px;
+          top: 61px;
+          border-radius: 50%;
+          border:
+            16px solid #25355b;
+          background:
+            radial-gradient(
+              circle,
+              #ffffff 0 18%,
+              transparent 19%
+            );
+        }
+
+        .ibg-camera-piece {
+          position: absolute;
+          width: 125px;
+          height: 70px;
+          background:
+            linear-gradient(
+              135deg,
+              #1e293b,
+              #334155
+            );
+          border-radius: 12px;
+          top: 13px;
+          left: 128px;
+          transform:
+            rotate(28deg);
+          box-shadow:
+            0 10px 22px
+            rgba(15,23,42,0.18);
+        }
+
+        .ibg-camera-piece::after {
+          content: "";
+          position: absolute;
+          width: 46px;
+          height: 22px;
+          background: #64748b;
+          border-radius: 6px;
+          left: 42px;
+          top: 15px;
+        }
+
+        .ibg-art-dots {
+          position: absolute;
+          width: 75px;
+          height: 75px;
+          right: 4px;
+          top: 40px;
+          background-image:
+            radial-gradient(
+              #94a3b8 2px,
+              transparent 2px
+            );
+          background-size: 14px 14px;
+          opacity: 0.35;
+        }
+
+        /* =====================================================
+           SELECT BUTTON
+        ===================================================== */
+
+        .ibg-main-select {
+          border: none;
+          cursor: pointer;
+          color: white;
+          font-size: clamp(
+            20px,
+            3vw,
+            29px
+          );
+          font-weight: 800;
+          letter-spacing: 0.2px;
+          padding:
+            18px 58px;
+          min-width: 340px;
+          border-radius: 60px;
+          background:
+            linear-gradient(
+              90deg,
+              #00b8ff,
+              #1677ff,
+              #9c19e8
+            );
+          box-shadow:
+            0 13px 30px
+            rgba(45, 108, 255, 0.25);
+          transition:
+            transform .18s ease,
+            box-shadow .18s ease;
+        }
+
+        .ibg-main-select:hover {
+          transform:
+            translateY(-2px)
+            scale(1.015);
+          box-shadow:
+            0 18px 35px
+            rgba(45,108,255,0.30);
+        }
+
+        .ibg-drop-title {
+          margin-top: 35px;
+          font-size:
+            clamp(
+              22px,
+              3vw,
+              32px
+            );
+          font-weight: 700;
+          color: #64748b;
+          text-transform: uppercase;
+        }
+
+        .ibg-paste-link {
+          margin-top: 12px;
+          font-size: 17px;
+          color: #64748b;
+          text-decoration:
+            underline;
+          cursor: pointer;
+        }
+
+        .ibg-upload-help {
+          margin-top: 18px;
+          color: #94a3b8;
+          font-size: 12px;
+        }
+
+        /* =====================================================
+           EDITOR HEADER
+        ===================================================== */
+
+        .ibg-editor {
+          width: 100%;
+          max-width: 1380px;
+          margin: 0 auto;
+        }
+
+        .ibg-header {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          margin-bottom: 12px;
+        }
+
+        .ibg-header-icon {
+          width: 42px;
+          height: 42px;
+          border-radius: 12px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 22px;
+          background:
+            rgba(
+              37,
+              99,
+              235,
+              0.10
+            );
+        }
+
+        .ibg-eyebrow {
+          font-size: 9px;
+          font-weight: 800;
+          letter-spacing: 1.2px;
+          color: #0ea5e9;
+        }
+
+        .ibg-header h1 {
+          margin: 1px 0 0;
+          font-size: 24px;
+          line-height: 1.1;
+        }
+
+        .ibg-header p {
+          margin: 3px 0 0;
+          font-size: 11px;
+          color: #64748b;
+        }
+
+        /* =====================================================
+           EDITOR LAYOUT
+        ===================================================== */
+
+        .ibg-layout {
+          display: grid;
+          grid-template-columns:
+            230px
+            minmax(0, 1fr);
+          gap: 14px;
+          align-items: start;
+        }
+
+        /* =====================================================
+           LEFT SIDEBAR
+        ===================================================== */
+
+        .ibg-sidebar {
+          height: calc(100vh - 90px);
+          max-height: 760px;
+          min-height: 560px;
+          overflow-y: auto;
+          padding-right: 2px;
+        }
+
+        .ibg-sidebar::-webkit-scrollbar {
+          width: 5px;
+        }
+
+        .ibg-sidebar::-webkit-scrollbar-thumb {
+          background: #cbd5e1;
+          border-radius: 10px;
+        }
+
+        .ibg-sidebar-card {
+          background: #ffffff;
+          border-radius: 16px;
+          padding: 10px;
+          margin-bottom: 10px;
+          box-shadow:
+            0 7px 24px
+            rgba(15,23,42,0.07);
+          border:
+            1px solid
+            rgba(15,23,42,0.06);
+        }
+
+        .ibg-sidebar-title {
+          display: flex;
+          align-items: center;
+          gap: 7px;
+          font-size: 12px;
+          font-weight: 800;
+          margin-bottom: 9px;
+        }
+
+        .ibg-step-number {
+          width: 23px;
+          height: 23px;
+          border-radius: 50%;
+          background: #172033;
+          color: white;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 10px;
+          font-weight: 800;
+        }
+
+        /* =====================================================
+           ADD MORE
+        ===================================================== */
+
+        .ibg-add-more-main {
+          width: 100%;
+          min-height: 54px;
+          border-radius: 11px;
+          border:
+            1.5px dashed
+            #0ea5e9;
+          background:
+            rgba(
+              14,
+              165,
+              233,
+              0.035
+            );
+          color: #172033;
+          font-size: 11px;
+          font-weight: 800;
+          cursor: pointer;
+        }
+
+        .ibg-add-more-main:hover {
+          background:
+            rgba(
+              14,
+              165,
+              233,
+              0.08
+            );
+        }
+
+        .ibg-format {
+          margin-top: 6px;
+          text-align: center;
+          font-size: 9px;
+          color: #64748b;
+        }
+
+        /* =====================================================
+           THUMBNAILS
+        ===================================================== */
+
+        .ibg-small-thumbs {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 6px;
+          margin-top: 9px;
+        }
+
+        .ibg-small-thumb {
+          width: 48px;
+          height: 48px;
+          border-radius: 8px;
+          overflow: hidden;
+          position: relative;
+          border: 2px solid transparent;
+          cursor: pointer;
+          background: #f1f5f9;
+        }
+
+        .ibg-small-thumb.selected {
+          border-color: #0ea5e9;
+        }
+
+        .ibg-small-thumb img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .ibg-small-thumb button {
+          position: absolute;
+          right: 1px;
+          top: 1px;
+          width: 15px;
+          height: 15px;
+          border: none;
+          border-radius: 50%;
+          background: rgba(0,0,0,.72);
+          color: white;
+          cursor: pointer;
+          font-size: 11px;
+          line-height: 14px;
+          padding: 0;
+        }
+
+        /* =====================================================
+           BACKGROUND / COLOR TABS
+        ===================================================== */
+
+        .ibg-tabs {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 5px;
+          margin-bottom: 8px;
+        }
+
+        .ibg-tab {
+          border: none;
+          background: #eef2f7;
+          color: #475569;
+          padding: 8px 4px;
+          border-radius: 9px;
+          font-size: 10px;
+          font-weight: 800;
+          cursor: pointer;
+        }
+
+        .ibg-tab.active {
+          background: #172033;
+          color: white;
+        }
+
+        /* =====================================================
+           BACKGROUND GRID
+        ===================================================== */
+
+        .ibg-background-grid {
+          display: grid;
+          grid-template-columns:
+            repeat(3, 1fr);
+          gap: 5px;
+          max-height: 360px;
+          overflow-y: auto;
+          padding-right: 2px;
+        }
+
+        .ibg-background-grid::-webkit-scrollbar {
+          width: 5px;
+        }
+
+        .ibg-background-grid::-webkit-scrollbar-thumb {
+          background: #94a3b8;
+          border-radius: 10px;
+        }
+
+        .ibg-background-item {
+          min-width: 0;
+          padding: 2px;
+          border:
+            2px solid
+            transparent;
+          border-radius: 8px;
+          background: #f8fafc;
+          cursor: pointer;
+          overflow: hidden;
+        }
+
+        .ibg-background-item:hover {
+          transform:
+            translateY(-1px);
+        }
+
+        .ibg-background-item.selected {
+          border-color: #1677ff;
+        }
+
+        .ibg-background-item img {
+          width: 100%;
+          aspect-ratio: 1 / 1;
+          object-fit: cover;
+          display: block;
+          border-radius: 6px;
+        }
+
+        .ibg-background-item span {
+          display: block;
+          font-size: 7px;
+          font-weight: 700;
+          margin-top: 2px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        /* NONE BACKGROUND */
+        .ibg-none-background {
+          aspect-ratio: 1 / 1;
+          border-radius: 6px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: white;
+          border: 1px solid #e2e8f0;
+          font-size: 22px;
+          color: #475569;
+        }
+
+        /* =====================================================
+           COLOR GRID
+        ===================================================== */
+
+        .ibg-color-grid {
+          display: grid;
+          grid-template-columns:
+            repeat(3, 1fr);
+          gap: 5px;
+          max-height: 360px;
+          overflow-y: auto;
+        }
+
+        .ibg-color-grid::-webkit-scrollbar {
+          width: 5px;
+        }
+
+        .ibg-color-grid::-webkit-scrollbar-thumb {
+          background: #94a3b8;
+          border-radius: 10px;
+        }
+
+        .ibg-color-item {
+          border:
+            2px solid
+            transparent;
+          background: transparent;
+          padding: 2px;
+          border-radius: 8px;
+          cursor: pointer;
+        }
+
+        .ibg-color-item.selected {
+          border-color: #1677ff;
+          background:
+            rgba(
+              37,
+              99,
+              235,
+              0.06
+            );
+        }
+
+        .ibg-color-box {
+          width: 100%;
+          aspect-ratio: 1 / 1;
+          border-radius: 8px;
+          border:
+            1px solid
+            rgba(0,0,0,.08);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 18px;
+          color: #475569;
+        }
+
+        .ibg-color-item small {
+          display: block;
+          margin-top: 2px;
+          font-size: 7px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        /* =====================================================
+           PROCESSING
+        ===================================================== */
+
+        .ibg-processing {
+          padding: 8px;
+          border-radius: 9px;
+          background:
+            rgba(
+              14,
+              165,
+              233,
+              0.08
+            );
+          color: #0369a1;
+          font-size: 9px;
+          text-align: center;
+          font-weight: 700;
+          margin-bottom: 8px;
+        }
+
+        /* =====================================================
+           DOWNLOAD
+        ===================================================== */
+
+        .ibg-download {
+          width: 100%;
+          border: none;
+          border-radius: 10px;
+          padding: 11px;
+          background:
+            linear-gradient(
+              90deg,
+              #1677ff,
+              #7c3aed
+            );
+          color: white;
+          font-size: 11px;
+          font-weight: 800;
+          cursor: pointer;
+        }
+
+        .ibg-download:disabled {
+          opacity: .4;
+          cursor: not-allowed;
+        }
+
+        /* =====================================================
+           WORKSPACE
+        ===================================================== */
+
+        .ibg-workspace {
+          min-width: 0;
+        }
+
+        .ibg-main-card {
+          background: white;
+          border-radius: 18px;
+          padding: 13px;
+          box-shadow:
+            0 10px 30px
+            rgba(15,23,42,.07);
+          border:
+            1px solid
+            rgba(15,23,42,.06);
+        }
+
+        .ibg-file-heading {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 10px;
+          margin-bottom: 8px;
+        }
+
+        .ibg-file-heading strong {
+          display: block;
+          font-size: 12px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .ibg-file-heading span {
+          font-size: 9px;
+          color: #64748b;
+          flex-shrink: 0;
+        }
+
+        /* =====================================================
+           IMAGE CANVAS
+
+           IMPORTANT:
+           This is compact and uses the image ratio.
+        ===================================================== */
+
+        .ibg-canvas-area {
+          width: 100%;
+          height: calc(100vh - 170px);
+          min-height: 420px;
+          max-height: 650px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 13px;
+          overflow: hidden;
+          background: #eef2f7;
+          padding: 18px;
+        }
+
+        .ibg-image-frame {
+          position: relative;
+          max-width: 100%;
+          max-height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          overflow: hidden;
+          border-radius: 10px;
+          background-color: #f8fafc;
+          background-image:
+            linear-gradient(
+              45deg,
+              #e5e7eb 25%,
+              transparent 25%
+            ),
+            linear-gradient(
+              -45deg,
+              #e5e7eb 25%,
+              transparent 25%
+            ),
+            linear-gradient(
+              45deg,
+              transparent 75%,
+              #e5e7eb 75%
+            ),
+            linear-gradient(
+              -45deg,
+              transparent 75%,
+              #e5e7eb 75%
+            );
+          background-size: 20px 20px;
+          background-position:
+            0 0,
+            0 10px,
+            10px -10px,
+            -10px 0;
+        }
+
+        .ibg-image-frame img {
+          display: block;
+          max-width: 100%;
+          max-height: calc(100vh - 220px);
+          width: auto;
+          height: auto;
+          object-fit: contain;
+        }
+
+        /* =====================================================
+           ORIGINAL IMAGE
+        ===================================================== */
+
+        .ibg-original {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+          border-radius: 8px;
+        }
+
+        /* =====================================================
+           PLACEHOLDER
+        ===================================================== */
+
+        .ibg-placeholder {
+          min-height: 300px;
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          color: #64748b;
+          text-align: center;
+        }
+
+        .ibg-placeholder-icon {
+          font-size: 38px;
+          margin-bottom: 8px;
+        }
+
+        .ibg-placeholder strong {
+          font-size: 14px;
+        }
+
+        .ibg-placeholder small {
+          margin-top: 5px;
+          font-size: 10px;
+        }
+
+        /* =====================================================
+           ZOOM
+        ===================================================== */
+
+        .ibg-toolbar {
+          display: flex;
+          justify-content: flex-end;
+          align-items: center;
+          gap: 4px;
+          margin-top: 7px;
+        }
+
+        .ibg-toolbar button {
+          width: 27px;
+          height: 27px;
+          border: 1px solid #e2e8f0;
+          border-radius: 7px;
+          background: white;
+          cursor: pointer;
+          font-weight: 800;
+        }
+
+        .ibg-toolbar span {
+          min-width: 42px;
+          text-align: center;
+          font-size: 9px;
+          font-weight: 800;
+        }
+
+        /* =====================================================
+           ERROR
+        ===================================================== */
+
+        .ibg-error {
+          margin-top: 8px;
+          padding: 8px 10px;
+          border-radius: 8px;
+          background:
+            rgba(
+              239,
+              68,
+              68,
+              0.08
+            );
+          color: #b91c1c;
+          font-size: 9px;
+        }
+
+        /* =====================================================
+           MOBILE
+        ===================================================== */
+
+        @media (max-width: 850px) {
+
+          .ibg-page {
+            padding: 8px;
+          }
+
+          .ibg-layout {
+            grid-template-columns: 190px minmax(0, 1fr);
+            gap: 9px;
+          }
+
+          .ibg-sidebar {
+            height: calc(100vh - 75px);
+            min-height: 500px;
+          }
+
+          .ibg-canvas-area {
+            height: calc(100vh - 145px);
+            min-height: 400px;
+          }
+
+          .ibg-background-grid,
+          .ibg-color-grid {
+            grid-template-columns:
+              repeat(3, 1fr);
+          }
+
+        }
+
+        @media (max-width: 650px) {
+
+          .ibg-upload-hero {
+            min-height: 75vh;
+            border-radius: 22px;
+          }
+
+          .ibg-main-select {
+            min-width: 0;
+            width: 90%;
+            padding:
+              15px 25px;
+          }
+
+          .ibg-camera-art {
+            transform: scale(.82);
+            margin-top: -10px;
+            margin-bottom: -5px;
+          }
+
+          .ibg-layout {
+            display: flex;
+            flex-direction: column;
+          }
+
+          .ibg-sidebar {
+            width: 100%;
+            height: auto;
+            min-height: 0;
+            max-height: none;
+            overflow: visible;
+          }
+
+          .ibg-workspace {
+            width: 100%;
+          }
+
+          .ibg-canvas-area {
+            height: 60vh;
+            min-height: 330px;
+          }
+
+          .ibg-background-grid,
+          .ibg-color-grid {
+            max-height: 230px;
+          }
+
+        }
+
+      `}</style>
+
+      {/* =====================================================
+          FIRST SCREEN
+      ===================================================== */}
+
+      {!currentFile && (
+        <div
+          className="ibg-upload-screen"
+        >
+          <div
+            className={
+              dragActive
+                ? "ibg-upload-hero drag-active"
+                : "ibg-upload-hero"
+            }
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            onClick={() =>
+              inputRef.current?.click()
+            }
+          >
+
+            {/* COLORFUL CAMERA */}
+            <div className="ibg-camera-art">
+
+              <div className="ibg-art-dots" />
+
+              <div className="ibg-camera-piece" />
+
+              <div className="ibg-camera-ring" />
+
             </div>
 
-            <div className="ibg-thumbnails">
-              {files.map((item, index) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  className={`ibg-thumb ${index === activeIndex ? "active" : ""}`}
-                  onClick={() => {
-                    setActiveIndex(index);
-                    setSelectedBackground("none");
-                    setSelectedColor("none");
-                    setSelectionMade(false);
-                  }}
-                  title={item.file.name}
-                >
-                  <img src={item.originalUrl} alt="" />
-                  {item.status === "processing" && <span className="ibg-thumb-loading">•••</span>}
-                  <span
-                    className="ibg-thumb-remove"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      removeFile(index);
-                    }}
-                  >×</span>
-                </button>
-              ))}
+            {/* SELECT IMAGE */}
+
+            <button
+              type="button"
+              className="ibg-main-select"
+              onClick={(event) => {
+                event.stopPropagation();
+                inputRef.current?.click();
+              }}
+            >
+              SELECT IMAGE
+            </button>
+
+            {/* DROP */}
+
+            <div className="ibg-drop-title">
+              OR DROP A FILE,
             </div>
 
-            <div className={`ibg-status ${processing ? "processing" : activeFile.status === "error" ? "error" : ""}`}>
-              {processing ? "✨ Removing background automatically..." : activeFile.status === "done" ? "✓ Background removed" : activeFile.status === "error" ? "Background removal failed" : "Preparing image..."}
-            </div>
+            {/* PASTE */}
 
-            <div className="ibg-tabs">
-              <button type="button" className={mode === "background" ? "active" : ""} onClick={() => { setMode("background"); setSearch(""); }}>
-                🖼 Background
-              </button>
-              <button type="button" className={mode === "color" ? "active" : ""} onClick={() => { setMode("color"); setSearch(""); }}>
-                🎨 Color
-              </button>
-            </div>
+            <div
+              className="ibg-paste-link"
+              onClick={(event) => {
+                event.stopPropagation();
 
-            <input
-              className="ibg-search"
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-              placeholder={mode === "background" ? "Search backgrounds..." : "Search colors..."}
-            />
-
-            <div className="ibg-grid-scroll">
-              <div className="ibg-grid">
-                {(mode === "background" ? filteredBackgrounds : filteredColors).map((item) => {
-                  const selected = mode === "background" ? selectedBackground === item.id : selectedColor === item.id;
-                  const none = item.type === "none";
-                  return (
-                    <button
-                      key={item.id}
-                      type="button"
-                      className={`ibg-tile ${selected ? "selected" : ""} ${none ? "ibg-none" : ""}`}
-                      onClick={() => none ? chooseNone() : mode === "background" ? chooseBackground(item.id) : chooseColor(item.id)}
-                      title={item.name}
-                    >
-                      {none ? <span className="ibg-none-icon">⊘</span> : mode === "background" ? <img src={item.url} alt={item.name} loading="lazy" /> : <span className="ibg-color" style={{ background: item.value }} />}
-                      {mode === "background" && !none && <span className="ibg-label">{item.name}</span>}
-                    </button>
+                const value =
+                  window.prompt(
+                    "Paste image URL"
                   );
-                })}
-              </div>
-            </div>
-          </aside>
 
-          <main className="ibg-main">
-            <div className="ibg-filebar">
-              <div className="ibg-fileinfo">
-                <strong>{activeFile.file.name}</strong>
-                <span>{formatSize(activeFile.file.size)}</span>
-              </div>
-              <span>{activeIndex + 1} / {files.length}</span>
-            </div>
+                if (!value) return;
 
-            <div className="ibg-preview-wrap">
-              {activeFile.removedUrl ? (
-                <div className="ibg-preview-frame" style={{ aspectRatio: previewRatio }}>
-                  <canvas ref={canvasRef} />
-                </div>
-              ) : (
-                <div className="ibg-processing">✨<strong>Removing background...</strong><span>Please wait a moment.</span></div>
-              )}
+                if (
+                  value.startsWith("http")
+                ) {
+                  setError(
+                    "Image URL support requires the image server to allow CORS. Please use Select Image or Drag & Drop if the URL does not load."
+                  );
+                }
+              }}
+            >
+              paste image or URL
             </div>
 
-            {activeFile.removedUrl && selectionMade && (
-              <div className="ibg-download-row">
-                <button type="button" className="ibg-download" onClick={downloadImage}>⬇ Download Image</button>
-              </div>
-            )}
-            {error && <div className="ibg-error">{error}</div>}
-          </main>
+            <div className="ibg-upload-help">
+              JPG, PNG, WEBP · Maximum 5 MB
+            </div>
+
+          </div>
         </div>
-      </div>
-    </section>
+      )}
+
+      {/* =====================================================
+          EDITOR
+      ===================================================== */}
+
+      {currentFile && (
+        <section className="ibg-page">
+
+          <div className="ibg-editor">
+
+            {/* HEADER */}
+
+            <header className="ibg-header">
+
+              <div className="ibg-header-icon">
+                🖼️
+              </div>
+
+              <div>
+
+                <div className="ibg-eyebrow">
+                  HUBCONVERTER · IMAGE TOOL
+                </div>
+
+                <h1>
+                  Image Background
+                </h1>
+
+                <p>
+                  Remove background and add a new background to your image
+                </p>
+
+              </div>
+
+            </header>
+
+            <div className="ibg-layout">
+
+              {/* =================================================
+                  LEFT SIDEBAR
+              ================================================= */}
+
+              <aside className="ibg-sidebar">
+
+                {/* ADD MORE */}
+
+                <div className="ibg-sidebar-card">
+
+                  <button
+                    type="button"
+                    className="ibg-add-more-main"
+                    onClick={() =>
+                      inputRef.current?.click()
+                    }
+                  >
+                    + Add More Images
+                  </button>
+
+                  <div className="ibg-format">
+                    JPG · PNG · WEBP · Max 5 MB
+                  </div>
+
+                  {files.length > 0 && (
+                    <div className="ibg-small-thumbs">
+
+                      {files.map(
+                        (file, index) => (
+                          <Thumbnail
+                            key={
+                              `${file.name}-${index}`
+                            }
+                            file={file}
+                            selected={
+                              index ===
+                              selectedIndex
+                            }
+                            onClick={() =>
+                              setSelectedIndex(
+                                index
+                              )
+                            }
+                            onRemove={() =>
+                              removeFile(
+                                index
+                              )
+                            }
+                          />
+                        )
+                      )}
+
+                    </div>
+                  )}
+
+                </div>
+
+                {/* HIDDEN INPUT */}
+
+                <input
+                  ref={inputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  multiple
+                  hidden
+                  onChange={handleInput}
+                />
+
+                {/* BACKGROUND */}
+
+                <div className="ibg-sidebar-card">
+
+                  <div className="ibg-sidebar-title">
+
+                    <span className="ibg-step-number">
+                      1
+                    </span>
+
+                    Background
+                  </div>
+
+                  <div className="ibg-tabs">
+
+                    <button
+                      type="button"
+                      className={
+                        mode === "background"
+                          ? "ibg-tab active"
+                          : "ibg-tab"
+                      }
+                      onClick={() =>
+                        setMode(
+                          "background"
+                        )
+                      }
+                    >
+                      🖼 Background
+                    </button>
+
+                    <button
+                      type="button"
+                      className={
+                        mode === "color"
+                          ? "ibg-tab active"
+                          : "ibg-tab"
+                      }
+                      onClick={() =>
+                        setMode("color")
+                      }
+                    >
+                      🎨 Color
+                    </button>
+
+                  </div>
+
+                  {/* BACKGROUND IMAGES */}
+
+                  {mode === "background" && (
+                    <div className="ibg-background-grid">
+
+                      {BACKGROUNDS.map(
+                        (background) => (
+
+                          <button
+                            type="button"
+                            key={
+                              background.name
+                            }
+                            className={
+                              selectedBackground?.name ===
+                              background.name
+                                ? "ibg-background-item selected"
+                                : "ibg-background-item"
+                            }
+                            onClick={() => {
+
+                              setSelectedBackground(
+                                background
+                              );
+
+                              setSelectedColor(
+                                "transparent"
+                              );
+
+                            }}
+                          >
+
+                            {background.none ? (
+                              <div className="ibg-none-background">
+                                ⊘
+                              </div>
+                            ) : (
+                              <img
+                                src={
+                                  background.url
+                                }
+                                alt={
+                                  background.name
+                                }
+                                loading="lazy"
+                              />
+                            )}
+
+                            <span>
+                              {background.name}
+                            </span>
+
+                          </button>
+
+                        )
+                      )}
+
+                    </div>
+                  )}
+
+                  {/* COLORS */}
+
+                  {mode === "color" && (
+                    <div className="ibg-color-grid">
+
+                      {COLORS.map(
+                        (color) => (
+
+                          <button
+                            type="button"
+                            key={
+                              color.name
+                            }
+                            className={
+                              selectedColor ===
+                              color.value
+                                ? "ibg-color-item selected"
+                                : "ibg-color-item"
+                            }
+                            onClick={() => {
+
+                              setSelectedColor(
+                                color.value
+                              );
+
+                              setSelectedBackground(
+                                BACKGROUNDS[0]
+                              );
+
+                            }}
+                          >
+
+                            <div
+                              className="ibg-color-box"
+                              style={
+                                color.rainbow
+                                  ? {
+                                      background:
+                                        "conic-gradient(#ff0000,#ff00a8,#7b2cff,#0099ff,#00e676,#ffff00,#ff0000)",
+                                    }
+                                  : color.none
+                                  ? {
+                                      background:
+                                        "#ffffff",
+                                    }
+                                  : {
+                                      background:
+                                        color.value,
+                                    }
+                              }
+                            >
+
+                              {color.none &&
+                                "⊘"}
+
+                            </div>
+
+                            <small>
+                              {color.name}
+                            </small>
+
+                          </button>
+
+                        )
+                      )}
+
+                    </div>
+                  )}
+
+                </div>
+
+                {/* PROCESSING */}
+
+                {processing && (
+                  <div className="ibg-processing">
+                    ⏳ Removing background automatically...
+                  </div>
+                )}
+
+                {/* DOWNLOAD */}
+
+                <div className="ibg-sidebar-card">
+
+                  <div className="ibg-sidebar-title">
+
+                    <span className="ibg-step-number">
+                      2
+                    </span>
+
+                    Download
+                  </div>
+
+                  <button
+                    type="button"
+                    className="ibg-download"
+                    disabled={
+                      !removedUrl ||
+                      processing
+                    }
+                    onClick={
+                      downloadImage
+                    }
+                  >
+                    ⬇ Download Image
+                  </button>
+
+                </div>
+
+              </aside>
+
+              {/* =================================================
+                  WORKSPACE
+              ================================================= */}
+
+              <main className="ibg-workspace">
+
+                <div className="ibg-main-card">
+
+                  {/* FILE NAME */}
+
+                  <div className="ibg-file-heading">
+
+                    <strong>
+                      {currentFile.name}
+                    </strong>
+
+                    <span>
+                      {selectedIndex + 1}
+                      {" / "}
+                      {files.length}
+                    </span>
+
+                  </div>
+
+                  {/* IMAGE */}
+
+                  <div className="ibg-canvas-area">
+
+                    <div
+                      className="ibg-image-frame"
+                      style={
+                        removedUrl
+                          ? finalPreviewStyle
+                          : {}
+                      }
+                    >
+
+                      {removedUrl ? (
+
+                        <img
+                          src={
+                            removedUrl
+                          }
+                          alt="Final image"
+                          style={
+                            previewStyle
+                          }
+                        />
+
+                      ) : (
+
+                        <img
+                          src={
+                            originalUrl
+                          }
+                          alt="Original"
+                          className="ibg-original"
+                        />
+
+                      )}
+
+                    </div>
+
+                  </div>
+
+                  {/* ZOOM */}
+
+                  <div className="ibg-toolbar">
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setZoom(
+                          (value) =>
+                            Math.max(
+                              50,
+                              value - 10
+                            )
+                        )
+                      }
+                    >
+                      −
+                    </button>
+
+                    <span>
+                      {zoom}%
+                    </span>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setZoom(
+                          (value) =>
+                            Math.min(
+                              150,
+                              value + 10
+                            )
+                        )
+                      }
+                    >
+                      +
+                    </button>
+
+                  </div>
+
+                  {/* FILE SIZE */}
+
+                  <div
+                    style={{
+                      marginTop: "5px",
+                      textAlign: "center",
+                      fontSize: "9px",
+                      color: "#64748b",
+                    }}
+                  >
+                    {formatSize(
+                      currentFile.size
+                    )}
+                    {" · "}
+                    {removedUrl
+                      ? "Background removed"
+                      : processing
+                      ? "Processing..."
+                      : "Processing image"}
+                  </div>
+
+                  {/* ERROR */}
+
+                  {error && (
+                    <div className="ibg-error">
+                      ⚠ {error}
+                    </div>
+                  )}
+
+                </div>
+
+              </main>
+
+            </div>
+
+          </div>
+
+        </section>
+      )}
+
+    </>
   );
 }
 
-const styles = `
-  .ibg-root, .ibg-root * { box-sizing: border-box; }
-  .ibg-root {
-    width: 100%;
-    min-height: 100vh;
-    padding: 16px;
-    background: #f4f6f8;
-    color: #223247;
-    font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  }
-  .ibg-start-root { display: flex; align-items: flex-start; justify-content: center; padding-top: 22px; background: #f7f8fa; }
-  .ibg-start-card {
-    width: min(540px, 100%);
-    min-height: 400px;
-    border-radius: 28px;
-    background: #fff;
-    box-shadow: 0 12px 40px rgba(25, 43, 61, .10);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 50px 25px;
-  }
-  .ibg-start-upload {
-    border: 0;
-    border-radius: 999px;
-    background: #1976e8;
-    color: #fff;
-    font-size: 29px;
-    font-weight: 700;
-    padding: 16px 48px;
-    cursor: pointer;
-  }
-  .ibg-start-drop { margin-top: 42px; color: #52677b; font-size: 24px; font-weight: 600; }
-  .ibg-start-paste { border: 0; background: transparent; color: #60758a; text-decoration: underline; margin-top: 10px; font-size: 15px; cursor: pointer; }
-  .ibg-start-error { margin-top: 18px; color: #d64545; font-size: 13px; }
+/* =========================================================
+   THUMBNAIL
+========================================================= */
 
-  .ibg-shell { width: min(1120px, 100%); margin: 0 auto; }
-  .ibg-header { text-align: center; margin: 2px 0 12px; }
-  .ibg-eyebrow { color: #00a7d9; font-size: 11px; font-weight: 800; letter-spacing: 1.6px; }
-  .ibg-header h1 { margin: 3px 0 2px; font-size: 24px; font-weight: 800; }
-  .ibg-header p { margin: 0; color: #708196; font-size: 12px; }
-  .ibg-editor { display: grid; grid-template-columns: 258px minmax(0, 1fr); gap: 12px; align-items: stretch; }
+function Thumbnail({
+  file,
+  selected,
+  onClick,
+  onRemove,
+}) {
+  const [url, setUrl] =
+    useState("");
 
-  .ibg-sidebar {
-    height: min(650px, calc(100vh - 88px));
-    min-height: 500px;
-    overflow: hidden;
-    background: #fff;
-    border: 1px solid #dce3e9;
-    border-radius: 16px;
-    box-shadow: 0 8px 28px rgba(22, 40, 58, .08);
-    display: flex;
-    flex-direction: column;
-  }
-  .ibg-upload-top { padding: 10px; border-bottom: 1px solid #e7ebef; text-align: center; }
-  .ibg-add-images { width: 100%; height: 39px; border: 1px dashed #00aeda; border-radius: 10px; background: #f5fbfd; color: #147394; font-size: 13px; font-weight: 800; cursor: pointer; }
-  .ibg-upload-top small { display: block; margin-top: 5px; color: #8393a3; font-size: 10px; }
-  .ibg-thumbnails { display: flex; gap: 6px; overflow-x: auto; padding: 8px 10px; min-height: 66px; border-bottom: 1px solid #e7ebef; }
-  .ibg-thumb { position: relative; flex: 0 0 50px; width: 50px; height: 50px; padding: 0; border: 1px solid #d7e0e7; border-radius: 8px; overflow: hidden; background: #f2f5f7; cursor: pointer; }
-  .ibg-thumb.active { border: 2px solid #1689ff; }
-  .ibg-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .ibg-thumb-remove { position: absolute; top: 2px; right: 2px; width: 16px; height: 16px; border-radius: 50%; background: rgba(0,0,0,.72); color: #fff; font-size: 12px; line-height: 15px; }
-  .ibg-thumb-loading { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,.72); color: #1689ff; font-weight: 900; }
-  .ibg-status { margin: 7px 10px; min-height: 28px; border-radius: 9px; background: #edf9f3; color: #15935c; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; text-align: center; padding: 4px; }
-  .ibg-status.processing { background: #fff8e5; color: #9c7410; }
-  .ibg-status.error { background: #fff0f0; color: #d94c4c; }
-  .ibg-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; padding: 0 10px 7px; }
-  .ibg-tabs button { height: 38px; border: 1px solid #e1e7ec; border-radius: 9px; background: #f4f7f9; color: #637285; font-size: 12px; font-weight: 800; cursor: pointer; }
-  .ibg-tabs button.active { background: #eaf8ff; border-color: #17b5e5; color: #087fa8; }
-  .ibg-search { width: calc(100% - 20px); height: 34px; margin: 0 10px 7px; border: 1px solid #dfe6eb; border-radius: 9px; outline: none; padding: 0 10px; color: #30465b; font-size: 11px; }
-  .ibg-search:focus { border-color: #1aaee0; }
-  .ibg-grid-scroll { flex: 1; min-height: 0; overflow-y: auto; padding: 0 8px 10px 10px; }
-  .ibg-grid-scroll::-webkit-scrollbar { width: 5px; }
-  .ibg-grid-scroll::-webkit-scrollbar-thumb { background: #aebbc6; border-radius: 10px; }
-  .ibg-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
-  .ibg-tile { position: relative; width: 100%; aspect-ratio: 1 / .86; padding: 0; border: 1px solid #e0e5ea; border-radius: 10px; overflow: hidden; background: #f6f8fa; cursor: pointer; }
-  .ibg-tile.selected { border: 2px solid #087dff; box-shadow: 0 0 0 1px rgba(8,125,255,.10); }
-  .ibg-tile img, .ibg-color { display: block; width: 100%; height: 100%; object-fit: cover; }
-  .ibg-label { position: absolute; left: 0; right: 0; bottom: 0; padding: 3px 2px; background: linear-gradient(transparent, rgba(0,0,0,.78)); color: #fff; font-size: 8px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .ibg-none { background: linear-gradient(45deg,#eef1f4 25%,transparent 25%),linear-gradient(-45deg,#eef1f4 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#eef1f4 75%),linear-gradient(-45deg,transparent 75%,#eef1f4 75%); background-size: 14px 14px; background-position: 0 0,0 7px,7px -7px,-7px 0; }
-  .ibg-none-icon { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 25px; color: #4c4c4c; }
+  useEffect(() => {
+    const objectUrl =
+      URL.createObjectURL(file);
 
-  .ibg-main { height: min(650px, calc(100vh - 88px)); min-height: 500px; background: #fff; border: 1px solid #dce3e9; border-radius: 16px; box-shadow: 0 8px 28px rgba(22,40,58,.08); padding: 10px; display: flex; flex-direction: column; min-width: 0; }
-  .ibg-filebar { min-height: 38px; display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 0 3px 7px; color: #7d8b99; font-size: 10px; }
-  .ibg-fileinfo { min-width: 0; }
-  .ibg-fileinfo strong { display: block; color: #1e3043; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .ibg-fileinfo span { display: block; margin-top: 1px; }
-  .ibg-preview-wrap { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 12px; background: linear-gradient(45deg,#f0f2f4 25%,transparent 25%),linear-gradient(-45deg,#f0f2f4 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#f0f2f4 75%),linear-gradient(-45deg,transparent 75%,#f0f2f4 75%); background-size: 26px 26px; background-position: 0 0,0 13px,13px -13px,-13px 0; }
-  .ibg-preview-frame { width: min(88%, 700px); max-width: 88%; max-height: 88%; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 12px; box-shadow: 0 10px 28px rgba(24,42,60,.14); }
-  .ibg-preview-frame canvas { width: 100%; height: 100%; display: block; object-fit: contain; }
-  .ibg-processing { display: flex; flex-direction: column; align-items: center; gap: 7px; color: #8191a0; font-size: 27px; }
-  .ibg-processing strong { color: #506275; font-size: 15px; }
-  .ibg-processing span { font-size: 11px; }
-  .ibg-download-row { display: flex; justify-content: center; padding-top: 9px; }
-  .ibg-download { min-width: 190px; height: 40px; border: 0; border-radius: 10px; background: linear-gradient(135deg,#087eff,#0dd6ca); color: #fff; font-size: 13px; font-weight: 800; cursor: pointer; }
-  .ibg-error { margin-top: 6px; text-align: center; color: #d94c4c; font-size: 11px; }
+    setUrl(objectUrl);
 
-  @media (max-width: 850px) {
-    .ibg-editor { grid-template-columns: 230px minmax(0,1fr); }
-    .ibg-sidebar, .ibg-main { height: min(600px, calc(100vh - 75px)); min-height: 440px; }
-  }
-  @media (max-width: 680px) {
-    .ibg-root { padding: 8px; }
-    .ibg-editor { grid-template-columns: 1fr; }
-    .ibg-sidebar { height: 315px; min-height: 315px; }
-    .ibg-main { height: 500px; min-height: 500px; }
-    .ibg-start-card { min-height: 390px; }
-    .ibg-start-upload { font-size: 25px; }
-    .ibg-start-drop { font-size: 21px; }
-  }
-`;
+    return () => {
+      URL.revokeObjectURL(
+        objectUrl
+      );
+    };
+  }, [file]);
+
+  return (
+    <div
+      className={
+        selected
+          ? "ibg-small-thumb selected"
+          : "ibg-small-thumb"
+      }
+      onClick={onClick}
+      title={file.name}
+    >
+
+      {url && (
+        <img
+          src={url}
+          alt={file.name}
+        />
+      )}
+
+      <button
+        type="button"
+        onClick={(event) => {
+          event.stopPropagation();
+          onRemove();
+        }}
+        aria-label={
+          `Remove ${file.name}`
+        }
+      >
+        ×
+      </button>
+
+    </div>
+  );
+}
+
+export default ImageBackground;
