@@ -12,7 +12,18 @@ const colors = ["#ffffff", "#f3f4f6", "#dbe4ee", "#111827", "#172554", "#17324d"
 
 export default function ImageBackground() {
   const inputRef = useRef(null); const [file, setFile] = useState(null); const [sourceUrl, setSourceUrl] = useState(""); const [cutoutUrl, setCutoutUrl] = useState(""); const [selectedBackground, setSelectedBackground] = useState(""); const [selectedColor, setSelectedColor] = useState("#ffffff"); const [tab, setTab] = useState("background"); const [search, setSearch] = useState(""); const [processing, setProcessing] = useState(false); const [dragging, setDragging] = useState(false); const [message, setMessage] = useState("");const [dots, setDots] = useState("");
-  useEffect(() => () => { if (sourceUrl) URL.revokeObjectURL(sourceUrl); if (cutoutUrl && cutoutUrl !== sourceUrl) URL.revokeObjectURL(cutoutUrl); }, [sourceUrl, cutoutUrl]);
+  useEffect(() => () => { if (sourceUrl) URL.revokeObjectURL(sourceUrl); if (cutoutUrl && cutoutUrl !== sourceUrl) URL.revokeObjectURL(cutoutUrl); }, [sourceUrl, cutoutUrl]);useEffect(() => {
+  if (!processing) {
+    setDots("");
+    return;
+  }
+
+  const interval = setInterval(() => {
+    setDots((prev) => (prev.length >= 3 ? "" : prev + "."));
+  }, 400);
+
+  return () => clearInterval(interval);
+}, [processing]);
   function cropTransparentCanvas(blob) {
     return new Promise((resolve) => {
       const url = URL.createObjectURL(blob); const image = new Image();
