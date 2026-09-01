@@ -38,7 +38,24 @@ async function api(path, options = {}) {
       ...(options.headers || {}),
     },
   });
+  const text = await response.text();
 
+  if (!response.ok) {
+    console.error(`API Error ${response.status}:`, text);
+    throw new Error(`API request failed: ${response.status}`);
+  }
+
+  if (!text) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(text);
+  } catch (error) {
+    console.error("Invalid JSON response:", text);
+    throw error;
+  }
+}
   const data = await response.json();
 
   if (!response.ok) {
