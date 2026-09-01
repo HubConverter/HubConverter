@@ -3725,3 +3725,18 @@ footer {
 @media (min-width: 1050px) { .featured-tools { width: min(900px, calc(100% - 360px)); margin-left: auto; margin-right: 42px; gap: 14px; }.featured-tool-card { min-height: 155px; padding: 18px; }.featured-tool-icon { font-size: 34px; }.featured-tool-card h3 { font-size: 17px; }.featured-tool-card p { font-size: 13px; }.featured-open-button { padding: 10px 16px; } }
 .background-canvas { min-width: 0; display: grid; grid-template-rows: auto minmax(0, 1fr); gap: 15px; }.canvas-title { display: flex; justify-content: space-between; gap: 14px; align-items: center; }.canvas-title strong { display: block; font-size: 18px; }.canvas-title span { display: block; max-width: 410px; margin-top: 4px; color: rgb(var(--muted)); font-size: 12px; }.background-download { align-self: center; border: 0; border-radius: 9px; padding: 11px 18px; color: #fff; background: linear-gradient(110deg, rgb(var(--accent)), rgb(var(--accent-2))); font-weight: 800; }.background-download:disabled { opacity: .6; cursor: wait; }.image-stage { min-height: 0; display: grid; place-items: center; overflow: hidden; background-position: center; background-size: cover; border-radius: 14px; box-shadow: inset 0 0 0 1px rgb(var(--line) / .45); }.image-stage img { max-width: 92%; max-height: 88%; object-fit: contain; filter: drop-shadow(0 12px 15px rgb(0 0 0 / .24)); }
 @media (max-width: 700px) { .background-editor-page { width: calc(100% - 20px); height: auto; min-height: 0; grid-template-columns: 1fr; }.background-sidebar { max-height: 250px; }.background-grid { grid-template-columns: repeat(5, 1fr); }.image-stage { min-height: 380px; } }
+
+/* Compact desktop editor: preview left, controls on the right. */
+.background-editor-page .background-canvas { grid-column: 1; grid-row: 1; }
+.background-editor-page .background-sidebar { grid-column: 2; grid-row: 1; }
+.image-stage img { max-width: 58%; max-height: 70%; }
+@media (min-width: 901px) and (max-width: 1300px) {
+  .hub-title-area { margin-left: 150px; }
+  .hub-logo-wrap { justify-self: start; opacity: .86; }
+}
+@media (max-width: 700px) {
+  .background-editor-page .background-canvas, .background-editor-page .background-sidebar { grid-column: 1; }
+  .background-editor-page .background-canvas { grid-row: 1; }
+  .background-editor-page .background-sidebar { grid-row: 2; }
+  .image-stage img { max-width: 72%; max-height: 72%; }
+}
