@@ -3758,3 +3758,12 @@ footer {
   .all-tools-home { width: calc(100% - 4rem); max-width: none; }
   .all-tools-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 18px; }
 }
+
+/* Image Background: compact square preview on the right; controls stay on the left. */
+@media (min-width: 701px) {
+  .background-editor-page { display: grid; grid-template-columns: 230px minmax(0, 1fr); }
+  .background-editor-page .background-sidebar { grid-column: 1; grid-row: 1; width: auto; }
+  .background-editor-page .background-canvas { grid-column: 2; grid-row: 1; display: grid; justify-items: center; }
+  .image-stage { width: min(460px, 100%); height: 460px; min-height: 0; }
+  .image-stage img { max-width: 68%; max-height: 68%; transform: scale(2.25); transform-origin: center bottom; }
+}
