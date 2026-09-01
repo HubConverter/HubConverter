@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { removeBackground } from "@imgly/background-removal";
 
-const photo = (id) => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=420&q=80`;
+const background = (id) => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=420&q=80`;
 const backgrounds = [
   ["Nature", "1500530855697-b586d89ba3ee"], ["Ocean", "1507525428034-b723cf961d3e"], ["Sea", "1473116763249-2faaef81ccda"], ["Sky", "1499346030926-9a72daac6c63"], ["Hotel", "1566073771259-6a8506099945"], ["Sunshine", "1500534314209-a25ddb2bd429"], ["Sunset", "1500534314209-a25ddb2bd429"], ["Mountain", "1501785888041-af3ef285b470"], ["Forest", "1441974231531-c6227db76b6e"], ["Flower", "1497250681960-ef046c08a56e"],
   ["Trees", "1473448912268-2022ce9509d8"], ["Beach", "1507525428034-b723cf961d3e"], ["City", "1444723121867-7a241cacace9"], ["Desert", "1509316785289-025f5b846b35"], ["Waterfall", "1433086966358-54859d0ed716"], ["Garden", "1416879595882-3373a0480b5b"], ["Snow", "1517299321609-52687d1bc55a"], ["Lake", "1470770841072-f978cf4d019e"], ["Road", "1470770841072-f978cf4d019e"], ["Tropical", "1507525428034-b723cf961d3e"],
@@ -11,7 +11,7 @@ const backgrounds = [
 const colors = ["#ffffff", "#f3f4f6", "#dbe4ee", "#111827", "#172554", "#17324d", "#0b62d6", "#2196f3", "#14b8a6", "#12a150", "#84cc16", "#d9e021", "#f5a623", "#fb923c", "#ed5b5b", "#ef4444", "#e91e63", "#be185d", "#9b51e0", "#7c3aed", "#5b3cc4", "#8b5a2b", "#f3d5b5", "#ead2ac", "#b9a7ff", "#7dd3fc", "#a7f3d0", "#fde68a", "#fecdd3", "#cbd5e1"];
 
 export default function ImageBackground() {
-  const inputRef = useRef(null); const [file, setFile] = useState(null); const [sourceUrl, setSourceUrl] = useState(""); const [cutoutUrl, setCutoutUrl] = useState(""); const [selectedBackground, setSelectedBackground] = useState(""); const [selectedColor, setSelectedColor] = useState("#ffffff"); const [tab, setTab] = useState("background"); const [search, setSearch] = useState(""); const [processing, setProcessing] = useState(false); const [dragging, setDragging] = useState(false); const [message, setMessage] = useState("");
+  const inputRef = useRef(null); const [file, setFile] = useState(null); const [sourceUrl, setSourceUrl] = useState(""); const [cutoutUrl, setCutoutUrl] = useState(""); const [selectedBackground, setSelectedBackground] = useState(""); const [selectedColor, setSelectedColor] = useState("#ffffff"); const [tab, setTab] = useState("background"); const [search, setSearch] = useState(""); const [processing, setProcessing] = useState(false); const [dragging, setDragging] = useState(false); const [message, setMessage] = useState("");const [dots, setDots] = useState("");
   useEffect(() => () => { if (sourceUrl) URL.revokeObjectURL(sourceUrl); if (cutoutUrl && cutoutUrl !== sourceUrl) URL.revokeObjectURL(cutoutUrl); }, [sourceUrl, cutoutUrl]);
   function cropTransparentCanvas(blob) {
     return new Promise((resolve) => {
