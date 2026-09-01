@@ -1,92 +1,21 @@
 import React, { useEffect, useRef, useState } from "react";
 
-/** A self-contained image-background uploader.  It intentionally reports the
- * selected file to the parent as well, so it can be connected to an API later. */
-export default function ImageBackground({ onImageSelect }) {
-  const inputRef = useRef(null);
-  const [file, setFile] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState("");
-  const [dragging, setDragging] = useState(false);
-  const [background, setBackground] = useState("transparent");
-  const [message, setMessage] = useState("");
+const photo = (id) => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=420&q=80`;
+const backgrounds = [
+  ["Nature", "1500530855697-b586d89ba3ee"], ["Ocean", "1507525428034-b723cf961d3e"], ["Sea", "1473116763249-2faaef81ccda"], ["Sky", "1499346030926-9a72daac6c63"], ["Hotel", "1566073771259-6a8506099945"], ["Sunshine", "1500534314209-a25ddb2bd429"], ["Sunset", "1500534314209-a25ddb2bd429"], ["Mountain", "1501785888041-af3ef285b470"], ["Forest", "1441974231531-c6227db76b6e"], ["Flower", "1497250681960-ef046c08a56e"],
+  ["Trees", "1473448912268-2022ce9509d8"], ["Beach", "1507525428034-b723cf961d3e"], ["City", "1444723121867-7a241cacace9"], ["Desert", "1509316785289-025f5b846b35"], ["Waterfall", "1433086966358-54859d0ed716"], ["Garden", "1416879595882-3373a0480b5b"], ["Snow", "1517299321609-52687d1bc55a"], ["Lake", "1470770841072-f978cf4d019e"], ["Road", "1470770841072-f978cf4d019e"], ["Tropical", "1507525428034-b723cf961d3e"],
+  ["Cafe", "1501339847302-ac426a4a7cbb"], ["Office", "1497366754035-f200968a6e72"], ["Library", "1507842217343-583bb7270b66"], ["Bedroom", "1616486338812-3dadae4b4ace"], ["Kitchen", "1556912167-f556f1f39fdf"], ["Studio", "1519608487953-e999c86e7455"], ["Abstract", "1557682250-33bd709cbe85"], ["Bokeh", "1519608487953-e999c86e7455"], ["Marble", "1528459105426-b9548367069b"], ["Paper", "1517841905240-472988babdf9"],
+  ["Neon", "1519608487953-e999c86e7455"], ["Stars", "1462331940025-496dfbfc7564"], ["Clouds", "1499346030926-9a72daac6c63"], ["Rain", "1519692933481-e162a57d6721"], ["Autumn", "1500534623283-312aade485b7"], ["Spring", "1497250681960-ef046c08a56e"], ["Summer", "1507525428034-b723cf961d3e"], ["Winter", "1517299321609-52687d1bc55a"], ["Wood", "1505693416388-ac5ce068fe85"], ["Gradient", "1557682250-33bd709cbe85"],
+];
+const colors = ["#ffffff", "#111827", "#0b62d6", "#12a150", "#f5a623", "#ed5b5b", "#9b51e0", "#f3d5b5", "#e9eef4", "#17324d"];
 
-  useEffect(() => () => previewUrl && URL.revokeObjectURL(previewUrl), [previewUrl]);
-
-  function selectFile(nextFile) {
-    if (!nextFile) return;
-    if (!nextFile.type.startsWith("image/")) {
-      setMessage("Please choose a JPG, PNG, WEBP, or GIF image.");
-      return;
-    }
-    if (nextFile.size > 10 * 1024 * 1024) {
-      setMessage("Please choose an image smaller than 10 MB.");
-      return;
-    }
-    if (previewUrl) URL.revokeObjectURL(previewUrl);
-    setFile(nextFile);
-    setPreviewUrl(URL.createObjectURL(nextFile));
-    setMessage("");
-    onImageSelect?.(nextFile);
-  }
-
-  function onDrop(event) {
-    event.preventDefault();
-    setDragging(false);
-    selectFile(event.dataTransfer.files?.[0]);
-  }
-
-  return (
-    <section className="image-background-tool" aria-labelledby="background-title">
-      <div className="tool-heading">
-        <p className="tool-eyebrow">IMAGE TOOL</p>
-        <h1 id="background-title">Image Background</h1>
-        <p>Upload an image, preview it, and choose a replacement background.</p>
-      </div>
-
-      <div
-        className={`image-dropzone ${dragging ? "is-dragging" : ""}`}
-        onClick={() => inputRef.current?.click()}
-        onDragEnter={(event) => { event.preventDefault(); setDragging(true); }}
-        onDragOver={(event) => event.preventDefault()}
-        onDragLeave={(event) => { if (event.currentTarget === event.target) setDragging(false); }}
-        onDrop={onDrop}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(event) => event.key === "Enter" && inputRef.current?.click()}
-      >
-        <input
-          ref={inputRef}
-          className="visually-hidden"
-          type="file"
-          accept="image/jpeg,image/png,image/webp,image/gif"
-          onChange={(event) => { selectFile(event.target.files?.[0]); event.target.value = ""; }}
-        />
-        <span className="image-dropzone-icon" aria-hidden="true">⇧</span>
-        <strong>{dragging ? "Drop image here" : "Drag & drop an image"}</strong>
-        <span>or click to browse · JPG, PNG, WEBP, GIF · max 10 MB</span>
-      </div>
-
-      {message && <p className="tool-message" role="alert">{message}</p>}
-
-      {file && (
-        <div className="image-editor">
-          <div className="selected-file" title={file.name}>Selected: {file.name}</div>
-          <label className="background-control">
-            Background
-            <select value={background} onChange={(event) => setBackground(event.target.value)}>
-              <option value="transparent">Transparent</option>
-              <option value="#ffffff">White</option>
-              <option value="#111827">Dark</option>
-              <option value="#2563eb">Blue</option>
-              <option value="#16a34a">Green</option>
-            </select>
-          </label>
-          <div className="image-preview" style={{ background }}>
-            <img src={previewUrl} alt={`Preview of ${file.name}`} />
-          </div>
-          <p className="tool-note">The image is ready for background processing. Connect this component to your background-removal API to export a processed file.</p>
-        </div>
-      )}
-    </section>
-  );
+export default function ImageBackground() {
+  const inputRef = useRef(null); const [file, setFile] = useState(null); const [sourceUrl, setSourceUrl] = useState(""); const [cutoutUrl, setCutoutUrl] = useState(""); const [selectedBackground, setSelectedBackground] = useState(""); const [selectedColor, setSelectedColor] = useState("#ffffff"); const [tab, setTab] = useState("background"); const [search, setSearch] = useState(""); const [processing, setProcessing] = useState(false); const [dragging, setDragging] = useState(false); const [message, setMessage] = useState("");
+  useEffect(() => () => { if (sourceUrl) URL.revokeObjectURL(sourceUrl); if (cutoutUrl && cutoutUrl !== sourceUrl) URL.revokeObjectURL(cutoutUrl); }, [sourceUrl, cutoutUrl]);
+  async function removeBackground(selectedFile) { setProcessing(true); setMessage("Removing background…"); try { const data = new FormData(); data.append("image", selectedFile); const response = await fetch("/api/remove-background", { method: "POST", body: data }); if (!response.ok) throw new Error(); const blob = await response.blob(); setCutoutUrl(URL.createObjectURL(blob)); setMessage("Background removed. Choose a photo or colour."); } catch { setCutoutUrl(URL.createObjectURL(selectedFile)); setMessage("Preview ready. Connect /api/remove-background to enable automatic cutout."); } finally { setProcessing(false); } }
+  function chooseFile(nextFile) { if (!nextFile) return; if (!nextFile.type.startsWith("image/")) { setMessage("Please choose an image file."); return; } if (nextFile.size > 10 * 1024 * 1024) { setMessage("Please choose an image below 10 MB."); return; } if (sourceUrl) URL.revokeObjectURL(sourceUrl); if (cutoutUrl && cutoutUrl !== sourceUrl) URL.revokeObjectURL(cutoutUrl); const url = URL.createObjectURL(nextFile); setFile(nextFile); setSourceUrl(url); setCutoutUrl(""); setSelectedBackground(""); setSelectedColor("#ffffff"); removeBackground(nextFile); }
+  function download() { if (!cutoutUrl) return; const link = document.createElement("a"); link.href = cutoutUrl; link.download = `${file?.name?.replace(/\.[^.]+$/, "") || "image"}-background.png`; link.click(); }
+  const shown = backgrounds.filter(([name]) => name.toLowerCase().includes(search.toLowerCase()));
+  if (!file) return <section className="background-upload-page"><div className={`background-upload-card ${dragging ? "background-upload-dragging" : ""}`} onClick={() => inputRef.current?.click()} onDragOver={(e) => { e.preventDefault(); setDragging(true); }} onDragLeave={() => setDragging(false)} onDrop={(e) => { e.preventDefault(); setDragging(false); chooseFile(e.dataTransfer.files?.[0]); }}><input ref={inputRef} className="background-file-input" type="file" accept="image/*" onChange={(e) => { chooseFile(e.target.files?.[0]); e.target.value = ""; }} /><div className="upload-cloud-icon">☁︎</div><strong>{dragging ? "Drop your image here" : "Select Image"}</strong><span>or drag and drop a file</span><small>JPG, PNG, WEBP · Max 10 MB</small></div></section>;
+  return <section className="background-editor-page"><aside className="background-sidebar"><div className="background-tabs"><button className={tab === "background" ? "active" : ""} onClick={() => setTab("background")}>Photo</button><button className={tab === "color" ? "active" : ""} onClick={() => setTab("color")}>Colour</button></div>{tab === "background" ? <><input className="background-search" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search backgrounds" /><div className="background-grid">{shown.map(([name, id], index) => <button key={`${name}-${index}`} title={name} className={selectedBackground === photo(id) ? "selected" : ""} onClick={() => setSelectedBackground(photo(id))}><img src={photo(id)} alt={name} /></button>)}</div></> : <div className="colour-grid">{colors.map((color) => <button key={color} aria-label={color} className={selectedColor === color ? "selected" : ""} onClick={() => { setSelectedColor(color); setSelectedBackground(""); }} style={{ background: color }} />)}</div>}</aside><main className="background-canvas"><div className="canvas-title"><div><strong>Image Background</strong><span>{processing ? "Processing…" : message}</span></div><button className="background-download" onClick={download} disabled={processing}>Download</button></div><div className="image-stage" style={{ backgroundColor: selectedColor, backgroundImage: selectedBackground ? `url(${selectedBackground})` : "none" }}><img src={cutoutUrl || sourceUrl} alt="Edited preview" /></div></main></section>;
 }
