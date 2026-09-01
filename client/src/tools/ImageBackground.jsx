@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { removeBackground } from "@imgly/background-removal";
 
-const photo = (id) => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=420&q=80`;
+const background = (id) => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=420&q=80`;
 const backgrounds = [
   ["Nature", "1500530855697-b586d89ba3ee"], ["Ocean", "1507525428034-b723cf961d3e"], ["Sea", "1473116763249-2faaef81ccda"], ["Sky", "1499346030926-9a72daac6c63"], ["Hotel", "1566073771259-6a8506099945"], ["Sunshine", "1500534314209-a25ddb2bd429"], ["Sunset", "1500534314209-a25ddb2bd429"], ["Mountain", "1501785888041-af3ef285b470"], ["Forest", "1441974231531-c6227db76b6e"], ["Flower", "1497250681960-ef046c08a56e"],
   ["Trees", "1473448912268-2022ce9509d8"], ["Beach", "1507525428034-b723cf961d3e"], ["City", "1444723121867-7a241cacace9"], ["Desert", "1509316785289-025f5b846b35"], ["Waterfall", "1433086966358-54859d0ed716"], ["Garden", "1416879595882-3373a0480b5b"], ["Snow", "1517299321609-52687d1bc55a"], ["Lake", "1470770841072-f978cf4d019e"], ["Road", "1470770841072-f978cf4d019e"], ["Tropical", "1507525428034-b723cf961d3e"],
@@ -13,7 +13,17 @@ const colors = ["#ffffff", "#f3f4f6", "#dbe4ee", "#111827", "#172554", "#17324d"
 export default function ImageBackground() {
   const inputRef = useRef(null); const [file, setFile] = useState(null); const [sourceUrl, setSourceUrl] = useState(""); const [cutoutUrl, setCutoutUrl] = useState(""); const [selectedBackground, setSelectedBackground] = useState(""); const [selectedColor, setSelectedColor] = useState("#ffffff"); const [tab, setTab] = useState("background"); const [search, setSearch] = useState(""); const [processing, setProcessing] = useState(false); const [dragging, setDragging] = useState(false); const [message, setMessage] = useState("");
   useEffect(() => () => { if (sourceUrl) URL.revokeObjectURL(sourceUrl); if (cutoutUrl && cutoutUrl !== sourceUrl) URL.revokeObjectURL(cutoutUrl); }, [sourceUrl, cutoutUrl]);
-  async function removeImageBackground(selectedFile) { setProcessing(true); setMessage("Removing background…"); try { const blob = await removeBackground(selectedFile); setCutoutUrl(URL.createObjectURL(blob)); setMessage("Background removed. Choose a photo or colour."); } catch (error) { console.error(error); setCutoutUrl(URL.createObjectURL(selectedFile)); setMessage("Could not remove the background. Please try another image."); } finally { setProcessing(false); } }
+  async function cropTransparentCanvas(blob) {
+    const bitmap = await createImageBitmap(blob); const canvas = document.createElement("canvas"); canvas.width = bitmap.width; canvas.height = bitmap.height;
+    const context = canvas.getContext("2d", { willReadFrequently: true }); context.drawImage(bitmap, 0, 0); const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
+    let left = canvas.width, top = canvas.height, right = -1, bottom = -1;
+    for (let y = 0; y < canvas.height; y += 1) for (let x = 0; x < canvas.width; x += 1) { if (pixels[(y * canvas.width + x) * 4 + 3] > 12) { left = Math.min(left, x); top = Math.min(top, y); right = Math.max(right, x); bottom = Math.max(bottom, y); } }
+    if (right < 0) return blob;
+    const padding = Math.round(Math.max(right - left, bottom - top) * 0.06); left = Math.max(0, left - padding); top = Math.max(0, top - padding); right = Math.min(canvas.width - 1, right + padding); bottom = Math.min(canvas.height - 1, bottom + padding);
+    const cropped = document.createElement("canvas"); cropped.width = right - left + 1; cropped.height = bottom - top + 1; cropped.getContext("2d").drawImage(canvas, left, top, cropped.width, cropped.height, 0, 0, cropped.width, cropped.height);
+    return new Promise((resolve) => cropped.toBlob((result) => resolve(result || blob), "image/png"));
+  }
+  async function removeImageBackground(selectedFile) { setProcessing(true); setMessage("Removing background…"); try { const removedBlob = await removeBackground(selectedFile); const croppedBlob = await cropTransparentCanvas(removedBlob); setCutoutUrl(URL.createObjectURL(croppedBlob)); setMessage("Background removed. Choose a photo or colour."); } catch (error) { console.error(error); setCutoutUrl(URL.createObjectURL(selectedFile)); setMessage("Could not remove the background. Please try another image."); } finally { setProcessing(false); } }
   function chooseFile(nextFile) { if (!nextFile) return; if (!nextFile.type.startsWith("image/")) { setMessage("Please choose an image file."); return; } if (nextFile.size > 10 * 1024 * 1024) { setMessage("Please choose an image below 10 MB."); return; } if (sourceUrl) URL.revokeObjectURL(sourceUrl); if (cutoutUrl && cutoutUrl !== sourceUrl) URL.revokeObjectURL(cutoutUrl); const url = URL.createObjectURL(nextFile); setFile(nextFile); setSourceUrl(url); setCutoutUrl(""); setSelectedBackground(""); setSelectedColor("#ffffff"); removeImageBackground(nextFile); }
   function download() { if (!cutoutUrl) return; const link = document.createElement("a"); link.href = cutoutUrl; link.download = `${file?.name?.replace(/\.[^.]+$/, "") || "image"}-background.png`; link.click(); }
   const shown = backgrounds.filter(([name]) => name.toLowerCase().includes(search.toLowerCase()));
