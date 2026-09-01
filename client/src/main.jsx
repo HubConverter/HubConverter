@@ -1,6 +1,3 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { createRoot } from "react-dom/client";
-import "./style.css";
 import JpgToPdf from "./tools/JpgToPdf.jsx";
 import ExcelToPdf from "./tools/ExcelToPdf.jsx";
 import WordToPdf from "./tools/WordToPdf.jsx";
@@ -22,78 +19,2313 @@ import TranslatePdf from "./tools/TranslatePdf.jsx";
 import ImageCompressor from "./tools/ImageCompressor.jsx";
 import ImageBackground from "./tools/ImageBackground.jsx";
 
-const tools = [
-  ["jpg-to-pdf", "JPG to PDF", "🖼️", "Convert images into one PDF", "pdf", JpgToPdf],
-  ["pdf-to-excel", "PDF to Excel", "📊", "Convert PDF tables to an Excel file", "pdf", PdfToExcel],
-  ["scan-pdf-to-excel", "Scan PDF to Excel", "🔎", "Extract scanned tables to Excel", "pdf", PdfToExcel],
-  ["excel-to-pdf", "Excel to PDF", "📊", "Convert spreadsheets to PDF", "pdf", ExcelToPdf],
-  ["word-to-pdf", "Word to PDF", "📝", "Convert documents to PDF", "pdf", WordToPdf],
-  ["pdf-to-jpg", "PDF to JPG", "📄", "Export PDF pages as images", "pdf", PDFToJpg],
-  ["merge-pdf", "Merge PDF", "📑", "Combine several PDF files", "pdf", MergePdf],
-  ["extract-pdf", "Extract PDF", "✂️", "Save selected PDF pages", "pdf", ExtractPdf],
-  ["compress-pdf", "Compress PDF", "🗜️", "Reduce PDF file size", "pdf", CompressPdf],
-  ["pdf-to-word", "PDF to Word", "📄", "Convert PDFs to Word", "pdf", PdfToWord],
-  ["pdf-to-powerpoint", "PDF to PowerPoint", "📊", "Convert PDF slides", "pdf", PDFToPowerPoint],
-  ["rotate-pdf", "Rotate PDF", "🔄", "Rotate PDF pages", "pdf", RotatePdf],
-  ["watermark-pdf", "Watermark PDF", "💧", "Add a watermark", "pdf", WatermarkPdf],
-  ["protect-pdf", "Protect PDF", "🔐", "Add a password", "pdf", ProtectPdf],
-  ["unlock-pdf", "Unlock PDF", "🔓", "Remove PDF protection", "pdf", UnlockPdf],
-  ["sign-pdf", "Sign PDF", "✍️", "Add your signature", "pdf", SignPdf],
-  ["delete-pdf-pages", "Delete PDF Pages", "🗑️", "Remove unwanted pages", "pdf", DeletePdfPages],
-  ["edit-pdf", "Edit PDF", "✏️", "Edit text, pages, and annotations", "pdf", EditPdf],
-  ["translate-pdf", "Translate PDF", "🌐", "Translate PDF content", "pdf", TranslatePdf],
-  ["image-compressor", "Image Compressor", "🖼️", "Make images smaller", "image", ImageCompressor],
-  ["image-background", "Image Background", "🪄", "Remove or replace image backgrounds", "image", ImageBackground],
-].map(([id, title, icon, description, category, Component]) => ({ id, title, icon, description, category, Component }));
 
-const themes = ["neon", "ocean", "sunset", "sunshine", "light"];
 
-function App() {
-  const [theme, setTheme] = useState(() => localStorage.getItem("hc_theme") || "sunshine");
-  const [category, setCategory] = useState("all");
-  const [query, setQuery] = useState("");
-  const [activeTool, setActiveTool] = useState(null);
+import React, { useEffect, useRef, useState } from "react";
+import { createRoot } from "react-dom/client";
+import "./style.css";
 
-  useEffect(() => {
-    document.body.className = `theme-${theme}`;
-    document.body.dataset.theme = theme;
-    localStorage.setItem("hc_theme", theme);
-  }, [theme]);
+const API = "/api";
 
-  const visibleTools = useMemo(() => tools.filter((tool) => {
-    const matchesCategory = category === "all" || tool.category === category;
-    const value = `${tool.title} ${tool.description}`.toLowerCase();
-    return matchesCategory && value.includes(query.toLowerCase().trim());
-  }), [category, query]);
+const token = () => localStorage.getItem("sh_token");
 
-  if (activeTool) {
-    const Component = activeTool.Component;
-    return <div className="converter-app">
-      <header className="converter-header"><button className="back-button" onClick={() => setActiveTool(null)}>← All tools</button><strong>Hub Converter</strong></header>
-      <main className="tool-workspace"><Component /></main>
-    </div>;
+async function api(path, options = {}) {
+  const response = await fetch(API + path, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...(token() ? { Authorization: "Bearer " + token() } : {}),
+      ...(options.headers || {}),
+    },
+  });
+
+  const text = await response.text();
+
+  if (!response.ok) {
+    console.error(`API Error ${response.status}:`, text);
+    throw new Error(`API request failed: ${response.status}`);
   }
 
-  return <div className="converter-app">
-    <header className="converter-header">
-      <button className="brand-button" onClick={() => { setCategory("all"); setQuery(""); }}>Hub Converter</button>
-      <nav aria-label="Tool categories">
-        <button className={category === "all" ? "active" : ""} onClick={() => setCategory("all")}>All tools</button>
-        <button className={category === "pdf" ? "active" : ""} onClick={() => setCategory("pdf")}>PDF tools</button>
-        <button className={category === "image" ? "active" : ""} onClick={() => setCategory("image")}>Image tools</button>
-      </nav>
-      <label className="theme-select">Theme <select value={theme} onChange={(e) => setTheme(e.target.value)}>{themes.map((value) => <option key={value}>{value}</option>)}</select></label>
-    </header>
-    <main className="converter-home">
-      <section className="converter-intro"><p>FILE CONVERTER</p><h1>Convert files simply</h1><span>Choose a tool, upload your file, then download the result.</span></section>
-      <input className="tool-search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search converter tools…" aria-label="Search converter tools" />
-      <section className="converter-grid" aria-label="Converter tools">
-        {visibleTools.map((tool) => <button className="converter-card" key={tool.id} onClick={() => setActiveTool(tool)}>
-          <span className="converter-icon">{tool.icon}</span><strong>{tool.title}</strong><small>{tool.description}</small><em>Open tool →</em>
-        </button>)}
-      </section>
-    </main>
-  </div>;
+  if (!text) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(text);
+  } catch (error) {
+    console.error("Invalid JSON response:", text);
+    throw error;
+  }
+}
+const fallback = [
+  ["Excel", "📊"],
+  ["Word", "📄"],
+  ["PowerPoint", "📽️"],
+  ["Tally", "▣"],
+  ["BUSY", "B"],
+  ["Photoshop", "Ps"],
+  ["Windows", "⊞"],
+  ["Chrome", "🌐"],
+];
+
+const themes = [
+  { id: "neon", label: "Neon", icon: "✦" },
+  { id: "ocean", label: "Ocean", icon: "🌊" },
+  { id: "sunset", label: "Sunset", icon: "🌇" },
+  { id: "sunshine", label: "Sunshine", icon: "☀️" },
+  { id: "light", label: "Light", icon: "◌" },
+];
+
+function HubLogo({ className = "", decorative = false }) {
+  return (
+    <svg
+      className={"hub-logo-svg " + className}
+      viewBox="0 0 160 160"
+      role={decorative ? undefined : "img"}
+      aria-label={decorative ? undefined : "HubConverter logo"}
+      aria-hidden={decorative || undefined}
+    >
+      <defs>
+        <filter id="hubLogoGlow" x="-40%" y="-40%" width="180%" height="180%">
+          <feGaussianBlur stdDeviation="3" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+      <circle cx="80" cy="80" r="70" fill="#071b4b" stroke="#04d9ff" strokeWidth="3" />
+      <path
+        d="M43 58a49 49 0 0 1 59-21l-7-15 35 14-21 31-6-15a28 28 0 0 0-36 13Z"
+        fill="#00cfff"
+        stroke="#b7f8ff"
+        strokeWidth="2"
+        strokeLinejoin="round"
+        filter="url(#hubLogoGlow)"
+      />
+      <path
+        d="M116 59a49 49 0 0 1-7 62l13 9-34 14-2-38 13 8a28 28 0 0 0 3-38Z"
+        fill="#ff9a19"
+        stroke="#fff0a2"
+        strokeWidth="2"
+        strokeLinejoin="round"
+        filter="url(#hubLogoGlow)"
+      />
+      <path
+        d="M72 125a49 49 0 0 1-43-45l-15 3 18-33 31 22-15 4a28 28 0 0 0 25 28Z"
+        fill="#45df47"
+        stroke="#c7ffc8"
+        strokeWidth="2"
+        strokeLinejoin="round"
+        filter="url(#hubLogoGlow)"
+      />
+      <circle cx="80" cy="81" r="27" fill="#087a25" stroke="#69ff57" strokeWidth="3" />
+      <path d="M80 103V67m0 0-14 14m14-14 14 14" fill="none" stroke="#eaffdc" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
 }
 
-createRoot(document.getElementById("root")).render(<App />);
+function App() {
+  const [view, setView] = useState("tools-all");
+  const [selectedSoftware, setSelectedSoftware] = useState("");
+  const [items, setItems] = useState([]);
+  const [allItems, setAllItems] = useState([]);
+  const [soft, setSoft] = useState([]);
+  const [prog, setProg] = useState([]);
+  const [favorites, setFavorites] = useState([]);
+  const [recent, setRecent] = useState([]);
+  const [q, setQ] = useState("");
+  const [filter, setFilter] = useState("");
+  const savedTheme = localStorage.getItem("sh_theme");
+  const [theme, setTheme] = useState(
+    savedTheme === "midnight" ? "sunshine" : savedTheme || "sunshine"
+  );
+  const [toolsResetKey, setToolsResetKey] = useState(0);
+  const [showThemes, setShowThemes] = useState(false);
+  const themePickerRef = useRef(null);
+  const [toast, setToast] = useState("");
+
+  useEffect(() => {
+    (async () => {
+      const allShortcuts = await api("/shortcuts");
+      setAllItems(allShortcuts);
+      setItems(allShortcuts);
+      setSoft(await api("/software"));
+
+      try {
+        setProg(JSON.parse(localStorage.getItem("sh_progress") || "[]"));
+        setFavorites(JSON.parse(localStorage.getItem("sh_favorites") || "[]"));
+      } catch {
+        localStorage.removeItem("sh_progress");
+        localStorage.removeItem("sh_favorites");
+      }
+    })();
+  }, []);
+
+  useEffect(() => {
+    document.body.classList.remove(
+      "theme-neon",
+      "theme-ocean",
+      "theme-sunset",
+      "theme-sunshine",
+      "theme-midnight",
+      "theme-light"
+    );
+    document.body.classList.add(`theme-${theme}`);
+    document.body.dataset.theme = theme;
+    localStorage.setItem("sh_theme", theme);
+  }, [theme]);
+
+
+  function notify(message) {
+    setToast(message);
+    setTimeout(() => setToast(""), 2200);
+  }
+
+  function showTools(nextView = "tools-all") {
+    setView(nextView);
+    setToolsResetKey((current) => current + 1);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  async function search(nextQ = q, nextSoftware = filter) {
+    setItems(
+      await api(
+  "/shortcuts?" +
+    new URLSearchParams({
+            q: nextQ,
+            software: nextSoftware,
+          })
+      )
+    );
+  }
+useEffect(() => {
+  const handleOutsideThemeClick = (event) => {
+    if (
+      themePickerRef.current &&
+      !themePickerRef.current.contains(event.target)
+    ) {
+      setShowThemes(false);
+    }
+  };
+
+  document.addEventListener("mousedown", handleOutsideThemeClick);
+
+  return () => {
+    document.removeEventListener("mousedown", handleOutsideThemeClick);
+  };
+}, []);
+  function openSoftware(software) {
+    const selected = String(software || "").trim();
+    setFilter(selected);
+    setQ("");
+
+    const normalized = selected.toLowerCase();
+
+    const data = allItems.filter((shortcut) => {
+      const name = String(shortcut.software || "").trim().toLowerCase();
+      return name === normalized;
+    });
+
+    setItems(data);
+    setSelectedSoftware(selected);
+    setView("software");
+  }
+
+  function learn(id) {
+    if (prog.includes(id)) return notify("Already mastered");
+
+    const next = [...prog, id];
+    setProg(next);
+    localStorage.setItem("sh_progress", JSON.stringify(next));
+    notify("Shortcut mastered");
+  }
+
+  function toggleFavorite(id) {
+    const saved = !favorites.includes(id);
+    const next = saved
+      ? [...favorites, id]
+      : favorites.filter((item) => item !== id);
+    setFavorites(next);
+    localStorage.setItem("sh_favorites", JSON.stringify(next));
+    notify(saved ? "Saved to favorites" : "Removed from favorites");
+  }
+
+  return (
+    <>
+    <header className="site-header">
+      <button
+        className="brand"
+        type="button"
+        onClick={() => showTools("tools-all")}
+        aria-label="Go to the HubConverter home page"
+      >
+        <HubLogo className="brand-mark" decorative />
+        <span className="brand-copy"><span>Hub</span>Converter</span>
+      </button>
+
+      <nav className="main-nav" aria-label="Tool categories">
+        <button
+          className={view === "tools-pdf" ? "sel" : ""}
+          type="button"
+          onClick={() => showTools("tools-pdf")}
+        >
+          ▣ <span>PDF Converter Tools</span>
+        </button>
+
+        <button
+          className={view === "tools-jpg" ? "sel" : ""}
+          type="button"
+          onClick={() => showTools("tools-jpg")}
+        >
+          🖼️ <span>JPG Tools</span>
+        </button>
+      </nav>
+
+      <div className="actions">
+        <label className="headerSearch">
+          <span aria-hidden="true">⌕</span>
+          <input
+            value={q}
+            onChange={(event) => setQ(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") showTools("tools-all");
+            }}
+            placeholder="Search tools..."
+            aria-label="Search converter tools"
+          />
+        </label>
+
+        <div className="themePicker" ref={themePickerRef}>
+          <button
+            className="themeToggle"
+            type="button"
+            onClick={() => setShowThemes((current) => !current)}
+            aria-label="Choose a color theme"
+            aria-expanded={showThemes}
+            title="Choose a color theme"
+          >
+            ☀
+          </button>
+
+          {showThemes && (
+            <div className="themeMenu" role="menu" aria-label="Color themes">
+              <b>Choose a theme</b>
+
+              {themes.map((item) => (
+                <button
+                  key={item.id}
+                  className={theme === item.id ? "themeChoice active" : "themeChoice"}
+                  type="button"
+                  onClick={() => {
+                    setTheme(item.id);
+                    setShowThemes(false);
+                  }}
+                  role="menuitem"
+                >
+                  <span>{item.icon}</span> {item.label}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </header>
+
+      
+
+   {view === "tools-all" && <Tools category="all" query={q} resetKey={toolsResetKey} />}
+
+{view === "tools-pdf" && <Tools category="pdf" query={q} resetKey={toolsResetKey} />}
+
+{view === "tools-jpg" && <Tools category="jpg" query={q} resetKey={toolsResetKey} />}
+
+      {view === "software" && (
+        <SoftwarePage
+          software={selectedSoftware}
+          items={items}
+          learn={() => setView("learn")}
+          back={() => showTools("tools-all")}
+          favorites={favorites}
+          toggleFavorite={toggleFavorite}
+        />
+      )}
+
+      {view === "learn" && (
+      <Learn items={items} />
+      )}
+
+      {view === "quiz" && (
+        <Quiz items={items} />
+      )}
+
+      {toast && (
+        <div className="toast">
+          {toast}
+        </div>
+      )}
+
+      <footer>
+       HubConverter · Convert files easily. Work smarter.
+      </footer>
+    </>
+  );
+}
+
+/* =========================
+   SOFTWARE SHORTCUT PAGE
+========================= */
+
+function SoftwarePage({ software, items, learn, back, favorites, toggleFavorite }) {
+ return (
+   <section className="wrap">
+      <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
+        <button
+          onClick={back}
+          style={{
+            border: "none",
+            background: "transparent",
+            color: "inherit",
+            cursor: "pointer",
+            fontSize: "16px",
+            fontWeight: "700",
+            padding: "10px 0",
+            marginBottom: "18px",
+          }}
+        >
+          ← Back to Apps
+        </button>
+
+        <div className="sectionHead">
+          <div>
+           <small>HUBCONVERTER</small>
+            <h2>{software} Shortcuts</h2>
+          </div>
+          <span>{items.length} shortcuts</span>
+        </div>
+
+        <div style={{ display: "flex", gap: "12px", margin: "20px 0 28px", flexWrap: "wrap" }}>
+          <button className="primary" onClick={learn}>Learn {software} →</button>
+        </div>
+
+        {items.length === 0 ? (
+          <div className="shortcut" style={{ padding: "28px" }}>
+            <h3>No shortcuts found for {software}</h3>
+            <p>Please add shortcuts for this software in your database.</p>
+          </div>
+        ) : (
+          <div className="cards">
+            {items.map((s) => (
+              <article className="shortcut" key={s.id}>
+                <div className="shortcutTop">
+                  <span className="appIcon">{s.icon}</span>
+                  <div>
+                    <b>{s.software}</b>
+                    <small>{s.category} · {s.level}</small>
+                  </div>
+                  <button
+                    className={favorites.includes(s.id) ? "heart on" : "heart"}
+                    onClick={() => toggleFavorite(s.id)}
+                    aria-label={favorites.includes(s.id) ? "Remove from favorites" : "Save to favorites"}
+                    title={favorites.includes(s.id) ? "Remove from favorites" : "Save to favorites"}
+                  >
+                    {favorites.includes(s.id) ? "♥" : "♡"}
+                  </button>
+                </div>
+                <div className="keys">
+                  {String(s.keys || "").split("+").map((k, i) => (
+                    <kbd key={i}>{k}</kbd>
+                  ))}
+                </div>
+                <h3>{s.action}</h3>
+                <p>{s.example}</p>
+              </article>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+/* =========================
+   HOME
+========================= */
+
+function Home({
+  setView,
+  q,
+  setQ,
+  search,
+  soft,
+  openSoftware,
+  setFilter,
+}) {
+  const appList = [
+    ...fallback.map(([software, icon]) =>
+      soft.find(
+        (app) => String(app.software).toLowerCase() === software.toLowerCase()
+      ) || { software, icon, count: 0 }
+    ),
+    ...soft.filter(
+      (app) =>
+        !fallback.some(
+          ([software]) => software.toLowerCase() === String(app.software).toLowerCase()
+        )
+    ),
+  ];
+
+  return (
+    <>
+      <section className="hero">
+       <div className="eyebrow">
+  THE COMPLETE FILE CONVERTER PLATFORM
+</div>
+
+<h1>
+  Convert your files.
+  <br />
+  <em>Easy and fast.</em>
+</h1>
+
+<p>
+  Convert PDF, JPG, Word, Excel and other files
+  quickly and easily with HubConverter.
+</p>
+
+        <div className="heroSearch">
+          <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                setFilter("");
+                setFilter("");
+                 search(q, "");
+              }
+            }}
+            placeholder='Try “Ctrl+C”, “Excel”, “Save”...'
+          />
+
+          <button
+            className="primary"
+            onClick={() => {
+              setFilter("");
+              setView("learn");
+              search(q, "");
+            }}
+          >
+            Search
+          </button>
+        </div>
+
+        <div className="quick">
+          {["save", "copy", "print", "undo", "new tab"].map(
+            (item) => (
+              <button
+                key={item}
+                onClick={() => {
+                  setQ(item);
+                  setView("learn");
+                  search(item, "");
+                }}
+              >
+                {item}
+              </button>
+            )
+          )}
+        </div>
+      </section>
+
+      <section className="wrap">
+        <div className="sectionHead">
+          <div>
+            <small>EXPLORE</small>
+            <h2>Choose an app</h2>
+          </div>
+
+          <span>
+            {soft.reduce(
+              (total, item) => total + item.count,
+              0
+            )}
+            + shortcuts
+          </span>
+        </div>
+
+        <div className="apps">
+          {appList.map(
+            (app) => (
+              <button
+                className="app"
+                key={app.software || app[0]}
+                onClick={() =>
+                 openSoftware(app.software || app.name || app[0])
+                }
+              >
+                <b>{app.icon || app[1]}</b>
+
+                <strong>
+                  {app.software || app[0]}
+                </strong>
+
+                <small>
+                  {app.count || "Ready"} shortcuts
+                </small>
+              </button>
+            )
+          )}
+        </div>
+
+        <div className="featureGrid">
+          <article>
+            ⚡
+            <b>Learn fast</b>
+            <p>
+              Focused Learn Mode helps you build
+              muscle memory.
+            </p>
+          </article>
+
+          <article>
+            🏆
+            <b>Earn XP</b>
+            <p>
+              Master shortcuts, build streaks and
+              unlock badges.
+            </p>
+          </article>
+
+          <article>
+            ☁️
+            <b>Sync your progress</b>
+            <p>
+              Your learning data is stored in your
+              account.
+            </p>
+          </article>
+        </div>
+      </section>
+    </>
+  );
+}
+
+/* =========================
+   TOOLS
+========================= */
+
+function Tools({ category = "all", query = "", resetKey = 0 }) {
+  const [selectedTool, setSelectedTool] = useState(null);
+
+  useEffect(() => {
+    setSelectedTool(null);
+  }, [category, resetKey]);
+
+  // =========================
+  // TOOL PAGES
+  // =========================
+
+  if (selectedTool === "jpg-to-pdf") {
+    return (
+      <div>
+        <div
+          style={{
+            maxWidth: "1200px",
+            margin: "0 auto",
+            padding: "20px 24px 0",
+          }}
+        >
+          <button
+            onClick={() => setSelectedTool(null)}
+            style={{
+              border: "none",
+              background: "transparent",
+              color: "inherit",
+              fontSize: "15px",
+              fontWeight: "600",
+              cursor: "pointer",
+              padding: "10px 0",
+            }}
+          >
+            ← Back to Tools
+          </button>
+        </div>
+
+        <JpgToPdf />
+      </div>
+    );
+  }
+  if (selectedTool === "pdf-to-excel") {
+  return (
+    <div>
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "20px 24px 0",
+        }}
+      >
+        <button
+          onClick={() => setSelectedTool(null)}
+          style={{
+            border: "none",
+            background: "transparent",
+            color: "inherit",
+            fontSize: "15px",
+            fontWeight: "600",
+            cursor: "pointer",
+            padding: "10px 0",
+          }}
+        >
+          ← Back to Tools
+        </button>
+      </div>
+
+      <PdfToExcel />
+    </div>
+  );
+}
+
+  if (selectedTool === "pdf-to-jpg") {
+    return (
+      <div>
+        <div
+          style={{
+            maxWidth: "1200px",
+            margin: "0 auto",
+            padding: "20px 24px 0",
+          }}
+        >
+          <button
+            onClick={() => setSelectedTool(null)}
+            style={{
+              border: "none",
+              background: "transparent",
+              color: "inherit",
+              fontSize: "15px",
+              fontWeight: "600",
+              cursor: "pointer",
+              padding: "10px 0",
+            }}
+          >
+            ← Back to Tools
+          </button>
+        </div>
+
+        <PDFToJpg />
+      </div>
+    );
+  }
+
+  if (selectedTool === "excel-to-pdf") {
+    return (
+      <div>
+        <div
+          style={{
+            maxWidth: "1200px",
+            margin: "0 auto",
+            padding: "20px 24px 0",
+          }}
+        >
+          <button
+            onClick={() => setSelectedTool(null)}
+            style={{
+              border: "none",
+              background: "transparent",
+              color: "inherit",
+              fontSize: "15px",
+              fontWeight: "600",
+              cursor: "pointer",
+              padding: "10px 0",
+            }}
+          >
+            ← Back to Tools
+          </button>
+        </div>
+
+        <ExcelToPdf />
+      </div>
+    );
+  }
+
+  if (selectedTool === "word-to-pdf") {
+    return (
+      <div>
+        <div
+          style={{
+            maxWidth: "1200px",
+            margin: "0 auto",
+            padding: "20px 24px 0",
+          }}
+        >
+          <button
+            onClick={() => setSelectedTool(null)}
+            style={{
+              border: "none",
+              background: "transparent",
+              color: "inherit",
+              fontSize: "15px",
+              fontWeight: "600",
+              cursor: "pointer",
+              padding: "10px 0",
+            }}
+          >
+            ← Back to Tools
+          </button>
+        </div>
+
+        <WordToPdf />
+      </div>
+    );
+  }
+if (selectedTool === "merge-pdf") {
+  return (
+    <div>
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "20px 24px 0",
+        }}
+      >
+        <button
+          onClick={() => setSelectedTool(null)}
+          style={{
+            border: "none",
+            background: "transparent",
+            color: "inherit",
+            fontSize: "15px",
+            fontWeight: "600",
+            cursor: "pointer",
+            padding: "10px 0",
+          }}
+        >
+          ← Back to Tools
+        </button>
+      </div>
+
+      <MergePdf />
+    </div>
+  );
+}
+  if (selectedTool === "extract-pdf") {
+  return (
+    <div>
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "20px 24px 0",
+        }}
+      >
+        <button
+          onClick={() => setSelectedTool(null)}
+          style={{
+            border: "none",
+            background: "transparent",
+            color: "inherit",
+            fontSize: "15px",
+            fontWeight: "600",
+            cursor: "pointer",
+            padding: "10px 0",
+          }}
+        >
+          ← Back to Tools
+        </button>
+      </div>
+
+      <ExtractPdf/>
+    </div>
+  );
+}
+  if (selectedTool === "compress-pdf") {
+  return (
+    <div>
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "20px 24px 0",
+        }}
+      >
+        <button
+          onClick={() => setSelectedTool(null)}
+          style={{
+            border: "none",
+            background: "transparent",
+            color: "inherit",
+            fontSize: "15px",
+            fontWeight: "600",
+            cursor: "pointer",
+            padding: "10px 0",
+          }}
+        >
+          ← Back to Tools
+        </button>
+      </div>
+
+      <CompressPdf />
+    </div>
+  );
+}
+  if (selectedTool === "pdf-to-word") {
+  return (
+    <div>
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "20px 24px 0",
+        }}
+      >
+        <button
+          onClick={() => setSelectedTool(null)}
+          style={{
+            border: "none",
+            background: "transparent",
+            color: "inherit",
+            fontSize: "15px",
+            fontWeight: "600",
+            cursor: "pointer",
+            padding: "10px 0",
+          }}
+        >
+          ← Back to Tools
+        </button>
+      </div>
+
+      <PdfToWord />
+    </div>
+  );
+}
+  if (selectedTool === "pdf-to-powerpoint") {
+  return (
+    <div>
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "20px 24px 0",
+        }}
+      >
+        <button
+          onClick={() => setSelectedTool(null)}
+          style={{
+            border: "none",
+            background: "transparent",
+            color: "inherit",
+            fontSize: "15px",
+            fontWeight: "600",
+            cursor: "pointer",
+            padding: "10px 0",
+          }}
+        >
+          ← Back to Tools
+        </button>
+      </div>
+
+      <PDFToPowerPoint />
+    </div>
+  );
+}
+  if (selectedTool === "rotate-pdf") {
+  return (
+    <div>
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "20px 24px 0",
+        }}
+      >
+        <button
+          onClick={() => setSelectedTool(null)}
+          style={{
+            border: "none",
+            background: "transparent",
+            color: "inherit",
+            fontSize: "15px",
+            fontWeight: "600",
+            cursor: "pointer",
+            padding: "10px 0",
+          }}
+        >
+          ← Back to Tools
+        </button>
+      </div>
+
+      <RotatePdf />
+    </div>
+  );
+}
+  if (selectedTool === "watermark-pdf") {
+  return (
+    <div>
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "20px 24px 0",
+        }}
+      >
+        <button
+          onClick={() => setSelectedTool(null)}
+          style={{
+            border: "none",
+            background: "transparent",
+            color: "inherit",
+            fontSize: "15px",
+            fontWeight: "600",
+            cursor: "pointer",
+            padding: "10px 0",
+          }}
+        >
+          ← Back to Tools
+        </button>
+      </div>
+
+      <WatermarkPdf />
+    </div>
+  );
+}
+  if (selectedTool === "protect-pdf") {
+    return (
+      <div>
+        <div
+          style={{
+            maxWidth: "1200px",
+            margin: "0 auto",
+            padding: "20px 24px 0",
+          }}
+        >
+          <button
+            onClick={() => setSelectedTool(null)}
+            style={{
+              border: "none",
+              background: "transparent",
+              color: "inherit",
+              fontSize: "15px",
+              fontWeight: "600",
+              cursor: "pointer",
+              padding: "10px 0",
+            }}
+          >
+            ← Back to Tools
+          </button>
+        </div>
+
+        <ProtectPdf />
+      </div>
+    );
+  }
+ if (selectedTool === "protect-pdf") {
+  return (
+    <div>
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "20px 24px 0",
+        }}
+      >
+        <button
+          onClick={() => setSelectedTool(null)}
+          style={{
+            border: "none",
+            background: "transparent",
+            color: "inherit",
+            fontSize: "15px",
+            fontWeight: "600",
+            cursor: "pointer",
+            padding: "10px 0",
+          }}
+        >
+          ← Back to Tools
+        </button>
+      </div>
+
+      <ProtectPdf />
+    </div>
+  );
+}
+
+if (selectedTool === "unlock-pdf") {
+  return (
+    <div>
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "20px 24px 0",
+        }}
+      >
+        <button
+          onClick={() => setSelectedTool(null)}
+          style={{
+            border: "none",
+            background: "transparent",
+            color: "inherit",
+            fontSize: "15px",
+            fontWeight: "600",
+            cursor: "pointer",
+            padding: "10px 0",
+          }}
+        >
+          ← Back to Tools
+        </button>
+      </div>
+
+      <UnlockPdf />
+    </div>
+  );
+}
+  if (selectedTool === "sign-pdf") {
+  return (
+    <div>
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "20px 24px 0",
+        }}
+      >
+        <button
+          onClick={() => setSelectedTool(null)}
+          style={{
+            border: "none",
+            background: "transparent",
+            color: "inherit",
+            fontSize: "15px",
+            fontWeight: "600",
+            cursor: "pointer",
+            padding: "10px 0",
+          }}
+        >
+          ← Back to Tools
+        </button>
+      </div>
+
+      <SignPdf />
+    </div>
+  );
+}
+if (selectedTool === "delete-pdf-pages") {
+  return (
+    <div>
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "20px 24px 0",
+        }}
+      >
+        <button
+          onClick={() => setSelectedTool(null)}
+          style={{
+            border: "none",
+            background: "transparent",
+            color: "inherit",
+            fontSize: "15px",
+            fontWeight: "600",
+            cursor: "pointer",
+            padding: "10px 0",
+          }}
+        >
+          ← Back to Tools
+        </button>
+      </div>
+
+      <DeletePdfPages />
+    </div>
+  );
+}
+
+if (selectedTool === "edit-pdf") {
+  return (
+    <div>
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "20px 24px 0",
+        }}
+      >
+        <button
+          onClick={() => setSelectedTool(null)}
+          style={{
+            border: "none",
+            background: "transparent",
+            color: "inherit",
+            fontSize: "15px",
+            fontWeight: "600",
+            cursor: "pointer",
+            padding: "10px 0",
+          }}
+        >
+          ← Back to Tools
+        </button>
+      </div>
+
+      <EditPdf />
+    </div>
+  );
+}
+if (selectedTool === "translate-pdf") {
+  return (
+    <div>
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "20px 24px 0",
+        }}
+      >
+        <button
+          onClick={() => setSelectedTool(null)}
+          style={{
+            border: "none",
+            background: "transparent",
+            color: "inherit",
+            fontSize: "15px",
+            fontWeight: "600",
+            cursor: "pointer",
+            padding: "10px 0",
+          }}
+        >
+          ← Back to Tools
+        </button>
+      </div>
+
+      <TranslatePdf />
+    </div>
+  );
+}
+if (selectedTool === "image-compressor") {
+  return (
+    <div>
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "20px 24px 0",
+        }}
+      >
+        <button
+          onClick={() => setSelectedTool(null)}
+          style={{
+            border: "none",
+            background: "transparent",
+            color: "inherit",
+            fontSize: "15px",
+            fontWeight: "600",
+            cursor: "pointer",
+            padding: "10px 0",
+          }}
+        >
+          ← Back to Tools
+        </button>
+      </div>
+
+      <ImageCompressor />
+    </div>
+  );
+}
+  if (selectedTool === "image-background") {
+  return (
+    <div>
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "20px 24px 0",
+        }}
+      >
+        <button
+          onClick={() => setSelectedTool(null)}
+          style={{
+            border: "none",
+            background: "transparent",
+            color: "inherit",
+            fontSize: "15px",
+            fontWeight: "600",
+            cursor: "pointer",
+            padding: "10px 0",
+          }}
+        >
+          ← Back to Tools
+        </button>
+      </div>
+
+      <ImageBackground />
+    </div>
+  );
+}
+ // =========================
+// TOOLS HOME
+// =========================
+
+const pdfTools = [
+  {
+    icon: "🖼️",
+    title: "JPG to PDF",
+    description: "Convert JPG images into a PDF document.",
+    id: "jpg-to-pdf",
+  },
+  {
+    icon: "📊",
+    title: "PDF to Excel",
+    description: "Convert PDF tables into an Excel spreadsheet.",
+    id: "pdf-to-excel",
+  },
+  {
+    icon: "📊",
+    title: "Excel to PDF",
+    description: "Convert Excel spreadsheets into PDF documents.",
+    id: "excel-to-pdf",
+  },
+  {
+    icon: "📝",
+    title: "Word to PDF",
+    description: "Convert Word documents into PDF files.",
+    id: "word-to-pdf",
+  },
+  {
+    icon: "🧾➡️🖼️",
+    title: "PDF to JPG",
+    description: "Convert PDF pages into JPG images.",
+    id: "pdf-to-jpg",
+  },
+  {
+    icon: "📑",
+    title: "Merge PDF",
+    description: "Combine multiple PDF files into one.",
+    id: "merge-pdf",
+  },
+  {
+    icon: "✂️",
+    title: "Extract PDF",
+    description: "Extract selected pages from a PDF.",
+    id: "extract-pdf",
+  },
+  {
+    icon: "🗜️",
+    title: "Compress PDF",
+    description: "Reduce PDF file size.",
+    id: "compress-pdf",
+  },
+  {
+    icon: "📄",
+    title: "PDF to Word",
+    description: "Convert PDF files to editable Word documents.",
+    id: "pdf-to-word",
+  },
+  {
+    icon: "📊",
+    title: "PDF to PowerPoint",
+    description: "Convert PDF files to PowerPoint.",
+    id: "pdf-to-powerpoint",
+  },
+  {
+    icon: "🔄",
+    title: "Rotate PDF",
+    description: "Rotate PDF pages.",
+    id: "rotate-pdf",
+  },
+  {
+    icon: "💧",
+    title: "Watermark PDF",
+    description: "Add a watermark to your PDF.",
+    id: "watermark-pdf",
+  },
+  {
+    icon: "🔐",
+    title: "Protect PDF",
+    description: "Password protect your PDF.",
+    id: "protect-pdf",
+  },
+  {
+    icon: "🔓",
+    title: "Unlock PDF",
+    description: "Remove password protection from your PDF.",
+    id: "unlock-pdf",
+  },
+  {
+    icon: "✍️",
+    title: "Sign PDF",
+    description: "Add your signature to PDF documents.",
+    id: "sign-pdf",
+  },
+  {
+    icon: "🗑️",
+    title: "Delete PDF Pages",
+    description: "Remove unwanted pages from a PDF instantly.",
+    id: "delete-pdf-pages",
+  },
+  {
+    icon: "✏️",
+    title: "Edit PDF",
+    description: "Edit and customize your PDF easily.",
+    id: "edit-pdf",
+  },
+  {
+    icon: "🌐",
+    title: "Translate PDF",
+    description: "Translate PDF into another language.",
+    id: "translate-pdf",
+  },
+];
+
+const jpgTools = [
+  
+  {
+  icon: "🖼️➡️🖼️",
+  title: "Image Compressor",
+  description: "Compress image files for smaller sizes and faster loading.",
+ id: "image-compressor",
+},
+ 
+  {
+    icon: "🖼️",
+    title: "Image Background",
+    description: "Remove and replace image backgrounds.",
+    id: "image-background",
+  },
+
+  {
+    icon: "📐",
+    title: "Image Resizer",
+    description: "Resize images to any dimensions.",
+  },
+  {
+    icon: "✂️",
+    title: "Image Cropper",
+    description: "Crop images quickly.",
+  },
+  {
+    icon: "🔃",
+    title: "Image Rotator",
+    description: "Rotate your images.",
+  },
+  {
+    icon: "📄",
+    title: "Image to PDF",
+    description: "Convert images into PDF documents.",
+  },
+];
+
+const textTools = [
+  {
+    icon: "🔢",
+    title: "Word Counter",
+    description: "Count words and characters in text.",
+  },
+  {
+    icon: "🔠",
+    title: "Case Converter",
+    description: "Convert text to uppercase or lowercase.",
+  },
+  {
+    icon: "🧹",
+    title: "Text Cleaner",
+    description: "Clean and format your text.",
+  },
+  {
+    icon: "📊",
+    title: "Text Sorter",
+    description: "Sort lines and text instantly.",
+  },
+];
+
+const allTools = [
+  ...pdfTools,
+  ...jpgTools.map((tool) => ({
+    ...tool,
+    comingSoon: true,
+  })),
+  ...textTools.map((tool) => ({
+    ...tool,
+    comingSoon: true,
+  })),
+];
+
+const toolsForCategory =
+  category === "pdf"
+    ? pdfTools
+    : category === "jpg"
+      ? jpgTools
+      : allTools;
+
+const toolsToShow = toolsForCategory.filter((tool) => {
+  const term = query.trim().toLowerCase();
+  return !term || [tool.title, tool.description].some((value) =>
+    value.toLowerCase().includes(term)
+  );
+});
+
+ return (
+   <main className={category === "all" ? "tools-page" : "wrap"}>
+
+    {/* =========================
+        ALL TOOLS HOME
+    ========================= */}
+{category === "all" && (
+  <div className="hub-home">
+
+    {/* =========================================
+        HERO / BRAND AREA
+    ========================================= */}
+    <section className="hub-hero">
+      <div className="hub-logo-wrap">
+        <HubLogo className="hub-logo" decorative />
+      </div>
+
+      <div className="hub-title-area">
+        <p className="hub-kicker">HubConverter file tools</p>
+        <h1>Hub Converter</h1>
+        <h2>Convert your files easily here</h2>
+
+        <div className="hub-checks" aria-label="HubConverter benefits">
+          <span>Fast</span>
+          <span>Secure</span>
+          <span>Easy to use</span>
+          <span>100% Free</span>
+        </div>
+      </div>
+    </section>
+
+
+    {/* =========================================
+        FEATURED TOOLS
+    ========================================= */}
+   <section className="featured-tools">
+
+  {[
+    
+   {
+    icon: "🖼️",
+    title: "Image Background",
+    description: "Remove and replace image backgrounds.",
+    id: "image-background",
+  },
+    {
+      icon: "📄",
+      title: "JPG to PDF",
+      description: "Convert image files into a cohesive PDF document.",
+      id: "jpg-to-pdf",
+    },
+
+    {
+      icon: "🖼️➡️🖼️",
+      title: "Image Compressor",
+      description: "Compress image files for smaller sizes and faster loading.",
+      id: "image-compressor",
+    },
+  ].map((tool) => (
+
+    <article
+      key={tool.title}
+      className="featured-tool-card"
+      onClick={
+        tool.id
+          ? () => setSelectedTool(tool.id)
+          : undefined
+      }
+    >
+
+      <div className="featured-tool-icon">
+        {tool.icon}
+      </div>
+
+      <h3>{tool.title}</h3>
+
+      <p>{tool.description}</p>
+
+      <button
+        className="featured-open-button"
+        disabled={!tool.id}
+        onClick={(event) => {
+          event.stopPropagation();
+
+          if (tool.id) {
+            setSelectedTool(tool.id);
+          }
+        }}
+      >
+        Open Tool →
+      </button>
+
+    </article>
+
+  ))}
+
+</section>
+
+
+    {/* =========================================
+        ALL TOOLS
+    ========================================= */}
+     <section className="all-tools-home">
+       <div className="home-section-title">
+         <span />
+         <h2>All Converter Tools</h2>
+         <span />
+       </div>
+ 
+       <div className="all-tools-grid">
+
+        {toolsToShow.map((tool) => (
+          <ToolCard
+            key={tool.title}
+            icon={tool.icon}
+            title={tool.title}
+            description={tool.description}
+            comingSoon={tool.comingSoon}
+            onClick={
+              tool.id
+                ? () => setSelectedTool(tool.id)
+                : undefined
+            }
+          />
+        ))}
+
+      </div>
+
+    </section>
+
+
+    {/* =========================================
+        BOTTOM MESSAGE
+    ========================================= */}
+     <section className="hub-bottom-banner" aria-label="Service benefits">
+       <div className="hub-benefit">
+         <span aria-hidden="true">♢</span>
+         <div><strong>100% Secure</strong><small>Your files are safe with us</small></div>
+       </div>
+       <div className="hub-benefit">
+         <span aria-hidden="true">👍</span>
+         <div><strong>Easy to Use</strong><small>Simple and user friendly</small></div>
+       </div>
+       <div className="hub-benefit">
+         <span aria-hidden="true">ϟ</span>
+         <div><strong>Fast Conversion</strong><small>Get results in seconds</small></div>
+       </div>
+       <div className="hub-benefit">
+         <span aria-hidden="true">🎁</span>
+         <div><strong>100% Free</strong><small>No signup required</small></div>
+       </div>
+     </section>
+
+  </div>
+)}
+
+    {/* =========================
+        PDF CONVERTER TOOLS
+    ========================= */}
+
+    {category === "pdf" && (
+      <>
+        <div style={{ marginBottom: "18px" }}>
+          <small>PDF TOOLS</small>
+
+          <h2 style={{ marginTop: "5px" }}>
+            PDF Tools
+          </h2>
+        </div>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns:
+              "repeat(auto-fit, minmax(210px, 1fr))",
+            gap: "18px",
+          }}
+        >
+          {pdfTools.map((tool) => (
+            <ToolCard
+              key={tool.title}
+              icon={tool.icon}
+              title={tool.title}
+              description={tool.description}
+              onClick={() => setSelectedTool(tool.id)}
+            />
+          ))}
+        </div>
+      </>
+    )}
+
+    {/* =========================
+        JPG / IMAGE TOOLS
+    ========================= */}
+
+    {category === "jpg" && (
+      <>
+        <div style={{ marginBottom: "18px" }}>
+          <small>IMAGE TOOLS</small>
+
+          <h2 style={{ marginTop: "5px" }}>
+            Image Tools
+          </h2>
+        </div>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns:
+              "repeat(auto-fit, minmax(210px, 1fr))",
+            gap: "18px",
+          }}
+        >
+          {jpgTools.map((tool) => (
+  <ToolCard
+    key={tool.title}
+    icon={tool.icon}
+    title={tool.title}
+    description={tool.description}
+    comingSoon={!tool.id}
+    onClick={
+      tool.id
+        ? () => setSelectedTool(tool.id)
+        : undefined
+    }
+  />
+))}
+        </div>
+      </>
+    )}
+
+   </main>
+ );
+}
+
+/* =========================
+   TOOL CARD
+========================= */
+
+function ToolCard({
+  icon,
+  title,
+  description,
+  onClick,
+  comingSoon,
+}) {
+  return (
+    <article
+      className={comingSoon ? "tool-card is-disabled" : "tool-card"}
+      onClick={comingSoon ? undefined : onClick}
+    >
+
+      <div className="tool-card-icon">
+        {icon}
+      </div>
+
+
+      <h3>
+        {title}
+      </h3>
+
+      <p>
+        {description}
+      </p>
+
+      <button
+        type="button"
+        disabled={comingSoon}
+        className="tool-card-button"
+        onClick={(event) => {
+          event.stopPropagation();
+
+          if (!comingSoon && onClick) {
+            onClick();
+          }
+        }}
+      >
+        {comingSoon
+          ? "Coming soon"
+          : "Open Tool →"}
+      </button>
+
+    </article>
+  );
+}
+/* =========================
+   LEARN
+========================= */
+
+function Learn({ items }) {
+  const [exam, setExam] = useState([]);
+  const [answers, setAnswers] = useState({});
+  const [submitted, setSubmitted] = useState(false);
+
+  function shuffle(list) {
+    return [...list].sort(() => Math.random() - 0.5);
+  }
+
+  function buildExam(source) {
+    return shuffle(source)
+      .slice(0, Math.min(25, source.length))
+      .map((question) => ({
+        ...question,
+        options: shuffle([
+          question.action,
+          ...shuffle(
+            source
+              .filter((item) => item.id !== question.id && item.action !== question.action)
+              .map((item) => item.action)
+          ).slice(0, 3),
+        ]),
+      }));
+  }
+
+  useEffect(() => {
+    setExam(buildExam(items || []));
+    setAnswers({});
+    setSubmitted(false);
+  }, [items]);
+
+  if (!exam.length) {
+    return (
+      <section className="wrap"><div className="learnBox">
+        <small>LEARN MODE</small><h2>No shortcuts found</h2>
+        <p>There are no shortcuts available for this selection yet.</p>
+      </div></section>
+    );
+  }
+
+  const correct = exam.filter((question) => answers[question.id] === question.action);
+  const wrong = exam.filter((question) => answers[question.id] !== question.action);
+
+  if (submitted) {
+    return (
+      <section className="wrap"><div className="learnBox examResults">
+        <div className="badge">{wrong.length ? "📘" : "🏆"}</div>
+        <small>LEARN RESULTS</small>
+        <h2>Practice complete</h2>
+        <p className="score">{correct.length}/{exam.length} correct</p>
+        <p>{wrong.length} wrong answer{wrong.length === 1 ? "" : "s"}</p>
+        {wrong.length > 0 && <div className="quizReview">
+          <h3>Review wrong answers</h3>
+          {wrong.map((question, index) => <article key={`${question.id}-${index}`}>
+            <kbd>{question.keys}</kbd><b>{question.action}</b>
+            <p><span>Your answer:</span> {answers[question.id] || "Not answered"}</p>
+            <p><span>Correct answer:</span> {question.action}</p>
+          </article>)}
+        </div>}
+        <button className="primary" onClick={() => {
+          setExam(buildExam(items)); setAnswers({}); setSubmitted(false);
+        }}>Try another 25 questions</button>
+      </div></section>
+    );
+  }
+
+  return (
+    <section className="wrap"><form className="examBox" onSubmit={(event) => {
+      event.preventDefault(); setSubmitted(true); window.scrollTo({ top: 0, behavior: "smooth" });
+    }}>
+      <small>LEARN PRACTICE · {exam.length} QUESTIONS</small>
+      <h2>Shortcut knowledge test</h2>
+      <p>Answer all questions, then submit to see your result.</p>
+      {exam.map((question, index) => <fieldset key={question.id} className="examQuestion">
+        <legend>{index + 1}. What does <kbd>{question.keys}</kbd> do?</legend>
+        <small>{question.software}</small>
+        {question.options.map((option) => <label key={option}>
+          <input type="radio" name={`question-${question.id}`} value={option}
+            checked={answers[question.id] === option}
+            onChange={() => setAnswers((current) => ({ ...current, [question.id]: option }))} />
+          {option}
+        </label>)}
+      </fieldset>)}
+      <button className="primary" type="submit">Submit answers</button>
+    </form></section>
+  );
+}
+
+/* =========================
+   QUIZ
+========================= */
+
+function Quiz({ items }) {
+  const [n, setN] = useState(0);
+  const [quiz, setQuiz] = useState([]);
+  const [answers, setAnswers] = useState([]);
+  const [done, setDone] = useState(false);
+
+  function shuffle(list) {
+    return [...list].sort(() => Math.random() - 0.5);
+  }
+
+  function createQuiz(source) {
+    return shuffle(source)
+      .slice(0, Math.min(5, source.length))
+      .map((question) => {
+        const distractors = shuffle(
+          source
+            .filter((item) => item.id !== question.id && item.action !== question.action)
+            .map((item) => item.action)
+        ).slice(0, 3);
+
+        return {
+          ...question,
+          options: shuffle([question.action, ...distractors]),
+        };
+      });
+  }
+
+  function startQuiz() {
+    setQuiz(createQuiz(items));
+    setN(0);
+    setAnswers([]);
+    setDone(false);
+  }
+
+  useEffect(() => {
+    startQuiz();
+  }, [items]);
+
+  const s = quiz[n];
+  const score = answers.filter((answer) => answer.correct).length;
+  const wrongAnswers = answers.filter((answer) => !answer.correct);
+
+  if (!s && !done) {
+    return (
+      <section className="wrap">
+        <div className="learnBox">
+          <small>QUIZ</small>
+          <h2>No shortcuts available yet</h2>
+          <p>Add shortcuts first, then come back to test yourself.</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (done) {
+    return (
+      <section className="wrap">
+        <div className="learnBox">
+          <div className="badge">
+            {wrongAnswers.length === 0 ? "🏆" : "📘"}
+          </div>
+          <h2>Quiz complete</h2>
+          <p className="score">{score}/{quiz.length} correct</p>
+          <p>{wrongAnswers.length} wrong answer{wrongAnswers.length === 1 ? "" : "s"}</p>
+
+          {wrongAnswers.length > 0 && (
+            <div className="quizReview">
+              <h3>Review your wrong answers</h3>
+              {wrongAnswers.map((answer, index) => (
+                <article key={`${answer.question.id}-${index}`}>
+                  <kbd>{answer.question.keys}</kbd>
+                  <b>{answer.question.action}</b>
+                  <p><span>Your answer:</span> {answer.selected}</p>
+                  <p><span>Correct answer:</span> {answer.question.action}</p>
+                </article>
+              ))}
+            </div>
+          )}
+
+          <button className="primary" onClick={startQuiz}>Try a new mixed quiz</button>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="wrap">
+      <div className="learnBox">
+
+        <small>
+          QUIZ · QUESTION {n + 1}/{quiz.length}
+        </small>
+
+        <h2>
+          What does <kbd>{s?.keys}</kbd> do?
+        </h2>
+
+        <p>
+          {s?.software}
+        </p>
+
+        <div className="answers">
+          {s.options.map((option) => (
+            <button
+              key={option}
+              onClick={() => {
+                const answer = {
+                  question: s,
+                  selected: option,
+                  correct: option === s.action,
+                };
+                setAnswers((current) => [...current, answer]);
+
+                if (n === quiz.length - 1) {
+                  setDone(true);
+                } else {
+                  setN(n + 1);
+                }
+              }}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+
+      </div>
+    </section>
+  );
+}
+
+/* =========================
+   PROFILE
+========================= */
+
+function Profile({
+  user,
+  prog,
+  recent,
+  favorites,
+}) {
+  const level =
+    Math.floor((user?.xp || 0) / 100) + 1;
+
+  return (
+    <section className="wrap">
+      <div className="profile">
+
+        <small>PROFILE</small>
+
+        <h2>
+          {user?.name}
+        </h2>
+
+        <p>
+          {user?.email}
+        </p>
+
+        <div className="stats">
+
+          <div>
+            <b>{user?.xp || 0}</b>
+            <small>XP</small>
+          </div>
+
+          <div>
+            <b>Level {level}</b>
+            <small>Current level</small>
+          </div>
+
+          <div>
+            <b>{favorites.length}</b>
+            <small>Favorites</small>
+          </div>
+
+          <div>
+            <b>{prog.length}</b>
+            <small>Mastered</small>
+          </div>
+
+        </div>
+
+        <div className="progress">
+          <span
+            style={{
+              width: `${(user?.xp || 0) % 100}%`,
+            }}
+          />
+        </div>
+
+        <h3>
+          Achievements
+        </h3>
+
+        <div className="badges">
+          <span>🏁 First Step</span>
+          <span>🧠 Learner</span>
+          <span>🔥 Streak Starter</span>
+          <span>🏆 Master</span>
+        </div>
+
+        <h3>
+          Recently learned
+        </h3>
+
+        <p>
+          {recent.length
+            ? recent.map((x) => (
+                <span
+                  className="recent"
+                  key={x.id || x.keys}
+                >
+                  ⌨ {x.keys} · {x.action}
+                </span>
+              ))
+            : "Your recent shortcuts will appear here."}
+        </p>
+
+      </div>
+    </section>
+  );
+}
+
+/* Login UI intentionally removed from the public version.
+
+function Auth({
+  close,
+  setUser,
+}) {
+  const [mode, setMode] = useState("login");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [err, setErr] = useState("");
+
+  async function go() {
+    try {
+      const data = await api(
+        mode === "login"
+          ? "/auth/login"
+          : "/auth/register",
+        {
+          method: "POST",
+          body: JSON.stringify(
+            mode === "login"
+              ? {
+                  email,
+                  password,
+                }
+              : {
+                  name,
+                  email,
+                  password,
+                }
+          ),
+        }
+      );
+
+      localStorage.setItem(
+        "sh_token",
+        data.token
+      );
+
+      setUser(data.user);
+    } catch (e) {
+      setErr(e.message);
+    }
+  }
+
+  return (
+    <div className="modal">
+      <div className="modalBox">
+
+        <button
+          className="close"
+          onClick={close}
+        >
+          ×
+        </button>
+
+        <h2>
+          {mode === "login"
+            ? "Welcome back"
+            : "Create your account"}
+        </h2>
+
+        {mode === "register" && (
+          <input
+            placeholder="Your name"
+            value={name}
+            onChange={(e) =>
+              setName(e.target.value)
+            }
+          />
+        )}
+
+        <input
+          placeholder="Email"
+          value={email}
+          onChange={(e) =>
+            setEmail(e.target.value)
+          }
+        />
+
+        <input
+          type="password"
+          placeholder="Password (8+ chars)"
+          value={password}
+          onChange={(e) =>
+            setPassword(e.target.value)
+          }
+        />
+
+        {err && (
+          <div className="error">
+            {err}
+          </div>
+        )}
+
+        <button
+          className="primary full"
+          onClick={go}
+        >
+          {mode === "login"
+            ? "Sign in"
+            : "Create account"}
+        </button>
+
+        <button
+          className="link"
+          onClick={() => {
+            setMode(
+              mode === "login"
+                ? "register"
+                : "login"
+            );
+            setErr("");
+          }}
+        >
+          {mode === "login"
+            ? "Create an account"
+            : "Sign in instead"}
+        </button>
+
+      </div>
+    </div>
+  );
+}
+*/
+
+/* =========================
+   ADMIN
+========================= */
+
+function Admin({ notify }) {
+  const [stats, setStats] = useState(null);
+  const [users, setUsers] = useState([]);
+
+  const [form, setForm] = useState({
+    software: "Excel",
+    icon: "📊",
+    category: "Office",
+    keys: "",
+    action: "",
+    level: "Beginner",
+    type: "General",
+    example: "",
+  });
+
+  useEffect(() => {
+    api("/admin/stats").then(setStats);
+    api("/admin/users").then(setUsers);
+  }, []);
+
+  async function add() {
+    await api("/admin/shortcuts", {
+      method: "POST",
+      body: JSON.stringify(form),
+    });
+
+    setForm({
+      ...form,
+      keys: "",
+      action: "",
+      example: "",
+    });
+
+    notify("Shortcut added");
+  }
+useEffect(() => {
+  function handleOutsideClick(event) {
+    if (
+      themePickerRef.current &&
+      !themePickerRef.current.contains(event.target)
+    ) {
+      setShowThemes(false);
+    }
+  }
+
+  document.addEventListener("mousedown", handleOutsideClick);
+
+  return () => {
+    document.removeEventListener("mousedown", handleOutsideClick);
+  };
+}, []);
+  return (
+    <section className="wrap">
+      <div className="admin">
+
+        <small>
+          ADMIN CENTER
+        </small>
+
+        <h2>
+          Platform control
+        </h2>
+
+        <div className="adminStats">
+          {stats &&
+            Object.entries(stats).map(
+              ([key, value]) => (
+                <div key={key}>
+                  <b>{value}</b>
+                  <small>{key}</small>
+                </div>
+              )
+            )}
+        </div>
+
+        <h3>
+          Add shortcut
+        </h3>
+
+        <div className="formGrid">
+          {Object.keys(form).map(
+            (key) => (
+              <input
+                key={key}
+                placeholder={key}
+                value={form[key]}
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    [key]: e.target.value,
+                  })
+                }
+              />
+            )
+          )}
+        </div>
+
+        <button
+          className="primary"
+          onClick={add}
+        >
+          ＋ Add shortcut
+        </button>
+
+        <h3>
+          Users
+        </h3>
+
+        <div className="userList">
+          {users.map((u) => (
+            <div key={u.id || u.email}>
+              <b>{u.name}</b>
+              <span>{u.email}</span>
+              <span>
+                Level{" "}
+                {Math.floor(
+                  (u.xp || 0) / 100
+                ) + 1}
+              </span>
+            </div>
+          ))}
+        </div>
+
+      </div>
+    </section>
+  );
+}
+
+const root = createRoot(
+  document.getElementById("root")
+);
+
+root.render(<App />);
