@@ -8,7 +8,38 @@ const backgrounds = [
   ["Cafe", "1501339847302-ac426a4a7cbb"], ["Office", "1497366754035-f200968a6e72"], ["Library", "1507842217343-583bb7270b66"], ["Bedroom", "1616486338812-3dadae4b4ace"], ["Kitchen", "1556912167-f556f1f39fdf"], ["Studio", "1519608487953-e999c86e7455"], ["Abstract", "1557682250-33bd709cbe85"], ["Bokeh", "1519608487953-e999c86e7455"], ["Marble", "1528459105426-b9548367069b"], ["Paper", "1517841905240-472988babdf9"],
   ["Neon", "1519608487953-e999c86e7455"], ["Stars", "1462331940025-496dfbfc7564"], ["Clouds", "1499346030926-9a72daac6c63"], ["Rain", "1519692933481-e162a57d6721"], ["Autumn", "1500534623283-312aade485b7"], ["Spring", "1497250681960-ef046c08a56e"], ["Summer", "1507525428034-b723cf961d3e"], ["Winter", "1517299321609-52687d1bc55a"], ["Wood", "1505693416388-ac5ce068fe85"], ["Gradient", "1557682250-33bd709cbe85"],
 ];
-const colors = ["#ffffff", "#f3f4f6", "#dbe4ee", "#111827", "#172554", "#17324d", "#0b62d6", "#2196f3", "#14b8a6", "#12a150", "#84cc16", "#d9e021", "#f5a623", "#fb923c", "#ed5b5b", "#ef4444", "#e91e63", "#be185d", "#9b51e0", "#7c3aed", "#5b3cc4", "#8b5a2b", "#f3d5b5", "#ead2ac", "#b9a7ff", "#7dd3fc", "#a7f3d0", "#fde68a", "#fecdd3", "#cbd5e1"];
+const colors = [
+  "#ffffff", // White
+  "#000000", // Black
+  "#f5f5f5", // Light Gray
+  "#808080", // Gray
+  "#d3d3d3", // Light Gray
+  "#c0c0c0", // Silver
+  "#800000", // Maroon
+  "#ff0000", // Red
+  "#800080", // Purple
+  "#ff00ff", // Magenta
+  "#008000", // Green
+  "#00ff00", // Lime
+  "#808000", // Olive
+  "#ffff00", // Yellow
+  "#000080", // Navy
+  "#0000ff", // Blue
+  "#008080", // Teal
+  "#00ffff", // Cyan
+  "#ffa500", // Orange
+  "#ffc0cb", // Pink
+  "#a52a2a", // Brown
+  "#f5deb3", // Wheat
+  "#f0e68c", // Khaki
+  "#4b0082", // Indigo
+  "#ee82ee", // Violet
+  "#dc143c", // Crimson
+  "#40e0d0", // Turquoise
+  "#50c878", // Emerald
+  "#98fb98", // Pale Green
+  "#add8e6", // Light Blue
+];
 
 export default function ImageBackground() {
   const inputRef = useRef(null); const [file, setFile] = useState(null); const [sourceUrl, setSourceUrl] = useState(""); const [cutoutUrl, setCutoutUrl] = useState(""); const [selectedBackground, setSelectedBackground] = useState(""); const [selectedColor, setSelectedColor] = useState("#ffffff"); const [tab, setTab] = useState("background"); const [search, setSearch] = useState(""); const [processing, setProcessing] = useState(false); const [dragging, setDragging] = useState(false); const [message, setMessage] = useState("");
