@@ -3752,3 +3752,9 @@ footer {
 @media (min-width: 901px) {
   .hub-title-area { margin-left: 0; transform: translateX(150px); }
 }
+
+/* Six equally wide home cards across the full desktop row. */
+@media (min-width: 1100px) {
+  .all-tools-home { width: calc(100% - 4rem); max-width: none; }
+  .all-tools-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 18px; }
+}
