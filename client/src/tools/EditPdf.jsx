@@ -71,8 +71,10 @@ export default function EditPdf() {
     }
   };
 
-  const handleFileChange = async (event) => {
-    const selectedFile = event.target.files?.[0];
+  const handleFileChange = async (eventOrFile) => {
+    const selectedFile = eventOrFile instanceof File
+      ? eventOrFile
+      : eventOrFile.target.files?.[0];
 
     if (!selectedFile) {
       return;
@@ -578,7 +580,7 @@ export default function EditPdf() {
     link.href = downloadUrl;
 
     link.download =
-      "ShortcutHub-Edited-PDF.pdf";
+      "Edited-PDF.pdf";
 
     document.body.appendChild(link);
 
@@ -607,7 +609,7 @@ export default function EditPdf() {
   };
 
   return (
-    <div
+    <div className="tool-page"
       style={{
         width: "100%",
         maxWidth: "1200px",
@@ -633,7 +635,12 @@ export default function EditPdf() {
             marginBottom: "25px",
           }}
         >
-          <div
+          <div className="upload-box"
+            onDragOver={(event) => event.preventDefault()}
+            onDrop={(event) => {
+              event.preventDefault();
+              handleFileChange(event.dataTransfer.files?.[0]);
+            }}
             style={{
               width: "70px",
               height: "70px",
@@ -751,7 +758,7 @@ export default function EditPdf() {
 
         {file && pdfDocument && (
           <>
-            <div
+            <div className="selected-file"
               style={{
                 background:
                   "#f8fafc",
