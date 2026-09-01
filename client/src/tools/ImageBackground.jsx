@@ -66,7 +66,8 @@ export default function Background({ onImageSelect }) {
   };
 
   // Paste image from clipboard
- useEffect(() => {
+// When a new image is selected, display it
+useEffect(() => {
   if (!currentFile) {
     setOriginalUrl("");
     setRemovedUrl("");
@@ -83,19 +84,37 @@ export default function Background({ onImageSelect }) {
   setZoom(100);
   setError("");
 
-  // Automatically remove background after image is selected
-  removeBackground();
-
   return () => {
     URL.revokeObjectURL(url);
   };
 }, [currentFile]);
-    window.addEventListener("paste", handlePaste);
 
-    return () => {
-      window.removeEventListener("paste", handlePaste);
-    };
-  }, []);
+// Paste image from clipboard
+useEffect(() => {
+  const handlePaste = (event) => {
+    const items = event.clipboardData?.items;
+
+    if (!items) return;
+
+    for (const item of items) {
+      if (item.type.startsWith("image/")) {
+        const file = item.getAsFile();
+
+        if (file) {
+          addFiles([file]);
+        }
+
+        break;
+      }
+    }
+  };
+
+  window.addEventListener("paste", handlePaste);
+
+  return () => {
+    window.removeEventListener("paste", handlePaste);
+  };
+}, []);
 
   return (
     <div className="background-upload-page">
