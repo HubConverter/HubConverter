@@ -556,11 +556,10 @@ export default function TranslatePdf() {
      FILE CHANGE
   ======================================================= */
 
-  const handleFileChange = (
-    event
-  ) => {
-    const selectedFile =
-      event.target.files?.[0];
+  const handleFileChange = (eventOrFile) => {
+    const selectedFile = eventOrFile instanceof File
+      ? eventOrFile
+      : eventOrFile.target.files?.[0];
 
     setError("");
     setMessage("");
@@ -1103,7 +1102,7 @@ export default function TranslatePdf() {
   ======================================================= */
 
   return (
-    <div
+    <div className="tool-page"
       style={{
         maxWidth: "1000px",
         margin: "0 auto",
@@ -1123,7 +1122,12 @@ export default function TranslatePdf() {
       >
         {/* HEADER */}
 
-        <div
+        <div className="upload-box"
+          onDragOver={(event) => event.preventDefault()}
+          onDrop={(event) => {
+            event.preventDefault();
+            handleFileChange(event.dataTransfer.files?.[0]);
+          }}
           style={{
             textAlign: "center",
             marginBottom: "28px",
@@ -1242,7 +1246,7 @@ export default function TranslatePdf() {
           </label>
 
           {file && (
-            <div
+            <div className="selected-file"
               style={{
                 marginTop:
                   "18px",
