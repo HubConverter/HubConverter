@@ -38,6 +38,7 @@ async function api(path, options = {}) {
       ...(options.headers || {}),
     },
   });
+
   const text = await response.text();
 
   if (!response.ok) {
@@ -56,15 +57,6 @@ async function api(path, options = {}) {
     throw error;
   }
 }
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw Error(data.error || "Request failed");
-  }
-
-  return data;
-}
-
 const fallback = [
   ["Excel", "📊"],
   ["Word", "📄"],
