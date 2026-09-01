@@ -34,6 +34,12 @@ export default function PdfToExcel() {
 
   const handleInputChange = (e) => {
     handleFile(e.target.files?.[0]);
+    e.target.value = "";
+  };
+
+  const handleDrop = (event) => {
+    event.preventDefault();
+    handleFile(event.dataTransfer.files?.[0]);
   };
 
   const extractPdfData = async () => {
@@ -200,7 +206,7 @@ export default function PdfToExcel() {
 
       XLSX.writeFile(
         workbook,
-        `ShortcutHub-PDF-to-Excel.xlsx`
+        `PDF-to-Excel.xlsx`
       );
     } catch (err) {
       console.error(err);
@@ -217,7 +223,7 @@ export default function PdfToExcel() {
   };
 
   return (
-    <div
+    <div className="tool-page"
       style={{
         width: "100%",
         maxWidth: "1000px",
@@ -263,7 +269,9 @@ export default function PdfToExcel() {
 
       {/* Upload area */}
       {!file && (
-        <label
+        <label className="upload-box"
+          onDragOver={(event) => event.preventDefault()}
+          onDrop={handleDrop}
           style={{
             display: "block",
             border: "2px dashed #6366f1",
@@ -325,7 +333,7 @@ export default function PdfToExcel() {
 
       {/* Selected file */}
       {file && (
-        <div
+        <div className="selected-file"
           style={{
             border: "1px solid #e2e8f0",
             borderRadius: "15px",
