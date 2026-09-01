@@ -66,29 +66,29 @@ export default function Background({ onImageSelect }) {
   };
 
   // Paste image from clipboard
-  useEffect(() => {
-    const handlePaste = (event) => {
-      const items = event.clipboardData?.items;
+ useEffect(() => {
+  if (!currentFile) {
+    setOriginalUrl("");
+    setRemovedUrl("");
+    return;
+  }
 
-      if (!items) return;
+  const url = URL.createObjectURL(currentFile);
 
-      for (const item of items) {
-        if (item.type.startsWith("image/")) {
-          const file = item.getAsFile();
+  setOriginalUrl(url);
+  setRemovedUrl("");
+  setSelectedBackground(null);
+  setSelectedColor("transparent");
+  setMode("background");
+  setZoom(100);
+  setError("");
 
-          if (file) {
-            handleFile(file);
-          }
-
-          break;
-        }
-      }
-    };
-// Automatically remove background after image upload
-useEffect(() => {
-  if (!currentFile) return;
-
+  // Automatically remove background after image is selected
   removeBackground();
+
+  return () => {
+    URL.revokeObjectURL(url);
+  };
 }, [currentFile]);
     window.addEventListener("paste", handlePaste);
 
