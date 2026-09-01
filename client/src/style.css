@@ -3740,3 +3740,15 @@ footer {
   .background-editor-page .background-sidebar { grid-row: 2; }
   .image-stage img { max-width: 72%; max-height: 72%; }
 }
+
+/* Final desktop sizing: compact background canvas, larger person, controls always on the right. */
+@media (min-width: 701px) {
+  .background-editor-page { display: flex; align-items: stretch; }
+  .background-editor-page .background-canvas { order: 1; flex: 1 1 auto; min-width: 0; }
+  .background-editor-page .background-sidebar { order: 2; flex: 0 0 230px; width: 230px; }
+  .image-stage { width: min(610px, 100%); height: 420px; min-height: 0; justify-self: center; align-self: center; }
+  .image-stage img { max-width: 74%; max-height: 88%; }
+}
+@media (min-width: 901px) {
+  .hub-title-area { margin-left: 0; transform: translateX(150px); }
+}
