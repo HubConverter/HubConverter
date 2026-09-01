@@ -84,7 +84,12 @@ export default function Background({ onImageSelect }) {
         }
       }
     };
+// Automatically remove background after image upload
+useEffect(() => {
+  if (!currentFile) return;
 
+  removeBackground();
+}, [currentFile]);
     window.addEventListener("paste", handlePaste);
 
     return () => {
