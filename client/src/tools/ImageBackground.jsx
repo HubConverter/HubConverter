@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { removeBackground } from "@imgly/background-removal";
 
-const background = (id) => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=420&q=80`;
+const photo = (id) => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=420&q=80`;
 const backgrounds = [
   ["Nature", "1500530855697-b586d89ba3ee"], ["Ocean", "1507525428034-b723cf961d3e"], ["Sea", "1473116763249-2faaef81ccda"], ["Sky", "1499346030926-9a72daac6c63"], ["Hotel", "1566073771259-6a8506099945"], ["Sunshine", "1500534314209-a25ddb2bd429"], ["Sunset", "1500534314209-a25ddb2bd429"], ["Mountain", "1501785888041-af3ef285b470"], ["Forest", "1441974231531-c6227db76b6e"], ["Flower", "1497250681960-ef046c08a56e"],
   ["Trees", "1473448912268-2022ce9509d8"], ["Beach", "1507525428034-b723cf961d3e"], ["City", "1444723121867-7a241cacace9"], ["Desert", "1509316785289-025f5b846b35"], ["Waterfall", "1433086966358-54859d0ed716"], ["Garden", "1416879595882-3373a0480b5b"], ["Snow", "1517299321609-52687d1bc55a"], ["Lake", "1470770841072-f978cf4d019e"], ["Road", "1470770841072-f978cf4d019e"], ["Tropical", "1507525428034-b723cf961d3e"],
