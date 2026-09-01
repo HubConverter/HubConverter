@@ -11,19 +11,8 @@ const backgrounds = [
 const colors = ["#ffffff", "#f3f4f6", "#dbe4ee", "#111827", "#172554", "#17324d", "#0b62d6", "#2196f3", "#14b8a6", "#12a150", "#84cc16", "#d9e021", "#f5a623", "#fb923c", "#ed5b5b", "#ef4444", "#e91e63", "#be185d", "#9b51e0", "#7c3aed", "#5b3cc4", "#8b5a2b", "#f3d5b5", "#ead2ac", "#b9a7ff", "#7dd3fc", "#a7f3d0", "#fde68a", "#fecdd3", "#cbd5e1"];
 
 export default function ImageBackground() {
-  const inputRef = useRef(null); const [file, setFile] = useState(null); const [sourceUrl, setSourceUrl] = useState(""); const [cutoutUrl, setCutoutUrl] = useState(""); const [selectedBackground, setSelectedBackground] = useState(""); const [selectedColor, setSelectedColor] = useState("#ffffff"); const [tab, setTab] = useState("background"); const [search, setSearch] = useState(""); const [processing, setProcessing] = useState(false); const [dragging, setDragging] = useState(false); const [message, setMessage] = useState("");const [dots, setDots] = useState("");
-  useEffect(() => () => { if (sourceUrl) URL.revokeObjectURL(sourceUrl); if (cutoutUrl && cutoutUrl !== sourceUrl) URL.revokeObjectURL(cutoutUrl); }, [sourceUrl, cutoutUrl]);useEffect(() => {
-  if (!processing) {
-    setDots("");
-    return;
-  }
-
-  const interval = setInterval(() => {
-    setDots((prev) => (prev.length >= 3 ? "" : prev + "."));
-  }, 400);
-
-  return () => clearInterval(interval);
-}, [processing]);
+  const inputRef = useRef(null); const [file, setFile] = useState(null); const [sourceUrl, setSourceUrl] = useState(""); const [cutoutUrl, setCutoutUrl] = useState(""); const [selectedBackground, setSelectedBackground] = useState(""); const [selectedColor, setSelectedColor] = useState("#ffffff"); const [tab, setTab] = useState("background"); const [search, setSearch] = useState(""); const [processing, setProcessing] = useState(false); const [dragging, setDragging] = useState(false); const [message, setMessage] = useState("");
+  useEffect(() => () => { if (sourceUrl) URL.revokeObjectURL(sourceUrl); if (cutoutUrl && cutoutUrl !== sourceUrl) URL.revokeObjectURL(cutoutUrl); }, [sourceUrl, cutoutUrl]);
   function cropTransparentCanvas(blob) {
     return new Promise((resolve) => {
       const url = URL.createObjectURL(blob); const image = new Image();
