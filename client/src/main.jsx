@@ -18,6 +18,7 @@ import EditPdf from "./tools/EditPdf.jsx";
 import TranslatePdf from "./tools/TranslatePdf.jsx";
 import ImageCompressor from "./tools/ImageCompressor.jsx";
 import ImageBackground from "./tools/ImageBackground.jsx";
+import ImageRotator from "./tools/ImageRotator.jsx";
 
 
 
@@ -1260,6 +1261,37 @@ if (selectedTool === "image-compressor") {
     </div>
   );
 }
+  if (selectedTool === "image-rotator") {
+  return (
+    <div>
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "20px 24px 0",
+        }}
+      >
+        <button
+          onClick={() => setSelectedTool(null)}
+          style={{
+            border: "none",
+            background: "transparent",
+            color: "inherit",
+            fontSize: "15px",
+            fontWeight: "600",
+            cursor: "pointer",
+            padding: "10px 0",
+          }}
+        >
+          ← Back to Tools
+        </button>
+      </div>
+
+      <ImageRotator />
+    </div>
+  );
+}
+
  // =========================
 // TOOLS HOME
 // =========================
@@ -1402,10 +1434,12 @@ const jpgTools = [
     description: "Crop images quickly.",
   },
   {
-    icon: "🔃",
-    title: "Image Rotator",
-    description: "Rotate your images.",
-  },
+  icon: "🔃",
+  title: "Image Rotator",
+  description: "Rotate images left, right, flip them, or use a custom angle.",
+  id: "image-rotator",
+},
+
   {
     icon: "📄",
     title: "Image to PDF",
@@ -1436,17 +1470,18 @@ const textTools = [
   },
 ];
 
-const allTools = [
+cconst allTools = [
   ...pdfTools,
   ...jpgTools.map((tool) => ({
     ...tool,
-    comingSoon: true,
+    comingSoon: !tool.id,
   })),
   ...textTools.map((tool) => ({
     ...tool,
     comingSoon: true,
   })),
 ];
+
 
 const toolsForCategory =
   category === "pdf"
