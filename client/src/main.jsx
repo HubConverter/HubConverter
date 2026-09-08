@@ -1470,7 +1470,7 @@ const textTools = [
   },
 ];
 
-cconst allTools = [
+const allTools = [
   ...pdfTools,
   ...jpgTools.map((tool) => ({
     ...tool,
